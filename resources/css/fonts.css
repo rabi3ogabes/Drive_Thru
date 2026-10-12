@@ -1,0 +1,9 @@
+/* Self-hosted fonts (no third-party font CDN): fast, private, offline-safe. */
+@import '@fontsource-variable/geist/index.css';
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/alexandria/index.css';
+@import '@fontsource/ibm-plex-sans-arabic/arabic-300.css';
+@import '@fontsource/ibm-plex-sans-arabic/arabic-400.css';
+@import '@fontsource/ibm-plex-sans-arabic/arabic-500.css';
+@import '@fontsource/ibm-plex-sans-arabic/arabic-600.css';
+@import '@fontsource/ibm-plex-sans-arabic/arabic-700.css';

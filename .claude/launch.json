@@ -1,0 +1,46 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "drive-thru",
+      "runtimeExecutable": "php",
+      "runtimeArgs": [
+        "-d",
+        "max_execution_time=300",
+        "-d",
+        "zend_extension=opcache",
+        "-d",
+        "opcache.enable_cli=1",
+        "-d",
+        "opcache.validate_timestamps=1",
+        "-d",
+        "opcache.revalidate_freq=0",
+        "-S",
+        "127.0.0.1:8000",
+        "-t",
+        "public",
+        "server.php"
+      ],
+      "port": 8000
+    },
+    {
+      "name": "drive-thru-proxy",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        ".claude/dev-proxy.cjs"
+      ],
+      "port": 8010
+    },
+    {
+      "name": "reverb",
+      "runtimeExecutable": "php",
+      "runtimeArgs": [
+        "artisan",
+        "reverb:start",
+        "--host=127.0.0.1",
+        "--port=8080"
+      ],
+      "port": 8080
+    }
+  ]
+}

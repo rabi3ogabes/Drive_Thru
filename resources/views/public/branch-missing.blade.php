@@ -1,0 +1,1 @@
+<x-public.notice :restaurant="$restaurant" :title="__('public.missing.branch_title')" :message="__('public.missing.branch_message', ['restaurant' => $restaurant->name])" :action="route('public.restaurant', $restaurant)" :action-label="__('public.missing.see_branches')" />

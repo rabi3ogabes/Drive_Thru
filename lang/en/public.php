@@ -1,0 +1,61 @@
+<?php
+
+return [
+    'powered_by' => 'Powered by',
+    'meta' => [
+        'description' => 'Find a :restaurant drive-thru near you: opening hours, directions and pickup times.',
+    ],
+    'status' => [
+        'closes_at' => 'Until :time',
+        'back_at' => 'Back at :time',
+        'opens_at' => 'Opens :day at :time',
+        'today' => 'today',
+        'tomorrow' => 'tomorrow',
+        'all_day' => 'Open 24 hours',
+        'all_day_long' => 'Open around the clock, every day.',
+    ],
+    'restaurant' => [
+        'branches' => '{0} No branches yet|{1} 1 drive-thru branch|[2,*] :count drive-thru branches',
+        'choose' => 'Choose your branch',
+        'no_branches' => 'Opening soon',
+        'no_branches_hint' => 'Our first branch is being set up. Please check back shortly.',
+    ],
+    'branch' => [
+        'all_branches' => 'All branches',
+        'prep' => 'Usual wait',
+        'minutes' => '{1} 1 minute|[2,*] :count minutes',
+        'pickup' => 'Pick up at',
+        'window' => 'The drive-thru window',
+        'directions' => 'Directions',
+        'hours' => 'Opening hours',
+        'closed' => 'Closed',
+        'closures' => 'Special closures',
+        'how_title' => 'Visiting the drive-thru',
+        'how_1' => 'Follow the signs into the drive-thru lane.',
+        'how_2' => 'Order at the window and tell us your name.',
+        'how_3' => 'Collect your order and enjoy.',
+    ],
+    'missing' => [
+        'restaurant_title' => 'Restaurant not found',
+        'restaurant_message' => 'This link doesn’t match any restaurant. Check the address or scan the QR code again.',
+        'home' => 'Go to the homepage',
+        'branch_title' => 'Branch not found',
+        'branch_message' => 'This branch link isn’t active anymore. Choose another :restaurant branch.',
+        'see_branches' => 'See all branches',
+    ],
+    'unavailable' => [
+        'title' => 'Temporarily unavailable',
+        'message' => ':restaurant isn’t taking visits through this link right now. Please try again later.',
+    ],
+    'menu' => [
+        'title' => 'Menu',
+        'search' => 'Search the menu',
+        'sections' => 'Menu sections',
+        'popular' => 'Popular',
+        'new' => 'New',
+        'limited' => 'Limited',
+        'save' => 'Save :amount',
+        'kcal' => ':count kcal',
+        'contains' => 'Contains: :list',
+        'no_results' => 'Nothing matches your search.',
+    ], ];

@@ -1,0 +1,55 @@
+<?php
+
+return [
+    'label' => 'سجل تدقيق',
+    'plural' => 'سجل التدقيق',
+    'timeline' => 'النشاط',
+    'when' => 'متى',
+    'who' => 'من',
+    'what' => 'ماذا',
+    'subject' => 'على',
+    'system' => 'النظام',
+    'from' => 'من',
+    'until' => 'إلى',
+    'field' => 'الحقل',
+    'before' => 'قبل',
+    'after' => 'بعد',
+    'empty' => 'لم يُسجَّل شيء بعد',
+    'generic' => ':event :type',
+
+    'verbs' => [
+        'created' => 'إنشاء',
+        'updated' => 'تعديل',
+        'deleted' => 'حذف',
+        'restored' => 'استعادة',
+    ],
+
+    'events' => [
+        'client_onboarded' => 'فتح حساب عميل',
+        'impersonation_started' => 'الدخول كمالك',
+        'impersonation_ended' => 'العودة إلى المنصة',
+        'restaurant_suspended' => 'إيقاف عميل',
+        'restaurant_reactivated' => 'إعادة تفعيل عميل',
+        'user_invited' => 'إرسال دعوة',
+        'user_invitation_accepted' => 'قبول دعوة',
+        'sessions_revoked' => 'تسجيل الخروج من الأجهزة الأخرى',
+        'platform_installed' => 'تثبيت المسؤول الأعلى',
+        'security_unlocked' => 'فتح تسجيل الدخول',
+        'security_two_factor_reset' => 'إعادة ضبط التحقق الثنائي',
+        'settings_updated' => 'تعديل إعدادات المنصة',
+    ],
+
+    'types' => [
+        'restaurant' => 'عميل',
+        'employee' => 'عضو فريق',
+        'position' => 'منصب',
+        'platform_role' => 'دور',
+        'user' => 'حساب',
+        'plan' => 'باقة',
+        'subscription' => 'اشتراك',
+        'invoice' => 'فاتورة',
+        'lead' => 'طلب انضمام',
+        'announcement' => 'إعلان',
+        'security_alert' => 'تنبيه أمني',
+    ],
+];

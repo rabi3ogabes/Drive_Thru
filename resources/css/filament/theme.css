@@ -1,0 +1,360 @@
+/*
+ * One theme for both Filament panels (platform /admin and restaurant /app).
+ * Mood: "Midnight & Ice": a floating midnight navigation rail, calm cool
+ * canvas, soft layered surfaces and brass used only as a precious accent.
+ */
+@import '../../../vendor/filament/filament/resources/css/theme.css';
+@import '../fonts.css';
+@import '../tokens.css';
+
+@source '../../../app/Filament/**/*';
+@source '../../../resources/views/filament/**/*';
+@source '../../../resources/views/components/**/*';
+@source '../../../resources/views/livewire/**/*';
+
+/* ------------------------------------------------------------------ base */
+
+:root {
+    --sidebar-width: 18.5rem;
+    --collapsed-sidebar-width: 5.75rem;
+    --topbar-height: 4.25rem;
+    --rail-inset: 0.75rem;
+}
+
+/* Filament writes --font-family inline; this keeps our bilingual stack. */
+:root:root {
+    --font-family: 'Geist Variable', 'IBM Plex Sans Arabic';
+    --serif-font-family: 'Fraunces Variable', 'Alexandria Variable';
+}
+
+html {
+    font-feature-settings: 'ss01', 'cv11';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Arabic reads better with a touch more line-height and no negative tracking. */
+html[dir='rtl'] {
+    --font-family: 'IBM Plex Sans Arabic', 'Geist Variable';
+    line-height: 1.65;
+}
+
+.fi-body {
+    background-color: var(--color-ink-50);
+    background-image:
+        radial-gradient(60rem 30rem at 100% -10%, rgb(167 200 228 / 0.28), transparent 60%),
+        radial-gradient(40rem 24rem at 0% 110%, rgb(169 209 203 / 0.18), transparent 60%);
+    background-attachment: fixed;
+}
+
+.dark .fi-body {
+    background-color: var(--color-ink-950);
+    background-image:
+        radial-gradient(60rem 30rem at 100% -10%, rgb(127 171 211 / 0.10), transparent 60%),
+        radial-gradient(40rem 24rem at 0% 110%, rgb(70 145 137 / 0.08), transparent 60%);
+}
+
+/* ------------------------------------------------------ navigation rail */
+
+.fi-sidebar {
+    isolation: isolate;
+    background-color: var(--color-ink-950);
+}
+
+@media (min-width: 64rem) {
+    .fi-sidebar {
+        background-color: transparent;
+        padding: var(--rail-inset);
+        padding-inline-end: 0;
+    }
+
+    /* The floating midnight panel sits behind the rail content. */
+    .fi-sidebar::before {
+        content: '';
+        position: absolute;
+        inset: var(--rail-inset);
+        inset-inline-end: 0;
+        z-index: -1;
+        border-radius: var(--radius-2xl);
+        background:
+            radial-gradient(22rem 18rem at 0% 0%, rgb(127 171 211 / 0.14), transparent 70%),
+            linear-gradient(180deg, var(--color-ink-900), var(--color-ink-950));
+        box-shadow:
+            var(--shadow-float),
+            inset 0 1px 0 rgb(255 255 255 / 0.06),
+            inset 0 0 0 1px rgb(255 255 255 / 0.04);
+    }
+}
+
+.fi-sidebar .fi-logo {
+    color: #fff;
+}
+
+.fi-sidebar-header {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.fi-sidebar-nav {
+    padding-inline: 0.875rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.12) transparent;
+}
+
+.fi-sidebar-group-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(202 223 240 / 0.45);
+}
+
+html[dir='rtl'] .fi-sidebar-group-label {
+    letter-spacing: 0;
+    font-size: 0.75rem;
+}
+
+.fi-sidebar-group-btn .fi-icon,
+.fi-sidebar-group-dropdown-trigger-btn .fi-icon {
+    color: rgb(202 223 240 / 0.45);
+}
+
+.fi-sidebar-item-btn {
+    border-radius: var(--radius-md);
+    padding: 0.625rem 0.75rem;
+    transition:
+        background-color var(--duration-base) var(--ease-spring),
+        transform var(--duration-fast) var(--ease-spring);
+}
+
+.fi-sidebar-item-btn:active {
+    transform: scale(0.985);
+}
+
+.fi-sidebar-item-btn > .fi-icon {
+    color: rgb(202 223 240 / 0.55);
+}
+
+.fi-sidebar-item-label {
+    color: rgb(228 239 248 / 0.78);
+}
+
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:focus-visible,
+.fi-sidebar-group-dropdown-trigger-btn:hover {
+    background-color: rgb(255 255 255 / 0.05);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.10), rgb(255 255 255 / 0.05));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    color: var(--color-brass-300);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
+    color: #fff;
+}
+
+.fi-sidebar-item.fi-active
+    > .fi-sidebar-item-btn
+    > .fi-sidebar-item-grouped-border
+    > .fi-sidebar-item-grouped-border-part {
+    background-color: var(--color-brass-300);
+}
+
+.fi-sidebar-item-grouped-border-part,
+.fi-sidebar-item-grouped-border-part-not-first,
+.fi-sidebar-item-grouped-border-part-not-last {
+    background-color: rgb(255 255 255 / 0.16);
+}
+
+.fi-sidebar-footer,
+.fi-sidebar .fi-tenant-menu {
+    color: rgb(228 239 248 / 0.85);
+}
+
+.fi-sidebar .fi-tenant-menu-trigger {
+    border-radius: var(--radius-lg);
+    background-color: rgb(255 255 255 / 0.04);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+.fi-sidebar .fi-tenant-menu-trigger:hover {
+    background-color: rgb(255 255 255 / 0.07);
+}
+
+.fi-sidebar .fi-tenant-menu-trigger * {
+    color: inherit;
+}
+
+/* --------------------------------------------------------------- topbar */
+
+.fi-topbar {
+    background-color: rgb(245 247 250 / 0.72) !important;
+    backdrop-filter: saturate(1.4) blur(18px);
+    -webkit-backdrop-filter: saturate(1.4) blur(18px);
+    box-shadow: 0 1px 0 rgb(10 15 28 / 0.05) !important;
+}
+
+.dark .fi-topbar {
+    background-color: rgb(10 15 28 / 0.66) !important;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.05) !important;
+}
+
+.fi-topbar .fi-logo {
+    color: var(--color-ink-950);
+}
+
+.dark .fi-topbar .fi-logo {
+    color: #fff;
+}
+
+/* -------------------------------------------------------------- content */
+
+.fi-header-heading {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'opsz' 96;
+}
+
+html[dir='rtl'] .fi-header-heading {
+    font-family: var(--font-display-ar);
+    letter-spacing: 0;
+    font-weight: 600;
+}
+
+.fi-header-subheading {
+    color: var(--color-ink-500);
+}
+
+.fi-section,
+.fi-wi-stats-overview-stat,
+.fi-ta-ctn,
+.fi-fo-tabs,
+.fi-in-tabs {
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--shadow-soft), var(--shadow-hairline) !important;
+    --tw-ring-color: transparent;
+}
+
+.dark .fi-section,
+.dark .fi-wi-stats-overview-stat,
+.dark .fi-ta-ctn,
+.dark .fi-fo-tabs,
+.dark .fi-in-tabs {
+    background-color: rgb(17 24 39 / 0.72);
+    box-shadow:
+        0 24px 48px -24px rgb(0 0 0 / 0.6),
+        inset 0 1px 0 rgb(255 255 255 / 0.04),
+        0 0 0 1px rgb(255 255 255 / 0.06) !important;
+}
+
+.fi-wi-stats-overview-stat-value {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.fi-btn {
+    border-radius: var(--radius-md);
+    transition:
+        background-color var(--duration-base) var(--ease-spring),
+        box-shadow var(--duration-base) var(--ease-spring),
+        transform var(--duration-fast) var(--ease-spring);
+}
+
+.fi-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.fi-input-wrp {
+    border-radius: var(--radius-md);
+}
+
+.fi-modal-window,
+.fi-dropdown-panel {
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--shadow-float), var(--shadow-hairline) !important;
+}
+
+/* ------------------------------------------------- sign-in (simple layout) */
+
+.fi-simple-layout {
+    background-color: var(--color-ivory-100);
+    background-image:
+        radial-gradient(48rem 32rem at 110% -10%, rgb(15 59 58 / 0.16), transparent 60%),
+        radial-gradient(40rem 28rem at -10% 110%, rgb(176 141 87 / 0.16), transparent 60%);
+}
+
+.dark .fi-simple-layout {
+    background-color: var(--color-ink-950);
+    background-image:
+        radial-gradient(48rem 32rem at 110% -10%, rgb(70 145 137 / 0.18), transparent 60%),
+        radial-gradient(40rem 28rem at -10% 110%, rgb(176 141 87 / 0.12), transparent 60%);
+}
+
+/* Fine paper grain over the sign-in canvas, fixed so it never repaints on scroll. */
+.fi-simple-layout::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.fi-simple-main {
+    border-radius: var(--radius-3xl) !important;
+    box-shadow:
+        var(--shadow-float),
+        0 0 0 1px rgb(10 15 28 / 0.05),
+        0 0 0 8px rgb(255 255 255 / 0.45) !important;
+    animation: var(--animate-rise);
+}
+
+.dark .fi-simple-main {
+    box-shadow:
+        0 40px 80px -32px rgb(0 0 0 / 0.7),
+        0 0 0 1px rgb(255 255 255 / 0.07),
+        0 0 0 8px rgb(255 255 255 / 0.03) !important;
+}
+
+.fi-simple-header-heading {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+}
+
+html[dir='rtl'] .fi-simple-header-heading {
+    font-family: var(--font-display-ar);
+    letter-spacing: 0;
+}
+
+.fi-simple-layout .fi-logo {
+    color: var(--color-ink-950);
+}
+
+.dark .fi-simple-layout .fi-logo {
+    color: #fff;
+}
+
+/* Dark mode: lift the rail off the midnight canvas so it still reads as a floating panel. */
+@media (min-width: 64rem) {
+    .dark .fi-sidebar::before {
+        background:
+            radial-gradient(22rem 18rem at 0% 0%, rgb(127 171 211 / 0.16), transparent 70%),
+            linear-gradient(180deg, var(--color-ink-800), var(--color-ink-900));
+        box-shadow:
+            0 40px 80px -32px rgb(0 0 0 / 0.8),
+            inset 0 1px 0 rgb(255 255 255 / 0.08),
+            inset 0 0 0 1px rgb(255 255 255 / 0.07);
+    }
+}
+
+/* Mirror directional icons (arrows, chevrons) in right-to-left layouts. */
+html[dir='rtl'] .flip-rtl {
+    transform: scaleX(-1);
+}

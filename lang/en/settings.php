@@ -1,0 +1,67 @@
+<?php
+
+return [
+    'title' => 'Restaurant settings',
+    'subheading' => 'Your brand, region and the rules guests order under.',
+    'save' => 'Save settings',
+    'saved' => 'Settings saved',
+    'tabs' => [
+        'brand' => 'Brand',
+        'region' => 'Language & money',
+        'ordering' => 'Ordering',
+        'alerts' => 'Alerts',
+    ],
+    'sections' => [
+        'quiet_hours' => 'Quiet hours',
+        'quiet_hours_hint' => 'Between these times, routine alerts (late orders, guests waiting) stay in the bell only: no push or WhatsApp. Failed refunds always come through. Times follow the restaurant time zone; a range like 23:00 to 08:00 crosses midnight. Leave both empty to turn quiet hours off.',
+        'identity' => 'Restaurant name',
+        'identity_hint' => 'Your guest link is :link. It never changes, so printed QR codes keep working.',
+        'look' => 'Look and feel',
+        'region' => 'Language, time and currency',
+        'links' => 'Guest links',
+        'links_hint' => 'How guests reach your menu from links and QR codes.',
+        'charges' => 'Tax and service',
+        'rules' => 'Order rules',
+    ],
+    'fields' => [
+        'quiet_hours_start' => 'Quiet from',
+        'quiet_hours_end' => 'Quiet until',
+        'name' => 'Restaurant name',
+        'logo' => 'Logo',
+        'logo_hint' => 'Square, at least 512 px. Up to 3 MB.',
+        'cover' => 'Cover image',
+        'cover_hint' => 'Shown at the top of your guest page. Wide (16:9), up to 5 MB.',
+        'accent_color' => 'Accent colour',
+        'accent_color_hint' => 'Used for your initials badge and highlights.',
+        'default_locale' => 'Default language',
+        'default_locale_hint' => 'For new team members and guests without a preference.',
+        'timezone' => 'Time zone',
+        'currency' => 'Currency',
+        'currency_hint' => 'Change this before your menu goes live; prices are stored in this currency.',
+        'tax_rate' => 'Tax',
+        'tax_rate_hint' => 'Added to every order. 0 if prices already include tax.',
+        'service_fee' => 'Service fee',
+        'service_fee_hint' => 'Optional, added to every order.',
+        'cancellation_window' => 'Free cancellation window',
+        'cancellation_window_hint' => 'Guests can cancel by themselves for this long after ordering.',
+        'order_override' => 'Allow owners to override order status',
+        'order_override_hint' => 'Lets you move an order to any status from the workspace, with every change logged.',
+    ],
+    'actions' => [
+        'apply_logo' => 'Use on all branches',
+    ],
+    'apply_logo_description' => 'Every branch will show the restaurant logo instead of its own.',
+    'notifications' => [
+        'logo_applied' => 'All branches now use the restaurant logo',
+    ],
+    'menu_link_mode' => [
+        'single' => [
+            'label' => 'One link for all branches',
+            'description' => 'Guests open your restaurant link and choose the nearest branch.',
+        ],
+        'per_branch' => [
+            'label' => 'A separate link per branch',
+            'description' => 'Each branch has its own locked link and QR, ideal for printed signs at the lane.',
+        ],
+    ],
+];

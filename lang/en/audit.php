@@ -1,0 +1,55 @@
+<?php
+
+return [
+    'label' => 'Audit entry',
+    'plural' => 'Audit log',
+    'timeline' => 'Activity',
+    'when' => 'When',
+    'who' => 'Who',
+    'what' => 'What',
+    'subject' => 'On',
+    'system' => 'System',
+    'from' => 'From',
+    'until' => 'Until',
+    'field' => 'Field',
+    'before' => 'Before',
+    'after' => 'After',
+    'empty' => 'Nothing recorded yet',
+    'generic' => ':type :event',
+
+    'verbs' => [
+        'created' => 'created',
+        'updated' => 'updated',
+        'deleted' => 'deleted',
+        'restored' => 'restored',
+    ],
+
+    'events' => [
+        'client_onboarded' => 'Client account opened',
+        'impersonation_started' => 'Viewed as owner',
+        'impersonation_ended' => 'Returned to platform',
+        'restaurant_suspended' => 'Client suspended',
+        'restaurant_reactivated' => 'Client reactivated',
+        'user_invited' => 'Invitation sent',
+        'user_invitation_accepted' => 'Invitation accepted',
+        'sessions_revoked' => 'Signed out other devices',
+        'platform_installed' => 'Super admin installed',
+        'security_unlocked' => 'Sign-in unlocked',
+        'security_two_factor_reset' => 'Two-factor reset',
+        'settings_updated' => 'Platform settings changed',
+    ],
+
+    'types' => [
+        'restaurant' => 'Client',
+        'employee' => 'Team member',
+        'position' => 'Position',
+        'platform_role' => 'Role',
+        'user' => 'Account',
+        'plan' => 'Plan',
+        'subscription' => 'Subscription',
+        'invoice' => 'Invoice',
+        'lead' => 'Lead',
+        'announcement' => 'Announcement',
+        'security_alert' => 'Security alert',
+    ],
+];

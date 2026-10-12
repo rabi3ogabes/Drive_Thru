@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <title>غير متصل · Offline</title>
+    <style>
+        :root { --ivory: #fbf8f2; --ink: #0a0f1c; --muted: #5d6474; --teal: #0f3b3a; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100dvh; display: grid; place-items: center; padding: 24px; background: var(--ivory); color: var(--ink);
+               font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans Arabic", sans-serif; -webkit-font-smoothing: antialiased; }
+        .card { width: 100%; max-width: 380px; padding: 6px; border-radius: 32px; background: #fff; box-shadow: 0 30px 60px -30px rgb(10 15 28 / .3), 0 0 0 1px rgb(10 15 28 / .05); }
+        .core { padding: 32px 24px; border-radius: 26px; background: linear-gradient(135deg, #f4efe4, #fff); text-align: center; }
+        .icon { width: 64px; height: 64px; margin: 0 auto; display: grid; place-items: center; border-radius: 999px; background: rgb(15 59 58 / .08); color: var(--teal); }
+        h1 { margin: 20px 0 4px; font-size: 1.375rem; }
+        p { margin: 0; color: var(--muted); line-height: 1.6; }
+        .en { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgb(10 15 28 / .06); direction: ltr; }
+        .en h1 { font-size: 1.125rem; margin-top: 0; }
+        button { margin-top: 24px; width: 100%; padding: 14px; border: 0; border-radius: 999px; background: var(--teal); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="card"><div class="core">
+        <div class="icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.6a10 10 0 0 1 14 0M8.5 16.3a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/><path d="m3 3 18 18"/></svg>
+        </div>
+        <h1>لا يوجد اتصال بالإنترنت</h1>
+        <p>طلباتك محفوظة بأمان. أعد المحاولة عند عودة الاتصال.</p>
+        <div class="en" lang="en">
+            <h1>You're offline</h1>
+            <p>Your orders are safe. Try again when you're back online.</p>
+        </div>
+        <button type="button" onclick="location.reload()">إعادة المحاولة · Try again</button>
+    </div></div>
+</body>
+</html>

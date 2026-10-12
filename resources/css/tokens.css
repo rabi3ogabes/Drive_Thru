@@ -1,0 +1,131 @@
+/*
+ * Drive-Thru Plus design tokens: the single source of truth for color, type,
+ * radius, elevation and motion. Shared by the website, the customer app, the
+ * ops screens and both Filament panels. Components never hard-code colors.
+ *
+ * Two moods, one family:
+ *   Midnight & Ice     → dashboards and ops screens (ink + ice, calm and dense)
+ *   Deep Teal & Brass  → customer app and website (ivory, teal, brass, sage)
+ */
+
+@theme {
+    /* Typography: Latin glyphs render in Geist/Fraunces and Arabic glyphs fall
+       through to IBM Plex Sans Arabic/Alexandria, so mixed text stays harmonious. */
+    --font-sans: 'Geist Variable', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Fraunces Variable', 'Alexandria Variable', ui-serif, Georgia, serif;
+    --font-display-ar: 'Alexandria Variable', 'IBM Plex Sans Arabic', ui-sans-serif, sans-serif;
+
+    /* Midnight ink: dashboard dark surfaces and the navigation rail */
+    --color-ink-50: #f5f7fa;
+    --color-ink-100: #eceff4;
+    --color-ink-200: #d9dee7;
+    --color-ink-300: #bcc4d2;
+    --color-ink-400: #8b95a8;
+    --color-ink-500: #636d82;
+    --color-ink-600: #475167;
+    --color-ink-700: #313a4f;
+    --color-ink-800: #1c2436;
+    --color-ink-900: #111827;
+    --color-ink-950: #0a0f1c;
+
+    /* Ice: cool highlights on midnight */
+    --color-ice-50: #f3f8fc;
+    --color-ice-100: #e4eff8;
+    --color-ice-200: #cadff0;
+    --color-ice-300: #a7c8e4;
+    --color-ice-400: #7fabd3;
+
+    /* Ivory: warm paper for customer surfaces */
+    --color-ivory-50: #fcfbf8;
+    --color-ivory-100: #f7f5f0;
+    --color-ivory-200: #efebe2;
+    --color-ivory-300: #e2dccf;
+
+    /* Deep teal: primary brand */
+    --color-teal-50: #eef6f5;
+    --color-teal-100: #d4e8e5;
+    --color-teal-200: #a9d1cb;
+    --color-teal-300: #75b2aa;
+    --color-teal-400: #469189;
+    --color-teal-500: #2b736c;
+    --color-teal-600: #1e5d57;
+    --color-teal-700: #184c47;
+    --color-teal-800: #143f3b;
+    --color-teal-900: #0f3b3a;
+    --color-teal-950: #082423;
+
+    /* Brass: the luxury accent, used sparingly */
+    --color-brass-50: #faf6ef;
+    --color-brass-100: #f2e8d6;
+    --color-brass-200: #e5d1ae;
+    --color-brass-300: #d5b582;
+    --color-brass-400: #c39e66;
+    --color-brass-500: #b08d57;
+    --color-brass-600: #957244;
+    --color-brass-700: #775a37;
+    --color-brass-800: #5e472f;
+    --color-brass-900: #4c3a28;
+
+    /* Sage: quiet supporting tone */
+    --color-sage-100: #e7ece6;
+    --color-sage-300: #b6c5b5;
+    --color-sage-500: #8a9e89;
+    --color-sage-700: #5a6d59;
+
+    /* Order lifecycle semantics: always paired with an icon and a label */
+    --color-status-new: #e5484d;
+    --color-status-progress: #f59e0b;
+    --color-status-ready: #16a34a;
+    --color-status-delayed: #dc2626;
+    --color-status-done: #64748b;
+    --color-status-cancelled: #9ca3af;
+
+    /* Radius: generous, concentric squircles */
+    --radius-xs: 0.375rem;
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
+    --radius-2xl: 1.75rem;
+    --radius-3xl: 2.25rem;
+
+    /* Elevation: layered, diffused, never harsh */
+    --shadow-hairline: 0 0 0 1px rgb(10 15 28 / 0.06);
+    --shadow-soft: 0 1px 2px rgb(10 15 28 / 0.04), 0 8px 24px -12px rgb(10 15 28 / 0.12);
+    --shadow-lift: 0 2px 4px rgb(10 15 28 / 0.04), 0 24px 48px -24px rgb(10 15 28 / 0.22);
+    --shadow-float: 0 4px 8px rgb(10 15 28 / 0.05), 0 40px 80px -32px rgb(10 15 28 / 0.35);
+    --shadow-inner-highlight: inset 0 1px 0 rgb(255 255 255 / 0.12);
+
+    /* Motion: spring-like, quick, interruptible */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration-fast: 150ms;
+    --duration-base: 240ms;
+    --duration-slow: 600ms;
+
+    --animate-rise: rise 700ms var(--ease-out-expo) both;
+    --animate-fade: fade 400ms var(--ease-out-expo) both;
+
+    @keyframes rise {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+            filter: blur(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    }
+
+    @keyframes fade {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
