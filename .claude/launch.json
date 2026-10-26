@@ -16,12 +16,12 @@
         "-d",
         "opcache.revalidate_freq=0",
         "-S",
-        "127.0.0.1:8000",
+        "127.0.0.1:8020",
         "-t",
         "public",
         "server.php"
       ],
-      "port": 8000
+      "port": 8020, "autoPort": false
     },
     {
       "name": "drive-thru-proxy",

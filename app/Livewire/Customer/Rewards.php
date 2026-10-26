@@ -11,18 +11,22 @@ use App\Domain\Loyalty\Exceptions\RewardUnavailable;
 use App\Domain\Loyalty\Models\LedgerEntry;
 use App\Domain\Loyalty\Models\LoyaltyProgram;
 use App\Domain\Loyalty\Models\Reward;
+use App\Domain\Loyalty\Models\StampCard;
+use App\Domain\Loyalty\Models\StampProgram;
 use App\Domain\Loyalty\Models\WalletReward;
+use App\Domain\Loyalty\Stamps;
 use App\Domain\Loyalty\Tiers;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Customer\Concerns\GuestPage;
 use App\Livewire\Customer\Concerns\SignsInWithPhone;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 /**
- * The guest's points: balance, tier and progress to the next one, rewards
- * in the wallet, the catalog to claim from, and every point movement.
- * Only for restaurants whose plan has loyalty and whose program is on.
+ * The guest's rewards: stamp cards filling up, points (balance, tier and
+ * progress, the catalog to claim from, every movement) and the wallet.
+ * Shown when the restaurant has Rewards and runs points or stamp cards.
  */
 class Rewards extends Component
 {
@@ -32,7 +36,7 @@ class Rewards extends Component
     public function mount(Restaurant $restaurant): void
     {
         $this->restaurant = $restaurant;
-        abort_unless($this->program() !== null, 404);
+        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty(), 404);
     }
 
     public function claim(int $rewardId): void
@@ -64,9 +68,15 @@ class Rewards extends Component
         $customer = $this->customer();
         $program = $this->program();
 
+        $programs = $this->stampPrograms();
+        $cards = $customer === null || $programs->isEmpty() ? collect() : StampCard::withoutTenancy()
+            ->where('customer_id', $customer->id)->whereIn('stamp_program_id', $programs->modelKeys())->get()->keyBy('stamp_program_id');
+
         return $this->page('livewire.customer.rewards', [
             'customer' => $customer,
             'program' => $program,
+            'stampPrograms' => $programs,
+            'stampCards' => $cards,
             'progress' => $customer === null ? null : app(Tiers::class)->progress($customer),
             'tiers' => app(Tiers::class)->tiers($this->restaurant->id),
             'wallet' => $customer === null ? collect() : WalletReward::withoutTenancy()->usable()->with('reward.product')->where('customer_id', $customer->id)->orderBy('expires_at')->get(),
@@ -87,6 +97,16 @@ class Rewards extends Component
     protected function signedIn(Customer $customer): void
     {
         $this->toast(__('guest.sign_in.welcome', ['name' => $customer->firstName() ?? '']));
+    }
+
+    /**
+     * @return Collection<int, StampProgram>
+     */
+    private function stampPrograms(): Collection
+    {
+        return once(fn (): Collection => $this->restaurant->hasFeature(PlanFeature::Loyalty)
+            ? app(Stamps::class)->programs($this->restaurant->id)
+            : new Collection);
     }
 
     private function program(): ?LoyaltyProgram

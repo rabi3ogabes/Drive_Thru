@@ -2,6 +2,40 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-10-26: Services model, Order-Ready Call, stamp cards & the new website
+
+### Built
+- **Three services, sold separately:** Drive-Thru, Order-Ready Call and Rewards.
+  - Each has a monthly price per branch and a free demo.
+  - Taking two or three services applies a bundle discount.
+  - Plans became tiers: branch and staff limits plus add-ons.
+  - The admin adds services to clients: demo, activate, extend, change the price, end.
+  - Owners try, keep, add and cancel from Billing.
+  - Billing charges added services pro rata, settles demos daily and records every change in the audit log.
+- **Order-Ready Call:**
+  - A counter pager screen.
+  - A guest pager page that rings, vibrates and keeps the screen awake.
+  - WhatsApp/SMS when the order is ready.
+  - A ready board for the waiting-area TV.
+- **Stamp cards (Rewards):**
+  - "Buy 5, the 6th is free", with a daily cap and carry-over.
+  - Stamps come back off after a cancellation or refund.
+  - Stamps can be added at the counter, by the guest's phone number.
+  - Guests see their cards, and checkout shows "1 more to go".
+- **Website:**
+  - A new home page, a page for each service and a pricing page.
+  - A live price calculator fed by the admin's price list.
+  - Plan tiers, FAQs and the demo form, which now records the services asked for.
+  - Light, dark or "match my device", with no flash on load.
+  - A sitemap with Arabic and English links, and structured data for search engines.
+- **Karak House demo menu:** 17 photographed dishes, with photos stored and served by the app itself. The branch menu page was redesigned (photo hero, "Most loved" carousel, category chips that follow the scroll).
+- **CRM foundations (7B task 1):** guest stats from picked-up orders, and an offers opt-in with proof of consent at checkout and on the account page.
+
+### Fixed during verification
+- **Floating ticket in the hero:** it covered the pager number, so it moved on desktop and is hidden on phones.
+- **Brand name in Arabic:** "Drive-Thru Plus" broke at its hyphen, so it now stays on one line.
+- **Pager counter:** a view variable clashed with a Livewire property of the same name and broke the screen.
+
 ## 2026-10-12: Phase 7A, Loyalty, tiers, rewards & promotions
 
 ### Built

@@ -44,6 +44,7 @@ return [
         'orders.operate' => ['label' => 'Handle orders', 'description' => 'Accept orders and move them through their stages.'],
         'orders.override' => ['label' => 'Override orders', 'description' => 'Change any order status, re-open or reset an order.'],
         'kitchen.operate' => ['label' => 'Kitchen screen', 'description' => 'Use the kitchen display and mark orders ready.'],
+        'pager.operate' => ['label' => 'Order-ready pager', 'description' => 'Hand out pager tickets at the counter and call guests when their order is ready.'],
         'pickup.operate' => ['label' => 'Pickup window', 'description' => 'Scan pickup codes and hand orders to customers.'],
         'payments.collect' => ['label' => 'Collect payments', 'description' => 'Mark pay-at-pickup orders as paid.'],
         'payments.refund' => ['label' => 'Refund payments', 'description' => 'Refund all or part of a payment.'],

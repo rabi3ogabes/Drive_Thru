@@ -42,7 +42,12 @@ return [
     ],
 
     'menu' => [
+        'signature_eyebrow' => 'Signature',
+        'signature' => 'Most loved here',
+        'count' => '{1} 1 item|[2,*] :count items',
+        'no_results' => 'Nothing matches that. Try another word.',
         'change_branch' => 'Change branch',
+        'menu_only' => 'Online ordering isn’t available here yet. Please order at the counter.',
         'order_ahead_hint' => 'This branch is closed right now. You can still order ahead for later.',
         'empty' => 'The menu is being prepared. Please check back soon.',
         'view_bag' => 'View bag',
@@ -274,6 +279,8 @@ return [
         'print' => 'Print',
     ],
     'savings' => [
+        'stamps_add' => '{1} +1 stamp on your :card card · :left to go|[2,*] +:count stamps on your :card card · :left to go',
+        'stamps_fill' => 'This order fills your :card card: :reward is yours',
         'title' => 'Savings',
         'balance' => '{0} No points yet|{1} 1 point|[2,*] :points points',
         'code' => 'Promo code',
@@ -297,6 +304,10 @@ return [
         'wallet' => 'Your wallet',
         'wallet_empty' => 'No rewards yet. Claim one below when you have enough points.',
         'wallet_hint' => 'Choose a reward at checkout to use it.',
+        'stamp_cards' => 'Stamp cards',
+        'stamps_subtitle' => 'Collect stamps every visit. A full card is a free treat.',
+        'stamps_left' => '{0} Card full: your reward is in your wallet|{1} 1 more stamp for your reward|[2,*] :count more stamps for your reward',
+        'stamps_sign_in' => 'Sign in to start collecting stamps.',
         'catalog' => 'Rewards to claim',
         'catalog_empty' => 'The restaurant hasn’t added rewards yet.',
         'cost' => ':points pts',
@@ -308,6 +319,7 @@ return [
         'expires' => 'expires :date',
         'past' => 'Used and expired rewards',
         'used_for_reward' => 'Used for a reward',
+        'points_added' => 'Points added',
         'status' => [
             'used' => 'Used',
             'expired' => 'Expired',
@@ -323,5 +335,9 @@ return [
             'fixed_off' => ':amount off your order',
             'bonus_points' => ':points bonus points',
         ],
+    ],
+    'offers' => [
+        'opt_in' => 'Send me offers',
+        'opt_in_hint' => 'Occasional deals from this restaurant on WhatsApp or SMS. Stop any time with one tap or by replying STOP.',
     ],
 ];

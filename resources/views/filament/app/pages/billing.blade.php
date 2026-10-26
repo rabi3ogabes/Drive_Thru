@@ -9,6 +9,8 @@
     $due = \App\Domain\Billing\Models\Invoice::query()->where('restaurant_id', $restaurant->id)->where('status', InvoiceStatus::Open)->orderBy('due_at')->first();
 @endphp
 <x-filament-panels::page>
+    @include('filament.app.pages.partials.your-services')
+
     <div class="grid gap-6 lg:grid-cols-3">
         <x-filament::section class="lg:col-span-2" icon="heroicon-o-sparkles" :heading="__('billing.owner.your_plan')">
             @if ($subscription && $plan)

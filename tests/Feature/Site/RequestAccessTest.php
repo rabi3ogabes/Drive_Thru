@@ -8,6 +8,7 @@ use App\Domain\Billing\PlanCatalog;
 use App\Domain\Growth\Models\Lead;
 use App\Domain\Platform\Models\Announcement;
 use App\Domain\Platform\PlatformSettings;
+use App\Domain\Services\Enums\Service;
 use App\Domain\Staff\Enums\EmployeeStatus;
 use App\Domain\Tenancy\Enums\RestaurantStatus;
 use App\Livewire\WorkspaceNotices;
@@ -124,6 +125,7 @@ it('shows the owner their billing page, and only the owner', function () {
     $restaurant = restaurant(slug: 'masar');
     $owner = ownerOf($restaurant);
     $cashier = employeeAt($restaurant, 'cashier');
+    withService($restaurant, Service::DriveThru, priceMinor: 34900);
     app(StartSubscription::class)->handle($restaurant, Plan::where('key', 'growth')->sole(), trialDays: 0);
 
     $this->actingAs($owner)->get('/app/masar/billing')->assertOk()->assertSee('DTP-');

@@ -15,6 +15,8 @@ enum DeviceKind: string implements HasDescription, HasIcon, HasLabel
     case Cashier = 'cashier';
     case Pickup = 'pickup';
     case Tv = 'tv';
+    case Pager = 'pager';
+    case ReadyBoard = 'ready_board';
 
     public function getLabel(): string
     {
@@ -33,6 +35,8 @@ enum DeviceKind: string implements HasDescription, HasIcon, HasLabel
             self::Cashier => 'heroicon-o-banknotes',
             self::Pickup => 'heroicon-o-shopping-bag',
             self::Tv => 'heroicon-o-tv',
+            self::Pager => 'heroicon-o-bell-alert',
+            self::ReadyBoard => 'heroicon-o-queue-list',
         };
     }
 }

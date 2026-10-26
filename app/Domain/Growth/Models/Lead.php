@@ -42,9 +42,10 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?int $converted_restaurant_id
  * @property ?CarbonImmutable $contacted_at
  * @property ?CarbonImmutable $converted_at
+ * @property ?list<string> $services services asked about (Service values)
  * @property ?CarbonImmutable $created_at
  */
-#[Fillable(['restaurant_name', 'contact_name', 'email', 'phone', 'branches_count', 'plan_id', 'message', 'locale', 'source', 'status', 'assigned_to', 'follow_up_at', 'lost_reason', 'converted_restaurant_id', 'contacted_at', 'converted_at', 'ip_hash'])]
+#[Fillable(['restaurant_name', 'contact_name', 'email', 'phone', 'branches_count', 'plan_id', 'message', 'locale', 'source', 'status', 'assigned_to', 'follow_up_at', 'lost_reason', 'converted_restaurant_id', 'contacted_at', 'converted_at', 'ip_hash', 'services'])]
 #[UseFactory(LeadFactory::class)]
 class Lead extends Model
 {
@@ -67,6 +68,7 @@ class Lead extends Model
         'contacted_at' => null,
         'converted_at' => null,
         'ip_hash' => null,
+        'services' => null,
     ];
 
     protected function casts(): array
@@ -78,6 +80,7 @@ class Lead extends Model
             'follow_up_at' => 'immutable_datetime',
             'contacted_at' => 'immutable_datetime',
             'converted_at' => 'immutable_datetime',
+            'services' => 'array',
         ];
     }
 

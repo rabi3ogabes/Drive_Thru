@@ -10,6 +10,7 @@ use App\Domain\Growth\Enums\LeadStatus;
 use App\Domain\Growth\Models\Lead;
 use App\Domain\Growth\Notifications\LeadAcknowledgement;
 use App\Domain\Growth\Notifications\NewLeadReceived;
+use App\Domain\Services\Enums\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -35,6 +36,7 @@ final class SubmitLead
             'phone' => filled($data['phone'] ?? null) ? trim((string) $data['phone']) : null,
             'branches_count' => max(1, min(500, (int) ($data['branches_count'] ?? 1))),
             'plan_id' => $data['plan_id'] ?? null,
+            'services' => array_values(array_intersect(array_column(Service::cases(), 'value'), (array) ($data['services'] ?? []))) ?: null,
             'message' => filled($data['message'] ?? null) ? trim((string) $data['message']) : null,
             'locale' => $locale ?? app()->getLocale(),
             'source' => $source,

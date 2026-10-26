@@ -1,0 +1,143 @@
+<?php
+
+return [
+    'names' => [
+        'drive_thru' => 'Drive-Thru',
+        'ready_call' => 'Order-Ready Call',
+        'rewards' => 'Rewards',
+    ],
+    'taglines' => [
+        'drive_thru' => 'Order ahead, drive up, drive off.',
+        'ready_call' => 'Their phone rings the moment it’s ready.',
+        'rewards' => 'Buy five, the sixth is on you.',
+    ],
+    'descriptions' => [
+        'drive_thru' => 'Online menu and ordering, payment, car arrival, kitchen and pickup screens, TV board and printing.',
+        'ready_call' => 'A pager on the guest’s own phone: it rings, vibrates and sends WhatsApp or SMS when the order is ready. Plus a ready board on your TV.',
+        'rewards' => 'Stamp cards, points, tiers, a rewards wallet, promotions and coupons that bring guests back.',
+    ],
+    'status' => [
+        'demo' => 'Demo',
+        'active' => 'Active',
+        'cancelling' => 'Ends at period end',
+        'ended' => 'Off',
+    ],
+    'locked' => [
+        'title' => ':service isn’t part of your plan yet',
+        'body' => 'Try it free for :days days. Nothing is charged unless you decide to keep it.',
+        'cta' => 'Try it free',
+        'billing' => 'See your services',
+    ],
+    'per_branch_month' => 'per branch / month',
+    'free_demo' => 'Free for :days days',
+    'demo_left' => '{0} Demo ends today|{1} Demo: 1 day left|[2,*] Demo: :count days left',
+    'ends_on' => 'Ends on :date',
+    'included' => 'Included',
+
+    'owner' => [
+        'title' => 'Your services',
+        'subheading' => 'Take one, two or all three. Each one can be tried free first.',
+        'try' => 'Try free for :days days',
+        'keep' => 'Keep it after the demo',
+        'kept' => 'You’ll keep it after the demo',
+        'dont_keep' => 'Don’t keep it',
+        'add' => 'Add now',
+        'cancel' => 'Cancel at period end',
+        'resume' => 'Keep it',
+        'monthly_total' => 'Monthly total',
+        'branches' => '{1} for 1 branch|[2,*] for :count branches',
+        'bundle' => 'Bundle discount (:percent%)',
+        'add_confirm' => 'Add :service now? Today you pay :amount for the rest of this period, then :monthly a month.',
+        'keep_confirm' => 'After the demo, :service costs :monthly a month for your :branches branches. You can cancel any time before the demo ends.',
+        'cancel_confirm' => ':service keeps working until :date, then switches off. Nothing more is charged.',
+        'demo_used' => 'You already tried :service. Add it, or ask us for a longer look.',
+        'nothing' => 'No services yet. Start a free demo below.',
+        'done' => [
+            'demo' => ':service demo started: :days days, free.',
+            'keep' => 'Noted. :service stays on after the demo.',
+            'dont_keep' => ':service will switch off when the demo ends.',
+            'added' => ':service is on.',
+            'cancelling' => ':service will switch off on :date.',
+            'resumed' => ':service stays on.',
+        ],
+    ],
+
+    'admin' => [
+        'title' => 'Services',
+        'prices' => 'Service prices',
+        'prices_hint' => 'Per branch, per month. New clients get these prices; existing clients keep the price they were given.',
+        'bundle_two' => 'Discount for 2 services',
+        'bundle_three' => 'Discount for 3 services',
+        'demo_days' => 'Free demo',
+        'price' => 'Price',
+        'active' => 'On sale',
+        'saved' => 'Service prices saved',
+        'add_demo' => 'Add as demo',
+        'activate' => 'Activate now',
+        'extend' => 'Extend demo',
+        'another_demo' => 'Grant another demo',
+        'override' => 'Change price',
+        'end' => 'End now',
+        'days' => 'Days',
+        'reason' => 'Reason',
+        'reason_hint' => 'Kept in the audit log.',
+        'unit_price' => 'Price per branch / month',
+        'not_added' => 'Not added',
+        'end_confirm' => ':service switches off for this client right away. No refund is issued.',
+        'done' => 'Saved',
+    ],
+
+    'notifications' => [
+        'demo_started' => [
+            'subject' => 'Your :service demo has started',
+            'line' => 'You have :days days to try :service, free. Nothing is charged unless you choose to keep it.',
+        ],
+        'demo_ending' => [
+            'subject' => 'Your :service demo ends in :days days',
+            'line_keep' => 'It will continue as a paid service at :monthly a month.',
+            'line_end' => 'It will switch off unless you choose to keep it.',
+        ],
+        'demo_ended' => [
+            'subject' => 'Your :service demo has ended',
+            'line' => ':service is now switched off. You can add it again any time from Billing.',
+        ],
+        'demo_converted' => [
+            'subject' => ':service is now part of your plan',
+            'line' => 'Your demo ended and :service continues at :monthly a month.',
+        ],
+        'added' => [
+            'subject' => ':service has been added to your account',
+            'line' => 'Our team added :service to :restaurant.',
+        ],
+        'action' => 'Open billing',
+    ],
+
+    'audit' => [
+        'demo_started' => 'Service demo started',
+        'activated' => 'Service activated',
+        'keep_set' => 'Service kept after demo',
+        'keep_unset' => 'Service not kept after demo',
+        'cancelling' => 'Service cancelled at period end',
+        'resumed' => 'Service cancellation undone',
+        'ended' => 'Service ended',
+        'demo_extended' => 'Service demo extended',
+        'demo_granted' => 'Another service demo granted',
+        'price_changed' => 'Service price changed',
+        'converted' => 'Service demo converted to paid',
+    ],
+
+    'invoice' => [
+        'line' => ':service · :branches',
+        'branches' => '{1} 1 branch|[2,*] :count branches',
+        'prorated' => ':service · :branches · :days days',
+        'bundle' => 'Bundle discount (:percent%)',
+        'tier' => ':plan plan',
+    ],
+
+    'errors' => [
+        'demo_used' => 'This restaurant already had a demo of :service.',
+        'already_on' => ':service is already on.',
+        'not_on' => ':service isn’t on.',
+        'not_for_sale' => ':service isn’t available right now.',
+    ],
+];

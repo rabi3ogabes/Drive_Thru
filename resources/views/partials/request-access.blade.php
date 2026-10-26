@@ -1,5 +1,6 @@
 @php
-    $plans = \App\Domain\Billing\Models\Plan::query()->available()->where('is_public', true)->get();
+    $services ??= collect();
+    $picked = (array) old('services', $preselect ?? []);
     $field = 'block w-full rounded-xl border-0 bg-white px-4 py-3 text-ink-950 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/10 transition placeholder:text-ink-400 focus:ring-2 focus:ring-teal-600';
 @endphp
 <section id="request" class="relative mx-auto max-w-6xl scroll-mt-24 px-4 pb-24 sm:px-6 lg:pb-32">
@@ -37,7 +38,10 @@
                             <p class="mt-3 max-w-sm text-ink-600">{{ __('leads.form.success_text') }}</p>
                         </div>
                     @else
-                        <form method="POST" action="{{ route('leads.store') }}" class="grid gap-5 sm:grid-cols-2" x-data="{ busy: false }" x-on:submit="busy = true" novalidate>
+                        <form method="POST" action="{{ route('leads.store') }}" class="grid gap-5 sm:grid-cols-2" novalidate
+                              x-data="{ busy: false, services: {{ \Illuminate\Support\Js::from(array_values($picked)) }}, branches: {{ (int) old('branches_count', 1) }} }"
+                              x-on:submit="busy = true"
+                              x-on:pick-services.window="services = $event.detail.services; branches = $event.detail.branches">
                             @csrf
                             {{-- Honeypot: invisible to people, irresistible to bots. --}}
                             <div class="hidden" aria-hidden="true">
@@ -68,24 +72,28 @@
 
                             <div>
                                 <label for="branches_count" class="block text-sm font-medium text-ink-800">{{ __('leads.form.attributes.branches_count') }}</label>
-                                <input id="branches_count" name="branches_count" type="number" min="1" max="500" inputmode="numeric" value="{{ old('branches_count', 1) }}" dir="ltr"
+                                <input id="branches_count" name="branches_count" type="number" min="1" max="500" inputmode="numeric" x-model.number="branches" value="{{ old('branches_count', 1) }}" dir="ltr"
                                        class="mt-1.5 {{ $field }} @error('branches_count') ring-2 ring-red-500/60 @enderror">
                                 @error('branches_count')<p class="mt-1.5 text-sm text-red-700">{{ $message }}</p>@enderror
                             </div>
 
-                            <div>
-                                <label for="plan" class="block text-sm font-medium text-ink-800">
-                                    {{ __('leads.form.attributes.plan') }} <span class="font-normal text-ink-400">· {{ __('leads.form.optional') }}</span>
-                                </label>
-                                <select id="plan" name="plan" class="mt-1.5 {{ $field }} appearance-none">
-                                    <option value="">{{ __('leads.form.plan_help') }}</option>
-                                    @foreach ($plans as $plan)
-                                        <option value="{{ $plan->key }}" @selected(old('plan') === $plan->key)>
-                                            {{ $plan->name }} · {{ $plan->formattedPrice() }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @if ($services->isNotEmpty())
+                                <fieldset class="sm:col-span-2">
+                                    <legend class="text-sm font-medium text-ink-800">{{ __('site.form.services') }} <span class="font-normal text-ink-400">· {{ __('site.form.services_hint') }}</span></legend>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        @foreach ($services as $key => $service)
+                                            <label class="cursor-pointer">
+                                                <input type="checkbox" name="services[]" value="{{ $key }}" x-model="services" class="peer sr-only">
+                                                <span class="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-medium text-ink-700 ring-1 ring-ink-950/10 transition peer-checked:bg-teal-900 peer-checked:text-paper peer-checked:ring-teal-900 peer-focus-visible:ring-2 peer-focus-visible:ring-teal-600">
+                                                    <x-filament::icon :icon="\App\Domain\Services\Enums\Service::from($key)->getIcon()" class="size-4" />
+                                                    {{ $service['label'] }}
+                                                </span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    @error('services')<p class="mt-1.5 text-sm text-red-700">{{ $message }}</p>@enderror
+                                </fieldset>
+                            @endif
 
                             <div class="sm:col-span-2">
                                 <label for="message" class="block text-sm font-medium text-ink-800">

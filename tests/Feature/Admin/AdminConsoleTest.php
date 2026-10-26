@@ -13,6 +13,7 @@ use App\Domain\Ordering\Realtime\ChannelAccess;
 use App\Domain\Platform\Models\Announcement;
 use App\Domain\Platform\PlatformSettings;
 use App\Domain\Security\Models\SecurityAlert;
+use App\Domain\Services\Enums\Service;
 use App\Domain\Tenancy\Enums\RestaurantStatus;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Filament\Admin\Pages\PlatformSettingsPage;
@@ -37,6 +38,7 @@ function clientWithInvoice(): Restaurant
 {
     $restaurant = restaurant(slug: 'masar');
     ownerOf($restaurant);
+    withService($restaurant, Service::DriveThru, priceMinor: 34900); // services carry the price
     app(StartSubscription::class)->handle($restaurant, Plan::where('key', 'growth')->sole(), 2, trialDays: 0);
 
     return $restaurant->fresh();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Customers\Models;
 
 use App\Domain\Branches\Models\Branch;
+use App\Domain\Crm\Models\CustomerSegment;
 use App\Domain\Loyalty\Models\LedgerEntry;
 use App\Domain\Loyalty\Models\Tier;
 use App\Domain\Loyalty\Models\WalletReward;
@@ -36,6 +37,16 @@ use Illuminate\Support\Str;
  * @property ?CarbonImmutable $last_seen_at
  * @property int $points_balance kept by Loyalty\Points only
  * @property ?int $tier_id
+ * @property ?CarbonImmutable $first_order_at first picked-up order
+ * @property ?CarbonImmutable $last_order_at last picked-up order
+ * @property int $picked_up_count
+ * @property int $orders_90d
+ * @property int $spent_90d_minor
+ * @property int $avg_order_minor
+ * @property ?CarbonImmutable $offers_consent_at set while the guest agrees to receive offers
+ * @property ?string $offers_consent_source
+ * @property ?string $offers_consent_version
+ * @property ?CarbonImmutable $offers_withdrawn_at
  * @property-read ?Tier $tier
  * @property ?CarbonImmutable $created_at
  * @property-read Restaurant $restaurant
@@ -57,6 +68,16 @@ class Customer extends Model
         'last_seen_at' => null,
         'points_balance' => 0,
         'tier_id' => null,
+        'first_order_at' => null,
+        'last_order_at' => null,
+        'picked_up_count' => 0,
+        'orders_90d' => 0,
+        'spent_90d_minor' => 0,
+        'avg_order_minor' => 0,
+        'offers_consent_at' => null,
+        'offers_consent_source' => null,
+        'offers_consent_version' => null,
+        'offers_withdrawn_at' => null,
     ];
 
     protected function casts(): array
@@ -69,6 +90,14 @@ class Customer extends Model
             'last_seen_at' => 'immutable_datetime',
             'notification_prefs' => 'array',
             'created_at' => 'immutable_datetime',
+            'first_order_at' => 'immutable_datetime',
+            'last_order_at' => 'immutable_datetime',
+            'picked_up_count' => 'integer',
+            'orders_90d' => 'integer',
+            'spent_90d_minor' => 'integer',
+            'avg_order_minor' => 'integer',
+            'offers_consent_at' => 'immutable_datetime',
+            'offers_withdrawn_at' => 'immutable_datetime',
         ];
     }
 
@@ -128,6 +157,20 @@ class Customer extends Model
     public function wallet(): HasMany
     {
         return $this->hasMany(WalletReward::class);
+    }
+
+    /**
+     * @return HasMany<CustomerSegment, $this>
+     */
+    public function segments(): HasMany
+    {
+        return $this->hasMany(CustomerSegment::class);
+    }
+
+    /** Marketing goes only to guests who said yes and haven't taken it back. */
+    public function acceptsOffers(): bool
+    {
+        return $this->offers_consent_at !== null && $this->wants('offers');
     }
 
     /**

@@ -70,6 +70,10 @@
                             <input type="checkbox" wire:model="receipts" class="mt-0.5 size-5 rounded border-ink-950/20 text-[var(--brand)] focus:ring-[var(--brand)]">
                             <span><span class="block text-sm font-medium text-ink-900">{{ __('guest.account.receipts') }}</span><span class="block text-xs text-ink-500">{{ __('guest.account.receipts_hint') }}</span></span>
                         </label>
+                        <label class="flex items-start gap-3">
+                            <input type="checkbox" wire:model="offers" class="mt-0.5 size-5 rounded border-ink-950/20 text-[var(--brand)] focus:ring-[var(--brand)]">
+                            <span><span class="block text-sm font-medium text-ink-900">{{ __('guest.offers.opt_in') }}</span><span class="block text-xs text-ink-500">{{ __('guest.offers.opt_in_hint') }}</span></span>
+                        </label>
                     </fieldset>
                     <button type="submit" wire:loading.attr="disabled" wire:target="saveProfile" class="w-full rounded-full bg-ink-950 py-3 font-semibold text-white transition active:scale-[0.98] disabled:opacity-70">{{ __('guest.account.save') }}</button>
                 </div>

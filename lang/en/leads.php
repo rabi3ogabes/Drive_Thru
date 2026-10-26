@@ -35,6 +35,7 @@ return [
     ],
 
     'fields' => [
+        'services' => 'Services',
         'restaurant_name' => 'Restaurant',
         'contact_name' => 'Contact person',
         'contact' => 'Contact',
@@ -109,8 +110,8 @@ return [
     ],
 
     'form' => [
-        'eyebrow' => 'Request access',
-        'title' => 'Bring your drive-thru online.',
+        'eyebrow' => 'Book a demo',
+        'title' => 'Book your free demo.',
         'lead' => 'Tell us a little about your restaurant. We’ll set everything up with you and have you taking orders within days.',
         'optional' => 'optional',
         'plan_help' => 'Not sure yet',

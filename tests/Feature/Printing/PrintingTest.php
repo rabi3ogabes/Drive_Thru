@@ -13,6 +13,7 @@ use App\Domain\Ordering\Actions\PlaceOrder;
 use App\Domain\Ordering\Data\OrderRequest;
 use App\Domain\Ordering\Enums\PaymentMethod;
 use App\Domain\Ordering\Models\Order;
+use App\Domain\Ordering\Models\OrderAdjustment;
 use App\Domain\Printing\Jobs\PrintOrderJob;
 use App\Domain\Printing\PrintOrder;
 use App\Domain\Printing\TicketRenderer;
@@ -117,4 +118,18 @@ it('prints a kitchen ticket automatically when the branch asks for it', function
 
     $order = printOrder(printBranch(['auto_print' => true]));
     Queue::assertPushed(PrintOrderJob::class, fn (PrintOrderJob $job) => $job->orderId === $order->id && $job->kind === 'kitchen');
+});
+
+it('itemises discounts and points on the printed receipt', function () {
+    $order = printOrder(printBranch());
+    $order->forceFill(['discount_minor' => 700, 'points_redeemed' => 500, 'points_earned' => 40])->save();
+    OrderAdjustment::withoutTenancy()->create(['restaurant_id' => $order->restaurant_id, 'order_id' => $order->id, 'kind' => 'coupon', 'label' => ['en' => 'Welcome 10%', 'ar' => 'ترحيب 10%'], 'amount_minor' => 200, 'created_at' => now()]);
+    OrderAdjustment::withoutTenancy()->create(['restaurant_id' => $order->restaurant_id, 'order_id' => $order->id, 'kind' => 'points', 'label' => ['en' => '500 points', 'ar' => '500 نقطة'], 'amount_minor' => 500, 'created_at' => now()]);
+    $order->forceFill(['locale' => 'en'])->save();
+
+    $receipt = app(TicketRenderer::class)->html($order->fresh(), TicketRenderer::RECEIPT);
+
+    expect($receipt)->toContain('Welcome 10%')->toContain('500 points')
+        ->toContain(__('guest.order.points_earned', ['points' => '40'], 'en'))
+        ->not->toContain(__('guest.checkout.discount', [], 'en').'</td>');
 });

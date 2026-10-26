@@ -105,6 +105,7 @@ it('shows balance, tier progress, wallet and history, and claims a reward', func
 
     Livewire::test(Rewards::class, ['restaurant' => $customer->restaurant])
         ->assertSee('400')->assertSee('Free coffee')->assertSee(__('guest.rewards.wallet_empty'))
+        ->assertSee(__('guest.rewards.points_added'))->assertDontSee(__('loyalty.ledger.earn'))
         ->call('claim', $reward->id)
         ->assertDispatched('toast', tone: 'success')
         ->assertDontSee(__('guest.rewards.wallet_empty'));

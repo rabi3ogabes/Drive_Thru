@@ -6,6 +6,8 @@ return [
         'cashier' => ['label' => 'Cashier', 'description' => 'Live orders and payments at the window.'],
         'pickup' => ['label' => 'Pickup', 'description' => 'Hands orders to arriving cars and checks pickup codes.'],
         'tv' => ['label' => 'Order status TV', 'description' => 'A big screen guests see: preparing and ready orders.'],
+        'pager' => ['label' => 'Pager counter', 'description' => 'Hands out pager tickets and calls guests when their order is ready.'],
+        'ready_board' => ['label' => 'Ready board', 'description' => 'A TV for the waiting area: preparing and ready pager numbers.'],
     ],
     'pair' => [
         'title' => 'Pair this screen',

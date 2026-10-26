@@ -100,6 +100,7 @@ function subscribe(element) {
         const channel = echo.private(name);
         entry = { channel, elements: new Set() };
         channel.listen('.order.updated', (payload) => entry.elements.forEach((el) => emit(el, 'live-update', payload)));
+        channel.listen('.pager.updated', (payload) => entry.elements.forEach((el) => emit(el, 'live-update', payload)));
         channel.listen('.database-notifications.sent', (payload) => entry.elements.forEach((el) => emit(el, 'live-alert', payload)));
         channel.error(() => entry.elements.forEach((el) => emit(el, 'live-status', { state: 'offline' })));
         subscriptions.set(name, entry);

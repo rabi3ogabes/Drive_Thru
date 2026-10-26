@@ -13,7 +13,7 @@ it('defaults to Arabic, right to left', function () {
         ->assertOk()
         ->assertSee('lang="ar"', false)
         ->assertSee('dir="rtl"', false)
-        ->assertSee(__('app.home.headline', [], 'ar'));
+        ->assertSee(__('site.hero.title', [], 'ar'));
 });
 
 it('follows the browser language when it is supported', function () {
@@ -21,7 +21,7 @@ it('follows the browser language when it is supported', function () {
         ->get('/')
         ->assertSee('lang="en"', false)
         ->assertSee('dir="ltr"', false)
-        ->assertSee('From scan to handover in under a minute.');
+        ->assertSee('Faster pickups. Calmer counters. More regulars.');
 });
 
 it('falls back to Arabic for unsupported browser languages', function () {

@@ -17,7 +17,11 @@
     <x-customer.shell :restaurant="$restaurant" :customer="$customer" active="account">
         <section class="pt-4">
             <h1 class="display text-3xl text-ink-950">{{ __('guest.rewards.title') }}</h1>
-            <p class="mt-1 text-sm text-ink-500">{{ __('guest.rewards.subtitle', ['points' => number_format((int) $program->earn_points_per_unit), 'currency' => Money::symbol($currency)]) }}</p>
+            @if ($program)
+                <p class="mt-1 text-sm text-ink-500">{{ __('guest.rewards.subtitle', ['points' => number_format((int) $program->earn_points_per_unit), 'currency' => Money::symbol($currency)]) }}</p>
+            @else
+                <p class="mt-1 text-sm text-ink-500">{{ __('guest.rewards.stamps_subtitle') }}</p>
+            @endif
         </section>
 
         @if (! $customer)
@@ -30,6 +34,7 @@
             </section>
         @else
             {{-- Balance and tier --}}
+            @if ($program)
             <section class="mt-6 rounded-[2rem] bg-[color-mix(in_oklab,var(--brand)_12%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="balance-title">
                 <div class="relative overflow-hidden rounded-[calc(2rem-0.375rem)] bg-[var(--brand)] p-5 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18)]">
                     <div aria-hidden="true" class="pointer-events-none absolute -end-16 -top-20 size-56 rounded-full bg-white/10 blur-2xl"></div>
@@ -59,6 +64,7 @@
                     @endif
                 </div>
             </section>
+            @endif
 
             {{-- Wallet --}}
             <section class="mt-6" aria-labelledby="wallet-title">
@@ -84,7 +90,30 @@
             </section>
         @endif
 
+        {{-- Stamp cards --}}
+        @if ($stampPrograms->isNotEmpty())
+            <section class="mt-8" aria-labelledby="stamps-title">
+                <h2 id="stamps-title" class="px-1 font-semibold text-ink-950">{{ __('guest.rewards.stamp_cards') }}</h2>
+                <ul class="mt-2 grid gap-3 sm:grid-cols-2">
+                    @foreach ($stampPrograms as $stampProgram)
+                        @php
+                            $filled = $stampCards->get($stampProgram->id)?->stamps ?? 0;
+                            $left = $stampProgram->stamps_needed - $filled;
+                        @endphp
+                        <li wire:key="stamp-{{ $stampProgram->id }}">
+                            <x-stamp-card :name="$stampProgram->name" :needed="$stampProgram->stamps_needed" :filled="$filled"
+                                          :target="$stampProgram->targetName()" :reward="$stampProgram->reward->name" animate />
+                            <p class="mt-2 px-1 text-xs text-ink-500">
+                                {{ $customer ? trans_choice('guest.rewards.stamps_left', $left, ['count' => $left]) : __('guest.rewards.stamps_sign_in') }}
+                            </p>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
         {{-- Catalog --}}
+        @if ($program)
         <section class="mt-8" aria-labelledby="catalog-title">
             <h2 id="catalog-title" class="px-1 font-semibold text-ink-950">{{ __('guest.rewards.catalog') }}</h2>
             @if ($catalog->isEmpty())
@@ -114,8 +143,9 @@
                 </ul>
             @endif
         </section>
+        @endif
 
-        @if ($customer)
+        @if ($customer && $program)
             {{-- History --}}
             <section class="mt-8" aria-labelledby="history-title">
                 <h2 id="history-title" class="px-1 font-semibold text-ink-950">{{ __('guest.rewards.history') }}</h2>
@@ -126,7 +156,11 @@
                         @foreach ($history as $entry)
                             <li class="flex items-center justify-between gap-3 px-4 py-3" wire:key="ledger-{{ $entry->id }}">
                                 <div class="min-w-0">
-                                    <p class="text-sm font-medium text-ink-900">{{ $entry->type === LedgerType::Redeem && $entry->order === null ? __('guest.rewards.used_for_reward') : $entry->type->getLabel() }}@if ($entry->order) · {{ $entry->order->displayNumber() }}@endif</p>
+                                    <p class="text-sm font-medium text-ink-900">{{ match (true) {
+                                        $entry->order === null && $entry->type === LedgerType::Redeem => __('guest.rewards.used_for_reward'),
+                                        $entry->order === null && $entry->type === LedgerType::Earn => __('guest.rewards.points_added'),
+                                        default => $entry->type->getLabel(),
+                                    } }}@if ($entry->order) · {{ $entry->order->displayNumber() }}@endif</p>
                                     <p class="text-xs text-ink-500">
                                         {{ $entry->created_at->setTimezone($tz)->format('d/m/Y') }}
                                         @if ($entry->points > 0 && $entry->remaining > 0 && $entry->expires_at)
@@ -140,7 +174,9 @@
                     </ul>
                 @endif
             </section>
+        @endif
 
+        @if ($customer)
             @if ($past->isNotEmpty())
                 <details class="mt-6 rounded-2xl bg-white ring-1 ring-ink-950/5">
                     <summary class="flex min-h-12 cursor-pointer list-none items-center px-4 text-sm font-medium text-ink-600 [&::-webkit-details-marker]:hidden">{{ __('guest.rewards.past') }}</summary>

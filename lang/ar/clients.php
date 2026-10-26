@@ -139,7 +139,7 @@ return [
         'reactivated' => 'تمت إعادة تفعيل العميل',
         'invitation_ready' => 'رابط الدعوة جاهز',
         'invitation_ready_body' => ':url · صالح لمدة 7 أيام',
-        'whatsapp_message' => 'أهلًا بك في Drive-Thru Plus! مساحة عمل :restaurant جاهزة. اختر كلمة المرور من هنا: :url',
+        'whatsapp_message' => 'أهلًا بك في Drive⁠-⁠Thru Plus! مساحة عمل :restaurant جاهزة. اختر كلمة المرور من هنا: :url',
     ],
 
     'impersonation' => [

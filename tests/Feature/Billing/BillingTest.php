@@ -16,6 +16,7 @@ use App\Domain\Billing\Notifications\InvoiceIssued;
 use App\Domain\Billing\Notifications\PaymentOverdue;
 use App\Domain\Billing\Notifications\RestaurantSuspended;
 use App\Domain\Platform\PlatformSettings;
+use App\Domain\Services\Enums\Service;
 use App\Domain\Tenancy\Enums\RestaurantStatus;
 use App\Support\Money;
 use Illuminate\Support\Facades\Notification;
@@ -122,7 +123,7 @@ it('is safe to run twice on the same day', function () {
     app(RunBillingCycle::class)->handle();
     $second = app(RunBillingCycle::class)->handle();
 
-    expect($second)->toBe(['trials_converted' => 0, 'periods_renewed' => 0, 'marked_past_due' => 0, 'suspended' => 0])
+    expect($second)->toBe(['services' => ['reminded' => 0, 'converted' => 0, 'demos_ended' => 0, 'ended' => 0], 'trials_converted' => 0, 'periods_renewed' => 0, 'marked_past_due' => 0, 'suspended' => 0])
         ->and(Invoice::withoutTenancy()->count())->toBe(2);
 });
 
@@ -187,12 +188,18 @@ it('computes monthly recurring revenue only from paying subscriptions', function
     expect($trial->mrrMinor())->toBe(0)->and($paying->mrrMinor())->toBe(129800);
 });
 
-it('lets per-client overrides switch plan features on or off', function () {
-    $plan = Plan::factory()->create(['features' => [PlanFeature::Loyalty]]);
+it('takes service features from the service and add-ons from the plan, with overrides winning', function () {
+    $plan = Plan::factory()->create(['features' => [PlanFeature::Loyalty, PlanFeature::AdvancedReports]]);
     [$restaurant] = subscribed($plan, trialDays: 0);
 
-    expect($restaurant->hasFeature(PlanFeature::Loyalty))->toBeTrue()
-        ->and($restaurant->hasFeature(PlanFeature::AiAssistant))->toBeFalse();
+    // Loyalty belongs to Rewards: the plan listing it is not enough.
+    expect($restaurant->hasFeature(PlanFeature::Loyalty))->toBeFalse()
+        ->and($restaurant->hasFeature(PlanFeature::AdvancedReports))->toBeTrue()
+        ->and($restaurant->hasFeature(PlanFeature::AiAssistant))->toBeFalse()
+        ->and($restaurant->hasFeature(PlanFeature::ArrivalTracking))->toBeTrue(); // comes with Drive-Thru
+
+    withService($restaurant, Service::Rewards);
+    expect($restaurant->hasFeature(PlanFeature::Loyalty))->toBeTrue();
 
     $restaurant->update(['feature_overrides' => ['ai_assistant' => true, 'loyalty' => false]]);
 

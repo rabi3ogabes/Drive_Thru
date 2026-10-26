@@ -13,6 +13,7 @@ use App\Domain\Menu\Models\ModifierGroup;
 use App\Domain\Menu\Models\ModifierOption;
 use App\Domain\Menu\Models\Product;
 use App\Domain\Ordering\CartPricer;
+use App\Domain\Services\Enums\Service;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Customer\Concerns\GuestPage;
 use App\Support\Lang;
@@ -103,6 +104,12 @@ class BranchMenu extends Component
      */
     public function add(int $productId, int $quantity, array $options = [], array $combo = [], ?string $notes = null): void
     {
+        if (! $this->restaurant->hasService(Service::DriveThru)) {
+            $this->toast(Lang::text('guest.menu.menu_only'), 'error');
+
+            return;
+        }
+
         $line = ['key' => 'check', 'product_id' => $productId, 'quantity' => $quantity, 'options' => $options, 'combo' => $combo, 'notes' => $notes];
         $priced = app(CartPricer::class)->price($this->branch(), [$line]);
         $checked = $priced->lines[0];
@@ -186,6 +193,7 @@ class BranchMenu extends Component
             'sections' => app(Menu::class)->sections($branch),
             'customer' => $this->customer(),
             'bag' => $bag,
+            'ordering' => $this->restaurant->hasService(Service::DriveThru),
         ], $branch->name);
     }
 

@@ -20,7 +20,7 @@ final class TicketRenderer
 
     public function html(Order $order, string $kind, bool $forPdf = false): string
     {
-        $order->loadMissing(['items', 'branch.restaurant', 'lane', 'customer', 'payment']);
+        $order->loadMissing(['items', 'branch.restaurant', 'lane', 'customer', 'payment', 'adjustments']);
 
         return view('print.ticket', ['order' => $order, 'kind' => $kind, 'forPdf' => $forPdf])->render();
     }

@@ -21,8 +21,8 @@ return [
         'mail' => [
             'subject' => 'دعوتك إلى :place',
             'greeting' => 'أهلًا بك!',
-            'body' => 'تمت دعوتك إلى :place على Drive-Thru Plus.',
-            'body_with_inviter' => 'دعاك :inviter إلى :place على Drive-Thru Plus.',
+            'body' => 'تمت دعوتك إلى :place على Drive⁠-⁠Thru Plus.',
+            'body_with_inviter' => 'دعاك :inviter إلى :place على Drive⁠-⁠Thru Plus.',
             'action' => 'اختر كلمة المرور',
             'expiry' => 'يعمل هذا الرابط مرة واحدة وتنتهي صلاحيته خلال :days أيام.',
         ],

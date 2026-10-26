@@ -23,6 +23,8 @@ return [
             'order_ready' => env('WHATSAPP_TEMPLATE_READY', 'dtp_order_ready'),
             'receipt' => env('WHATSAPP_TEMPLATE_RECEIPT', 'dtp_order_receipt'),
             'alert' => env('WHATSAPP_TEMPLATE_ALERT', 'dtp_staff_alert'),
+            'pager_ready' => env('WHATSAPP_TEMPLATE_PAGER_READY', 'dtp_pager_ready'),
+            'stamps' => env('WHATSAPP_TEMPLATE_STAMPS', 'dtp_stamp_card'),
         ],
 
         // Template language codes as registered with Meta.

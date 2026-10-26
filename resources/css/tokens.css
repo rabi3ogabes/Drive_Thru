@@ -35,6 +35,9 @@
     --color-ice-300: #a7c8e4;
     --color-ice-400: #7fabd3;
 
+    /* Paper: pure white that never changes with the theme (text on brand colours) */
+    --color-paper: #ffffff;
+
     /* Ivory: warm paper for customer surfaces */
     --color-ivory-50: #fcfbf8;
     --color-ivory-100: #f7f5f0;

@@ -45,6 +45,24 @@ final class ChannelAccess
         return false;
     }
 
+    /** A branch's pager tickets: counter staff who run the pager and cover the branch. */
+    public function branchPager(User $user, int $branchId): bool
+    {
+        $branch = Branch::withoutTenancy()->find($branchId);
+
+        if ($branch === null || ! $user->is_active) {
+            return false;
+        }
+
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return ($user->employmentAt($branch->restaurant_id)?->coversBranch($branch) ?? false)
+            && ($user->hasRestaurantPermission($branch->restaurant_id, RestaurantPermission::OperatePager)
+                || $user->hasRestaurantPermission($branch->restaurant_id, RestaurantPermission::ViewOrders));
+    }
+
     /** Platform staff who look after clients: live activity across every restaurant. */
     public function platformDashboard(User $user): bool
     {

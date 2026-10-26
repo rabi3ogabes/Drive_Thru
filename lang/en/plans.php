@@ -14,7 +14,7 @@ return [
         'price' => 'Price & limits',
         'price_hint' => 'Prices are per branch. Existing clients keep their price until you change their plan.',
         'features' => 'Included features',
-        'features_hint' => 'Clients can also get individual features switched on or off from their page.',
+        'features_hint' => 'Add-ons of this tier. Service features (loyalty, arrival tracking…) come with the service itself. Clients can also get features switched on or off from their page.',
         'visibility' => 'Visibility',
     ],
 

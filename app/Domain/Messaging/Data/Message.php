@@ -22,6 +22,10 @@ final readonly class Message
 
     public const ALERT = 'alert';
 
+    public const PAGER_READY = 'pager_ready';
+
+    public const STAMPS = 'stamps';
+
     /**
      * @param  list<string>  $parameters  template body parameters, in order
      */

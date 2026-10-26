@@ -6,6 +6,7 @@ namespace App\Domain\Billing\Models;
 
 use App\Domain\Billing\Enums\BillingInterval;
 use App\Domain\Billing\Enums\SubscriptionStatus;
+use App\Domain\Billing\SubscriptionCharges;
 use App\Domain\Tenancy\Concerns\BelongsToRestaurant;
 use Carbon\CarbonImmutable;
 use Database\Factories\SubscriptionFactory;
@@ -91,9 +92,10 @@ class Subscription extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    /** The plan tier's fee plus the billed services, less the bundle discount. */
     public function amountPerPeriodMinor(): int
     {
-        return $this->unit_price_minor * $this->quantity;
+        return app(SubscriptionCharges::class)->total($this);
     }
 
     /** Monthly recurring revenue this subscription contributes. */

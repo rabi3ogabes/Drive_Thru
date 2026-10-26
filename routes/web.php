@@ -19,6 +19,7 @@ use App\Http\Controllers\RealtimeAuthController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SadadController;
 use App\Http\Controllers\ShortLinkController;
+use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SubmitLeadController;
 use App\Http\Controllers\SwitchLocaleController;
 use App\Http\Middleware\AuthenticateDevice;
@@ -26,7 +27,10 @@ use App\Http\Middleware\ResolveGuestRestaurant;
 use App\Livewire\Customer;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'home')->name('home');
+Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/pricing', [SiteController::class, 'pricing'])->name('site.pricing');
+Route::get('/services/{service}', [SiteController::class, 'service'])->whereIn('service', ['drive-thru', 'ready-call', 'rewards'])->name('site.service');
+Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('site.sitemap');
 
 // Public API reference for integrators (rendered from the OpenAPI description).
 Route::get('/developers/api', fn () => view('developers.api', [
@@ -92,8 +96,8 @@ Route::post('/pay/{reference}', [FakePaymentController::class, 'decide'])->where
 Route::middleware(['auth', 'throttle:240,1'])->prefix('ops/{restaurant:slug}')->group(function (): void {
     Route::get('/', [OpsController::class, 'home'])->name('ops.home');
     Route::get('/overview', [OpsController::class, 'overview'])->name('ops.overview');
-    Route::get('/go/{screen}', [OpsController::class, 'go'])->where('screen', 'kitchen|live|pickup|tv')->name('ops.go');
-    Route::get('/{branch}/{screen}', [OpsController::class, 'screen'])->where(['branch' => '[a-z0-9][a-z0-9-]*', 'screen' => 'kitchen|live|pickup|tv'])->name('ops.screen');
+    Route::get('/go/{screen}', [OpsController::class, 'go'])->where('screen', 'kitchen|live|pickup|tv|pager|ready|stamps')->name('ops.go');
+    Route::get('/{branch}/{screen}', [OpsController::class, 'screen'])->where(['branch' => '[a-z0-9][a-z0-9-]*', 'screen' => 'kitchen|live|pickup|tv|pager|ready|stamps'])->name('ops.screen');
 });
 
 // 80 mm tickets and receipts for the browser's print dialog (paired screens and staff).
@@ -135,6 +139,7 @@ Route::middleware(ResolveGuestRestaurant::class)->group(function () use ($slug, 
     Route::livewire('/{restaurant:slug}/orders', Customer\Orders::class)->where('restaurant', $slug)->missing($missing)->name('customer.orders');
     Route::livewire('/{restaurant:slug}/orders/{order:short_code}', Customer\OrderStatus::class)->where('restaurant', $slug)->missing($missing)->middleware('throttle:120,1')->name('customer.order');
     Route::get('/{restaurant:slug}/orders/{order:short_code}/receipt', ReceiptController::class)->where('restaurant', $slug)->missing($missing)->name('customer.receipt');
+    Route::livewire('/{restaurant:slug}/p/{token}', Customer\Pager::class)->where(['restaurant' => $slug, 'token' => '[A-Za-z0-9]{32}'])->missing($missing)->middleware('throttle:120,1')->name('customer.pager');
     Route::livewire('/{restaurant:slug}/rewards', Customer\Rewards::class)->where('restaurant', $slug)->missing($missing)->name('customer.rewards');
     Route::livewire('/{restaurant:slug}/account', Customer\Account::class)->where('restaurant', $slug)->missing($missing)->name('customer.account');
     Route::livewire('/{restaurant:slug}/{branch}/checkout', Customer\Checkout::class)->where(['restaurant' => $slug, 'branch' => '[a-z0-9][a-z0-9-]*'])->missing($missing)->name('customer.checkout');

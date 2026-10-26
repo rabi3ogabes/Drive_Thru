@@ -8,8 +8,9 @@ use App\Domain\Billing\Enums\PlanFeature as F;
 use App\Domain\Billing\Models\Plan;
 
 /**
- * The launch plans (prices from the reference product, per branch per month).
- * Installed idempotently; once installed, prices are edited in the console.
+ * The plan tiers: branch and staff limits plus add-ons. They carry no fee by
+ * default (the services are priced); Enterprise is priced per client.
+ * Installed idempotently; once installed, they are edited in the console.
  */
 final class PlanCatalog
 {
@@ -29,29 +30,29 @@ final class PlanCatalog
             [
                 'key' => 'starter',
                 'name' => ['en' => 'Starter', 'ar' => 'البداية'],
-                'description' => ['en' => 'Everything a single drive-thru needs to take orders online.', 'ar' => 'كل ما يحتاجه فرع درايف ثرو واحد لاستقبال الطلبات أونلاين.'],
-                'price_minor' => 34900,
+                'description' => ['en' => 'For one or two branches getting started.', 'ar' => 'لفرع أو فرعين في البداية.'],
+                'price_minor' => 0,
                 'limits' => ['branches' => 2, 'employees' => 15],
-                'features' => [F::ArrivalTracking],
-                'trial_days' => 14,
+                'features' => [],
+                'trial_days' => 0,
             ],
             [
                 'key' => 'growth',
                 'name' => ['en' => 'Growth', 'ar' => 'النمو'],
-                'description' => ['en' => 'Multi-branch control with loyalty, promotions and deeper reports.', 'ar' => 'تحكم متعدد الفروع مع الولاء والعروض وتقارير أعمق.'],
-                'price_minor' => 64900,
+                'description' => ['en' => 'Up to 10 branches, with deeper reports.', 'ar' => 'حتى 10 فروع، مع تقارير أعمق.'],
+                'price_minor' => 0,
                 'limits' => ['branches' => 10, 'employees' => 80],
-                'features' => [F::ArrivalTracking, F::ScheduledOrders, F::Loyalty, F::Promotions, F::Campaigns, F::KitchenStations, F::AdvancedReports],
-                'trial_days' => 14,
+                'features' => [F::AdvancedReports],
+                'trial_days' => 0,
                 'is_highlighted' => true,
             ],
             [
                 'key' => 'enterprise',
                 'name' => ['en' => 'Enterprise', 'ar' => 'المؤسسات'],
-                'description' => ['en' => 'Unlimited branches, integrations, AI and a dedicated team.', 'ar' => 'فروع غير محدودة وتكاملات وذكاء اصطناعي وفريق مخصص.'],
+                'description' => ['en' => 'Unlimited branches, API, AI, custom domain and a dedicated team.', 'ar' => 'فروع غير محدودة وواجهة برمجية وذكاء اصطناعي ونطاق خاص وفريق مخصص.'],
                 'price_minor' => null,
                 'limits' => ['branches' => null, 'employees' => null],
-                'features' => F::cases(),
+                'features' => F::addOns(),
                 'trial_days' => 0,
             ],
         ];
