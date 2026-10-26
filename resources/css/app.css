@@ -76,8 +76,8 @@
         letter-spacing: 0.2em;
         text-transform: uppercase;
         color: var(--color-teal-800);
-        background: rgb(255 255 255 / 0.6);
-        box-shadow: inset 0 0 0 1px rgb(15 59 58 / 0.1);
+        background: color-mix(in oklab, var(--color-white) 60%, transparent);
+        box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-teal-800) 12%, transparent);
     }
 
     html[dir='rtl'] .eyebrow {
@@ -89,14 +89,14 @@
     .bezel {
         border-radius: var(--radius-3xl);
         padding: 0.4rem;
-        background: rgb(255 255 255 / 0.45);
-        box-shadow: inset 0 0 0 1px rgb(10 15 28 / 0.06), var(--shadow-float);
+        background: color-mix(in oklab, var(--color-white) 45%, transparent);
+        box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-950) 6%, transparent), var(--shadow-float);
     }
 
     .bezel-core {
         border-radius: calc(var(--radius-3xl) - 0.4rem);
-        background: #fff;
-        box-shadow: var(--shadow-inner-highlight), 0 0 0 1px rgb(10 15 28 / 0.04);
+        background: var(--color-white);
+        box-shadow: var(--shadow-inner-highlight), 0 0 0 1px color-mix(in oklab, var(--color-ink-950) 4%, transparent);
     }
 
     /* Pill buttons with a nested trailing icon ("button-in-button"). */
@@ -149,24 +149,54 @@
         background: var(--color-teal-800);
     }
 
+    html.site-themeable[data-theme='dark'] .btn-primary:hover {
+        background: var(--color-teal-500);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html.site-themeable:not([data-theme='light']) .btn-primary:hover {
+            background: var(--color-teal-500);
+        }
+    }
+
     .btn-primary .btn-icon {
         background: rgb(255 255 255 / 0.12);
         color: var(--color-brass-200);
     }
 
     .btn-ghost {
-        background: rgb(255 255 255 / 0.65);
+        background: color-mix(in oklab, var(--color-white) 65%, transparent);
         color: var(--color-ink-900);
-        box-shadow: inset 0 0 0 1px rgb(10 15 28 / 0.08);
+        box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-950) 8%, transparent);
     }
 
     .btn-ghost:hover {
-        background: #fff;
+        background: var(--color-white);
     }
 
     .btn-ghost .btn-icon {
         background: var(--color-ink-100);
         color: var(--color-ink-700);
+    }
+
+    /* The website's compact call to action (navigation). */
+    .site-cta {
+        background: var(--color-teal-900);
+        color: var(--color-paper);
+    }
+
+    .site-cta:hover {
+        background: var(--color-teal-800);
+    }
+
+    html.site-themeable[data-theme='dark'] .site-cta:hover {
+        background: var(--color-teal-500);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html.site-themeable:not([data-theme='light']) .site-cta:hover {
+            background: var(--color-teal-500);
+        }
     }
 
     /* Fixed paper grain: decorative, never repaints on scroll. */
@@ -250,4 +280,115 @@
 @keyframes ops-ticker {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
+}
+
+/*
+ * Website dark theme ("Deep teal night"). Tailwind v4 utilities read the
+ * colour tokens as CSS variables, so the theme remaps the palette once
+ * instead of adding dark: variants everywhere: paper surfaces turn to deep
+ * ink, ink text turns to warm ivory, teal and brass lift for contrast.
+ * Pages opt in with <x-layouts.site themeable>; it follows the device unless
+ * the visitor picked Light or Dark (html[data-theme]). Self-contained
+ * illustrations (.theme-fixed) keep their designed colours in both themes.
+ */
+@layer base {
+    html.site-themeable[data-theme='dark'] {
+        color-scheme: dark;
+        --color-white: #141b20;
+        --color-ivory-50: #0c1114;
+        --color-ivory-100: #12181c;
+        --color-ivory-200: #1a2226;
+        --color-ivory-300: #273036;
+        --color-ink-50: #191e22;
+        --color-ink-100: #22282d;
+        --color-ink-200: #31363b;
+        --color-ink-300: #474b50;
+        --color-ink-400: #6b6e72;
+        --color-ink-500: #8a8b87;
+        --color-ink-600: #a4a29b;
+        --color-ink-700: #bfbcb4;
+        --color-ink-800: #d6d3ca;
+        --color-ink-900: #e7e4dc;
+        --color-ink-950: #f4f1ea;
+        --color-teal-700: #74b8ad;
+        --color-teal-800: #8fcac0;
+        --color-teal-900: #1e5d57;
+        --color-brass-50: #251f16;
+        --color-brass-700: #d5b582;
+        --color-brass-800: #e5d1ae;
+        --color-brass-900: #f2e8d6;
+        --color-red-700: #f87171;
+        --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+        --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -24px rgb(0 0 0 / 0.6);
+        --shadow-float: 0 4px 8px rgb(0 0 0 / 0.3), 0 40px 80px -32px rgb(0 0 0 / 0.7);
+        --shadow-hairline: 0 0 0 1px rgb(255 255 255 / 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html.site-themeable:not([data-theme='light']) {
+            color-scheme: dark;
+            --color-white: #141b20;
+            --color-ivory-50: #0c1114;
+            --color-ivory-100: #12181c;
+            --color-ivory-200: #1a2226;
+            --color-ivory-300: #273036;
+            --color-ink-50: #191e22;
+            --color-ink-100: #22282d;
+            --color-ink-200: #31363b;
+            --color-ink-300: #474b50;
+            --color-ink-400: #6b6e72;
+            --color-ink-500: #8a8b87;
+            --color-ink-600: #a4a29b;
+            --color-ink-700: #bfbcb4;
+            --color-ink-800: #d6d3ca;
+            --color-ink-900: #e7e4dc;
+            --color-ink-950: #f4f1ea;
+            --color-teal-700: #74b8ad;
+            --color-teal-800: #8fcac0;
+            --color-teal-900: #1e5d57;
+            --color-brass-50: #251f16;
+            --color-brass-700: #d5b582;
+            --color-brass-800: #e5d1ae;
+            --color-brass-900: #f2e8d6;
+            --color-red-700: #f87171;
+            --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+            --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -24px rgb(0 0 0 / 0.6);
+            --shadow-float: 0 4px 8px rgb(0 0 0 / 0.3), 0 40px 80px -32px rgb(0 0 0 / 0.7);
+            --shadow-hairline: 0 0 0 1px rgb(255 255 255 / 0.06);
+        }
+    }
+
+    /* Illustrations that are already a "screen" or a photo keep their colours. */
+    html.site-themeable .theme-fixed {
+        color-scheme: light;
+        --color-white: #ffffff;
+        --color-ivory-50: #fcfbf8;
+        --color-ivory-100: #f7f5f0;
+        --color-ivory-200: #efebe2;
+        --color-ivory-300: #e2dccf;
+        --color-ink-50: #f5f7fa;
+        --color-ink-100: #eceff4;
+        --color-ink-200: #d9dee7;
+        --color-ink-300: #bcc4d2;
+        --color-ink-400: #8b95a8;
+        --color-ink-500: #636d82;
+        --color-ink-600: #475167;
+        --color-ink-700: #313a4f;
+        --color-ink-800: #1c2436;
+        --color-ink-900: #111827;
+        --color-ink-950: #0a0f1c;
+        --color-teal-700: #184c47;
+        --color-teal-800: #143f3b;
+        --color-teal-900: #0f3b3a;
+        --color-brass-50: #faf6ef;
+        --color-brass-700: #775a37;
+        --color-brass-800: #5e472f;
+        --color-brass-900: #4c3a28;
+    }
+
+    /* The theme switch and the page swap colours together, never in steps. */
+    html.site-themeable.theme-switching,
+    html.site-themeable.theme-switching * {
+        transition: none !important;
+    }
 }

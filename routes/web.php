@@ -8,7 +8,6 @@ use App\Http\Controllers\DeviceScreenController;
 use App\Http\Controllers\DownloadInvoiceController;
 use App\Http\Controllers\DownloadQrController;
 use App\Http\Controllers\FakePaymentController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LeaveImpersonationController;
 use App\Http\Controllers\ManifestController;
@@ -20,6 +19,7 @@ use App\Http\Controllers\RealtimeAuthController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SadadController;
 use App\Http\Controllers\ShortLinkController;
+use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SubmitLeadController;
 use App\Http\Controllers\SwitchLocaleController;
 use App\Http\Middleware\AuthenticateDevice;
@@ -27,7 +27,10 @@ use App\Http\Middleware\ResolveGuestRestaurant;
 use App\Livewire\Customer;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class)->name('home');
+Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/pricing', [SiteController::class, 'pricing'])->name('site.pricing');
+Route::get('/services/{service}', [SiteController::class, 'service'])->whereIn('service', ['drive-thru', 'ready-call', 'rewards'])->name('site.service');
+Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('site.sitemap');
 
 // Public API reference for integrators (rendered from the OpenAPI description).
 Route::get('/developers/api', fn () => view('developers.api', [

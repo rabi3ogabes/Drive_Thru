@@ -1,16 +1,26 @@
 @php
     use App\Support\Locales;
     $locale = app()->getLocale();
+    $themeable = (bool) ($themeable ?? false);
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ Locales::direction($locale) }}">
+<html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ Locales::direction($locale) }}" @class(['site-themeable' => $themeable])>
 <head>
     <meta charset="utf-8">
     <script>document.documentElement.classList.add('js')</script>
+    @if ($themeable)
+        {{-- The visitor's saved choice, applied before the first paint (no flash). --}}
+        <script>try { const t = localStorage.getItem('dtp.site.theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t } catch (e) {}</script>
+        <meta name="color-scheme" content="light dark">
+        <meta name="theme-color" content="#f7f5f0" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#0c1114" media="(prefers-color-scheme: dark)">
+        <link rel="canonical" href="{{ url()->current() }}">
+    @else
+        <meta name="theme-color" content="{{ $themeColor ?? '#f7f5f0' }}">
+        <meta name="color-scheme" content="{{ $colorScheme ?? 'light' }}">
+    @endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="{{ $themeColor ?? '#f7f5f0' }}">
-    <meta name="color-scheme" content="{{ $colorScheme ?? 'light' }}">
     <title>{{ $title ?? config('app.name') }}</title>
     @isset($description)
         <meta name="description" content="{{ $description }}">

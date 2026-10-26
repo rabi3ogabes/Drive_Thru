@@ -1,6 +1,6 @@
 @php
     $services ??= collect();
-    $picked = (array) old('services', []);
+    $picked = (array) old('services', $preselect ?? []);
     $field = 'block w-full rounded-xl border-0 bg-white px-4 py-3 text-ink-950 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/10 transition placeholder:text-ink-400 focus:ring-2 focus:ring-teal-600';
 @endphp
 <section id="request" class="relative mx-auto max-w-6xl scroll-mt-24 px-4 pb-24 sm:px-6 lg:pb-32">
@@ -84,7 +84,7 @@
                                         @foreach ($services as $key => $service)
                                             <label class="cursor-pointer">
                                                 <input type="checkbox" name="services[]" value="{{ $key }}" x-model="services" class="peer sr-only">
-                                                <span class="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-medium text-ink-700 ring-1 ring-ink-950/10 transition peer-checked:bg-teal-900 peer-checked:text-white peer-checked:ring-teal-900 peer-focus-visible:ring-2 peer-focus-visible:ring-teal-600">
+                                                <span class="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-medium text-ink-700 ring-1 ring-ink-950/10 transition peer-checked:bg-teal-900 peer-checked:text-paper peer-checked:ring-teal-900 peer-focus-visible:ring-2 peer-focus-visible:ring-teal-600">
                                                     <x-filament::icon :icon="\App\Domain\Services\Enums\Service::from($key)->getIcon()" class="size-4" />
                                                     {{ $service['label'] }}
                                                 </span>

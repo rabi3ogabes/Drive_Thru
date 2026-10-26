@@ -14,7 +14,7 @@
     $columns = $needed <= 6 ? $needed : (int) ceil($needed / 2);
 @endphp
 {{-- A guest's stamp card: their restaurant's colour, one circle per stamp, the reward at the end. --}}
-<div {{ $attributes->class('relative overflow-hidden rounded-[1.75rem] p-1.5 ring-1 ring-black/5') }}
+<div {{ $attributes->class('theme-fixed relative overflow-hidden rounded-[1.75rem] p-1.5 ring-1 ring-black/5') }}
      style="--card: {{ $accent ?? 'var(--brand, var(--color-teal-800))' }}; background: color-mix(in oklab, var(--card) 14%, white);">
     <div class="relative overflow-hidden rounded-[calc(1.75rem-0.375rem)] p-5 text-white shadow-[inset_0_1px_0_color-mix(in_oklab,white_18%,transparent)]"
          style="background: linear-gradient(140deg, color-mix(in oklab, var(--card) 88%, white) 0%, var(--card) 55%, color-mix(in oklab, var(--card) 80%, var(--color-ink-950)) 100%);">

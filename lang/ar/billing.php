@@ -104,7 +104,7 @@ return [
 
     'mail' => [
         'greeting' => 'مرحبًا،',
-        'salutation' => 'مع خالص التحية، فريق Drive-Thru Plus',
+        'salutation' => 'مع خالص التحية، فريق Drive⁠-⁠Thru Plus',
         'invoice_issued' => [
             'subject' => 'الفاتورة :number',
             'body' => 'فاتورتك رقم :number بقيمة :total جاهزة، ويستحق سدادها في :due.',

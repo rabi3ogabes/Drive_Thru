@@ -21,7 +21,7 @@ final class SubmitLeadController
     public function __invoke(Request $request, SubmitLead $submit): RedirectResponse
     {
         if (filled($request->input('company_website'))) {
-            return redirect()->to(route('home').'#request')->with('lead_submitted', true);
+            return redirect()->to($this->backTo($request).'#request')->with('lead_submitted', true);
         }
 
         $validated = $request->validate([
@@ -47,6 +47,17 @@ final class SubmitLeadController
             'services' => $validated['services'] ?? [],
         ], LeadSource::Website, app()->getLocale(), $request->ip());
 
-        return redirect()->to(route('home').'#request')->with('lead_submitted', true);
+        return redirect()->to($this->backTo($request).'#request')->with('lead_submitted', true);
+    }
+
+    /** Back to the website page the form was sent from (never another site). */
+    private function backTo(Request $request): string
+    {
+        $previous = strtok(url()->previous(), '#') ?: route('home');
+        $sameSite = parse_url($previous, PHP_URL_HOST) === $request->getHost();
+        $path = '/'.ltrim((string) parse_url($previous, PHP_URL_PATH), '/');
+        $website = $path === '/' || $path === '/pricing' || str_starts_with($path, '/services/');
+
+        return $sameSite && $website ? $previous : route('home');
     }
 }

@@ -103,7 +103,7 @@ final class CreateRestaurant
     {
         return [
             'admin', 'app', 'ops', 'api', 'pair', 'screen', 'r', 'o', 'locale', 'login', 'logout', 'up', 'storage', 'build',
-            'features', 'pricing', 'contact', 'demo', 'terms', 'privacy', 'cookies', 'blog', 'help',
+            'features', 'pricing', 'services', 'contact', 'demo', 'terms', 'privacy', 'cookies', 'blog', 'help',
             'livewire', 'filament', 'broadcasting', 'realtime', 'pay', 'payments', 'webhooks', 'print', 'push', 'qr', 'invoices', 'impersonation', 'developers', 'sw.js', 'offline.html',
             'sitemap.xml', 'robots.txt', 'manifest.json',
         ];
