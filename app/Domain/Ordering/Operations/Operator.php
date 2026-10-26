@@ -101,6 +101,8 @@ final readonly class Operator
             DeviceKind::Cashier => [RestaurantPermission::ViewOrders, RestaurantPermission::OperateOrders, RestaurantPermission::OperatePickup, RestaurantPermission::CollectPayments],
             DeviceKind::Pickup => [RestaurantPermission::ViewOrders, RestaurantPermission::OperatePickup, RestaurantPermission::CollectPayments],
             DeviceKind::Tv => [RestaurantPermission::ViewOrders],
+            DeviceKind::Pager => [RestaurantPermission::OperatePager],
+            DeviceKind::ReadyBoard => [],
         };
 
         return new self(

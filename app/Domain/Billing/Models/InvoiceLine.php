@@ -18,8 +18,9 @@ use Spatie\Translatable\HasTranslations;
  * @property int $unit_price_minor
  * @property int $amount_minor
  * @property int $sort
+ * @property bool $is_discount subtracted from the subtotal
  */
-#[Fillable(['invoice_id', 'description', 'quantity', 'unit_price_minor', 'amount_minor', 'sort'])]
+#[Fillable(['invoice_id', 'description', 'quantity', 'unit_price_minor', 'amount_minor', 'sort', 'is_discount'])]
 #[WithoutTimestamps]
 class InvoiceLine extends Model
 {
@@ -32,6 +33,7 @@ class InvoiceLine extends Model
     protected $attributes = [
         'quantity' => 1,
         'sort' => 0,
+        'is_discount' => false,
     ];
 
     protected function casts(): array
@@ -40,6 +42,7 @@ class InvoiceLine extends Model
             'quantity' => 'integer',
             'unit_price_minor' => 'integer',
             'amount_minor' => 'integer',
+            'is_discount' => 'boolean',
         ];
     }
 

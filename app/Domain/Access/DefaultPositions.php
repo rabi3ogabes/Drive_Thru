@@ -24,12 +24,12 @@ final class DefaultPositions
             )),
             'branch_manager' => [
                 P::OperateBranch, P::ManageStaff, P::ManageAvailability, P::ViewOrders, P::OperateOrders,
-                P::OperateKitchen, P::OperatePickup, P::CollectPayments, P::RefundPayments,
+                P::OperateKitchen, P::OperatePickup, P::OperatePager, P::CollectPayments, P::RefundPayments,
                 P::ViewCustomers, P::ViewReports, P::ExportReports,
             ],
-            'cashier' => [P::ViewOrders, P::OperateOrders, P::OperatePickup, P::CollectPayments],
+            'cashier' => [P::ViewOrders, P::OperateOrders, P::OperatePickup, P::OperatePager, P::CollectPayments],
             'kitchen' => [P::ViewOrders, P::OperateKitchen],
-            'expeditor' => [P::ViewOrders, P::OperatePickup],
+            'expeditor' => [P::ViewOrders, P::OperatePickup, P::OperatePager],
             'accountant' => [P::ViewOrders, P::ViewReports, P::ViewFinance, P::ExportReports],
             'marketing' => [
                 P::ViewCustomers, P::ViewCustomerContacts, P::ManageLoyalty, P::ManagePromotions,

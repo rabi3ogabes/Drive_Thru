@@ -12,6 +12,7 @@ use App\Domain\Branches\Models\Station;
 use App\Filament\App\Resources\Screens\Pages\ManageScreens;
 use App\Filament\App\Workspace;
 use App\Filament\App\WorkspaceNavigationGroup;
+use App\Http\Controllers\OpsController;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -75,8 +76,10 @@ class DeviceResource extends Resource
                 ->visible($creating),
             ToggleButtons::make('kind')
                 ->label(__('devices.fields.kind'))
-                ->options(DeviceKind::class)
-                ->default(DeviceKind::Kitchen)
+                ->options(fn (): array => self::kinds())
+                ->icons(collect(DeviceKind::cases())->mapWithKeys(fn (DeviceKind $k): array => [$k->value => $k->getIcon()])->all())
+                ->default(fn (): ?string => array_key_first(self::kinds()))
+                ->in(fn (): array => array_keys(self::kinds()))
                 ->required()
                 ->live()
                 ->columns(['default' => 1, 'sm' => 2])
@@ -192,5 +195,21 @@ class DeviceResource extends Resource
         return [
             'index' => ManageScreens::route('/'),
         ];
+    }
+
+    /**
+     * Screen kinds the restaurant can pair: order screens come with
+     * Drive-Thru, the pager counter and ready board with Order-Ready Call.
+     *
+     * @return array<string, string>
+     */
+    public static function kinds(): array
+    {
+        $restaurant = Workspace::restaurant();
+
+        return collect(DeviceKind::cases())
+            ->filter(fn (DeviceKind $kind): bool => $restaurant->hasService(OpsController::serviceFor($kind)))
+            ->mapWithKeys(fn (DeviceKind $kind): array => [$kind->value => $kind->getLabel()])
+            ->all();
     }
 }

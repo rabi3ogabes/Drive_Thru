@@ -87,6 +87,8 @@ class RestaurantInfolist
                         ->color(fn (Restaurant $record): string => $record->owner()?->last_login_at !== null ? 'success' : 'warning'),
                 ]),
 
+            ClientServices::section(),
+
             Section::make(__('clients.sections.billing_details'))
                 ->icon('heroicon-o-building-office-2')
                 ->columnSpan(['default' => 3, 'lg' => 2])

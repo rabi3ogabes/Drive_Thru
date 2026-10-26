@@ -65,7 +65,11 @@ final class DeviceScreenController
             DeviceKind::Cashier => 'ops.live-board',
             DeviceKind::Pickup => 'ops.pickup-window',
             DeviceKind::Tv => 'ops.command-center',
+            DeviceKind::Pager => 'ops.pager-counter',
+            DeviceKind::ReadyBoard => 'ops.ready-board',
         };
+
+        abort_unless($device->branch->restaurant->hasService(OpsController::serviceFor($device->kind)), 403, __('pager.service_off_screen'));
 
         return view('ops.page', [
             'title' => $device->branch->name.' · '.$device->kind->getLabel(),

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Ordering\Models\Order;
+use App\Domain\ReadyCall\Models\PagerTicket;
 use App\Http\Middleware\AuthenticateDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -16,7 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * - a paired screen may listen to its own branch's orders only;
  * - a guest may listen to their own order (or one they opened through a
- *   signed staff link, which grants that order for the browser session).
+ *   signed staff link, which grants that order for the browser session);
+ * - whoever holds a live pager link may listen to that ticket only.
  *
  * Panel staff use Laravel's /broadcasting/auth with routes/channels.php.
  */
@@ -44,6 +46,17 @@ final class RealtimeAuthController
             $device = AuthenticateDevice::resolve($request);
 
             return $device !== null && $device->branch_id === (int) $m[1];
+        }
+
+        if (preg_match('/^branch\.(\d+)\.pager$/', $name, $m) === 1) {
+            $device = AuthenticateDevice::resolve($request);
+
+            return $device !== null && $device->branch_id === (int) $m[1];
+        }
+
+        // The pager link is the key: whoever holds it may hear that one ticket.
+        if (preg_match('/^pager\.([A-Za-z0-9]{32})$/', $name, $m) === 1) {
+            return PagerTicket::findLive($m[1])?->isLive() ?? false;
         }
 
         if (preg_match('/^order\.([2-9A-HJ-NP-Z]{6})$/', $name, $m) === 1) {

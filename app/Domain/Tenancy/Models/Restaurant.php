@@ -19,6 +19,8 @@ use App\Domain\Menu\Models\MenuSchedule;
 use App\Domain\Menu\Models\ModifierGroup;
 use App\Domain\Menu\Models\Product;
 use App\Domain\Ordering\Models\Order;
+use App\Domain\Services\Enums\Service;
+use App\Domain\Services\Models\RestaurantService;
 use App\Domain\Staff\Models\Employee;
 use App\Domain\Tenancy\Enums\RestaurantStatus;
 use App\Models\User;
@@ -291,7 +293,36 @@ class Restaurant extends Model implements HasAvatar, HasName
             return $override;
         }
 
+        // Features of a service come with the service, whatever the plan tier.
+        $service = $feature->service();
+
+        if ($service !== null) {
+            return $this->hasService($service);
+        }
+
         return $this->plan()?->includes($feature) ?? false;
+    }
+
+    /**
+     * @return HasMany<RestaurantService, $this>
+     */
+    public function services(): HasMany
+    {
+        return $this->hasMany(RestaurantService::class);
+    }
+
+    /** The restaurant's record for a service (whatever its status), loaded once per request. */
+    public function service(Service $service): ?RestaurantService
+    {
+        $this->loadMissing(['services' => fn ($query) => $query->withoutTenancy()]);
+
+        return $this->services->first(fn (RestaurantService $row): bool => $row->service === $service);
+    }
+
+    /** True while the service is active, on demo, or cancelling but still paid for. */
+    public function hasService(Service $service): bool
+    {
+        return $this->service($service)?->isOn() ?? false;
     }
 
     /** Up to two initials for avatars and cards, from the name in the current language. */

@@ -90,7 +90,7 @@ return [
 
     'owner' => [
         'title' => 'Billing',
-        'subheading' => 'Your plan, payments and invoices.',
+        'subheading' => 'Your services, plan, payments and invoices.',
         'your_plan' => 'Your plan',
         'billed' => 'Billed every',
         'trial_left' => '{0} Your free trial ends today|{1} One day left in your free trial|[2,*] :count days left in your free trial',

@@ -12,6 +12,7 @@ use App\Domain\Billing\Models\Invoice;
 use App\Domain\Billing\Models\Plan;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Branches\Models\Device;
+use App\Domain\Crm\Listeners\RefreshGuestStats;
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Growth\Models\Lead;
 use App\Domain\Integrations\Models\ApiClient;
@@ -21,7 +22,9 @@ use App\Domain\Integrations\Webhooks\Listeners\SendWebhooks;
 use App\Domain\Loyalty\Listeners\AwardPointsOnPickup;
 use App\Domain\Loyalty\Listeners\ReturnBenefitsOnCancel;
 use App\Domain\Loyalty\Listeners\ReversePointsOnRefund;
+use App\Domain\Loyalty\Listeners\StampOrders;
 use App\Domain\Loyalty\Models\Reward;
+use App\Domain\Loyalty\Models\StampProgram;
 use App\Domain\Menu\Models\MenuCategory;
 use App\Domain\Menu\Models\MenuSchedule;
 use App\Domain\Menu\Models\ModifierGroup;
@@ -72,6 +75,7 @@ use App\Policies\RestaurantPolicy;
 use App\Policies\RewardPolicy;
 use App\Policies\SecurityAlertPolicy;
 use App\Policies\SessionRecordPolicy;
+use App\Policies\StampProgramPolicy;
 use App\Policies\UserPolicy;
 use App\Support\Digits;
 use Filament\Forms\Components\TextInput;
@@ -152,6 +156,8 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(OrderStatusChanged::class, AwardPointsOnPickup::class);
         Event::listen(OrderStatusChanged::class, ReturnBenefitsOnCancel::class);
         Event::listen(PaymentRefunded::class, ReversePointsOnRefund::class);
+        Event::listen(OrderStatusChanged::class, RefreshGuestStats::class);
+        Event::listen([OrderStatusChanged::class, PaymentRefunded::class], StampOrders::class);
     }
 
     private function configureAuthorization(): void
@@ -180,6 +186,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(WebhookEndpoint::class, IntegrationPolicy::class);
         Gate::policy(ApiClient::class, IntegrationPolicy::class);
         Gate::policy(Reward::class, RewardPolicy::class);
+        Gate::policy(StampProgram::class, StampProgramPolicy::class);
         Gate::policy(Promotion::class, PromotionPolicy::class);
         Gate::policy(Coupon::class, PromotionPolicy::class);
         Gate::policy(Plan::class, PlanPolicy::class);

@@ -28,6 +28,7 @@ enum RestaurantPermission: string implements Permission
     case OverrideOrders = 'orders.override';
     case OperateKitchen = 'kitchen.operate';
     case OperatePickup = 'pickup.operate';
+    case OperatePager = 'pager.operate';
     case CollectPayments = 'payments.collect';
     case RefundPayments = 'payments.refund';
     case ViewCustomers = 'customers.view';
@@ -53,7 +54,7 @@ enum RestaurantPermission: string implements Permission
             self::ManageStaff => 'team',
             self::ManageMenu, self::ManageAvailability => 'menu',
             self::ViewOrders, self::OperateOrders, self::OverrideOrders,
-            self::OperateKitchen, self::OperatePickup => 'operations',
+            self::OperateKitchen, self::OperatePickup, self::OperatePager => 'operations',
             self::CollectPayments, self::RefundPayments => 'payments',
             self::ViewCustomers, self::ViewCustomerContacts => 'customers',
             self::ManageLoyalty, self::ManagePromotions, self::ManageCampaigns => 'growth',

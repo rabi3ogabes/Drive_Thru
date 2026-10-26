@@ -96,9 +96,15 @@
                     <div>{{ $line->getTranslation('description', 'en') }}</div>
                     <div class="ar muted">{{ $line->getTranslation('description', 'ar') }}</div>
                 </td>
-                <td class="num">{{ $line->quantity }}</td>
-                <td class="num">{{ $fmt($line->unit_price_minor) }}</td>
-                <td class="num">{{ $fmt($line->amount_minor) }}</td>
+                @if ($line->is_discount)
+                    <td class="num"></td>
+                    <td class="num"></td>
+                    <td class="num">−{{ $fmt($line->amount_minor) }}</td>
+                @else
+                    <td class="num">{{ $line->quantity }}</td>
+                    <td class="num">{{ $fmt($line->unit_price_minor) }}</td>
+                    <td class="num">{{ $fmt($line->amount_minor) }}</td>
+                @endif
             </tr>
         @endforeach
     </tbody>

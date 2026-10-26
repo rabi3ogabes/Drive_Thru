@@ -20,6 +20,9 @@ final class RunBilling extends Command
     {
         $report = $cycle->handle();
 
+        $this->components->twoColumnDetail('Service demos converted', (string) $report['services']['converted']);
+        $this->components->twoColumnDetail('Service demos ended', (string) $report['services']['demos_ended']);
+        $this->components->twoColumnDetail('Services ended', (string) $report['services']['ended']);
         $this->components->twoColumnDetail('Trials converted', (string) $report['trials_converted']);
         $this->components->twoColumnDetail('Periods renewed', (string) $report['periods_renewed']);
         $this->components->twoColumnDetail('Marked past due', (string) $report['marked_past_due']);

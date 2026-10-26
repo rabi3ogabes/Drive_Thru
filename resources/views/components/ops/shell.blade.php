@@ -7,12 +7,9 @@
     $user = auth()->user();
     $overview = $deviceId === null && $user instanceof User && app(ChannelAccess::class)->restaurantDashboard($user, $restaurant->id);
     $locale = app()->getLocale() === 'ar' ? 'ar-u-nu-latn' : 'en-GB';
-    $screens = $deviceId === null && $branch !== null ? [
-        'kitchen' => __('ops.screens.kitchen'),
-        'live' => __('ops.screens.live'),
-        'pickup' => __('ops.screens.pickup'),
-        'tv' => __('ops.screens.tv'),
-    ] : [];
+    $screens = $deviceId === null && $branch !== null && $user instanceof User
+        ? collect(\App\Http\Controllers\OpsController::screensFor($restaurant, \App\Domain\Ordering\Operations\Operator::staff($user, $restaurant->id)))->mapWithKeys(fn (string $key): array => [$key => __('ops.screens.'.$key)])->all()
+        : [];
 @endphp
 <div x-data="opsShell({
         locale: @js($locale),

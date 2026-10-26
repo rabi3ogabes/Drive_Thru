@@ -9,12 +9,14 @@ use App\Domain\Billing\Models\Invoice;
 use App\Domain\Billing\Models\Subscription;
 use App\Domain\Billing\Notifications\PaymentOverdue;
 use App\Domain\Platform\PlatformSettings;
+use App\Domain\Services\Actions\ManageServices;
 use App\Domain\Tenancy\Enums\RestaurantStatus;
 use Carbon\CarbonImmutable;
 
 /**
  * The daily billing run. Idempotent: running it twice on the same day has no
  * extra effect. In order:
+ *  0. service demos and cancellations are settled (ManageServices::settle),
  *  1. trials that ended become active and get their first invoice,
  *  2. periods that ended roll over and get invoiced,
  *  3. clients with an overdue invoice become past due (grace period starts),
@@ -26,15 +28,16 @@ final class RunBillingCycle
         private readonly IssueInvoice $issueInvoice,
         private readonly SuspendRestaurant $suspend,
         private readonly PlatformSettings $settings,
+        private readonly ManageServices $services,
     ) {}
 
     /**
-     * @return array{trials_converted: int, periods_renewed: int, marked_past_due: int, suspended: int}
+     * @return array{services: array{reminded: int, converted: int, demos_ended: int, ended: int}, trials_converted: int, periods_renewed: int, marked_past_due: int, suspended: int}
      */
     public function handle(?CarbonImmutable $now = null): array
     {
         $now ??= CarbonImmutable::now();
-        $report = ['trials_converted' => 0, 'periods_renewed' => 0, 'marked_past_due' => 0, 'suspended' => 0];
+        $report = ['services' => $this->services->settle($now), 'trials_converted' => 0, 'periods_renewed' => 0, 'marked_past_due' => 0, 'suspended' => 0];
 
         Subscription::withoutTenancy()->with(['plan', 'restaurant'])
             ->where('status', SubscriptionStatus::Trialing)

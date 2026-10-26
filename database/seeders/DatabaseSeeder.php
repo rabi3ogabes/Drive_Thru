@@ -106,6 +106,7 @@ class DatabaseSeeder extends Seeder
             ['Al Sadd', 'السد', 'Doha', 'الدوحة', [[6, 12], [15, 1]], 6],
             ['Al Rayyan', 'الريان', 'Al Rayyan', 'الريان', [[6, 24]], 6],
         ]);
+        app(DemoCafeMenuSeeder::class)->run($karak);
 
         $this->leads();
 

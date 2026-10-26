@@ -8,12 +8,14 @@ use App\Domain\Billing\Enums\PlanFeature;
 use App\Domain\Branches\BranchSchedule;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Branches\Models\Lane;
+use App\Domain\Crm\Consent;
 use App\Domain\Customers\Enums\VehicleType;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Customers\Models\CustomerVehicle;
 use App\Domain\Loyalty\Models\LoyaltyProgram;
 use App\Domain\Loyalty\Models\WalletReward;
 use App\Domain\Loyalty\PointsRedemption;
+use App\Domain\Loyalty\Stamps;
 use App\Domain\Menu\BranchMenu as Menu;
 use App\Domain\Menu\Models\Product;
 use App\Domain\Ordering\Actions\PlaceOrder;
@@ -29,6 +31,7 @@ use App\Domain\Ordering\Exceptions\OrderRejected;
 use App\Domain\Payments\Actions\StartPayment;
 use App\Domain\Payments\GatewayResolver;
 use App\Domain\Promotions\Models\Coupon;
+use App\Domain\Services\Enums\Service;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Customer\Concerns\GuestPage;
 use App\Livewire\Customer\Concerns\SignsInWithPhone;
@@ -88,6 +91,9 @@ class Checkout extends Component
 
     public string $notes = '';
 
+    /** "Send me offers": unticked until the guest ticks it. */
+    public bool $offers = false;
+
     #[Locked]
     public ?string $problem = null;
 
@@ -121,6 +127,12 @@ class Checkout extends Component
 
         if ($model === null) {
             abort(response()->view('public.branch-missing', ['restaurant' => $restaurant], 404));
+        }
+
+        if (! $restaurant->hasService(Service::DriveThru)) {
+            $this->redirectRoute('public.branch', [$restaurant, $model->code], navigate: true);
+
+            return;
         }
 
         $this->branchId = $model->id;
@@ -302,6 +314,10 @@ class Checkout extends Component
             return;
         }
 
+        if ($this->offers) {
+            app(Consent::class)->give($customer, 'checkout');
+        }
+
         $this->cart()->clear($this->restaurant->id);
         session()->forget("source.{$this->restaurant->id}");
         $orderUrl = route('customer.order', [$this->restaurant, $order]);
@@ -350,6 +366,7 @@ class Checkout extends Component
             'maxSchedule' => now($tz)->addDays(PlaceOrder::MAX_SCHEDULE_DAYS)->format('Y-m-d\TH:i'),
             'readyBy' => $bag === null ? null : now($tz)->addMinutes($bag->prepMinutes),
             'savings' => $savings,
+            'stamps' => $bag === null ? [] : app(Stamps::class)->preview($this->restaurant, $customer, $bag->lines),
         ], __('guest.checkout.title'));
     }
 

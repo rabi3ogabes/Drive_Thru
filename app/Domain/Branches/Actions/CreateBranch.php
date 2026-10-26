@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
  */
 final class CreateBranch
 {
-    public const RESERVED_CODES = ['orders', 'account', 'rewards', 'sign-in', 'checkout', 'manifest-webmanifest', 'offline', 'go', 'overview'];
+    public const RESERVED_CODES = ['orders', 'account', 'rewards', 'sign-in', 'checkout', 'manifest-webmanifest', 'offline', 'go', 'overview', 'p', 'invite', 'unsubscribe', 'q'];
 
     public function __construct(private readonly PlanLimits $limits) {}
 

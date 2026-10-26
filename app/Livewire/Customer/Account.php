@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Customer;
 
 use App\Domain\Billing\Enums\PlanFeature;
+use App\Domain\Crm\Consent;
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Customers\Enums\VehicleType;
 use App\Domain\Customers\Models\Customer;
@@ -36,6 +37,8 @@ class Account extends Component
     public bool $orderUpdates = true;
 
     public bool $receipts = true;
+
+    public bool $offers = false;
 
     public bool $addingVehicle = false;
 
@@ -69,6 +72,12 @@ class Account extends Component
             'locale' => $data['locale'],
             'notification_prefs' => array_merge((array) $customer->notification_prefs, ['order_updates' => $this->orderUpdates, 'receipts' => $this->receipts]),
         ])->save();
+
+        if ($this->offers && ! $customer->acceptsOffers()) {
+            app(Consent::class)->give($customer, 'account');
+        } elseif (! $this->offers && $customer->acceptsOffers()) {
+            app(Consent::class)->withdraw($customer, 'account');
+        }
 
         $this->toast(__('guest.account.saved'));
     }
@@ -212,5 +221,6 @@ class Account extends Component
         $this->locale = $customer->locale ?? app()->getLocale();
         $this->orderUpdates = $customer->wants('order_updates');
         $this->receipts = $customer->wants('receipts');
+        $this->offers = $customer->acceptsOffers();
     }
 }

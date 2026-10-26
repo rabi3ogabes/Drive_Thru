@@ -32,6 +32,9 @@ final class PlatformSettings
             'billing.address' => 'Doha, Qatar',
             'billing.email' => 'billing@drivethru.test',
             'billing.bank_details' => null,
+            // Discount on the services total when a restaurant takes 2 or 3 services (basis points)
+            'billing.bundle_two_bp' => 1000,
+            'billing.bundle_three_bp' => 1500,
             // Operations
             'orders.admin_override' => true,
             'otp.channels' => ['whatsapp', 'sms'],

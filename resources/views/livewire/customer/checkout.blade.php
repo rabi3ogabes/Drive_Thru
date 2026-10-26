@@ -256,6 +256,12 @@
                             <span class="text-sm font-medium text-ink-700">{{ __('guest.checkout.notes') }}</span>
                             <textarea wire:model="notes" rows="2" maxlength="300" placeholder="{{ __('guest.checkout.notes_hint') }}" class="mt-1.5 resize-none {{ $field }}"></textarea>
                         </label>
+                        @unless ($customer->acceptsOffers())
+                            <label class="mt-4 flex items-start gap-3 rounded-2xl bg-ivory-50 p-3 ring-1 ring-ink-950/5">
+                                <input type="checkbox" wire:model="offers" class="mt-0.5 size-5 rounded border-ink-950/20 text-[var(--brand)] focus:ring-[var(--brand)]">
+                                <span><span class="block text-sm font-medium text-ink-900">{{ __('guest.offers.opt_in') }}</span><span class="block text-xs text-ink-500">{{ __('guest.offers.opt_in_hint') }}</span></span>
+                            </label>
+                        @endunless
                     </div>
                 </section>
             @endif
@@ -349,6 +355,12 @@
                     @endif
                     <div class="flex justify-between border-t border-ink-950/8 pt-2.5 text-base font-semibold text-ink-950"><dt>{{ __('guest.checkout.total') }}</dt><dd dir="ltr" data-total>{{ Money::format($bag->totalMinor, $currency) }}</dd></div>
                 </dl>
+                @foreach ($stamps as $stamp)
+                    <p class="mt-2 flex items-center gap-1.5 text-xs text-brass-800">
+                        <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="m5.3 8.2 1.8 1.8 3.6-3.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        {{ $stamp['fills'] ? __('guest.savings.stamps_fill', ['card' => $stamp['program']->name, 'reward' => $stamp['program']->reward->name]) : trans_choice('guest.savings.stamps_add', $stamp['adds'], ['count' => $stamp['adds'], 'card' => $stamp['program']->name, 'left' => $stamp['left']]) }}
+                    </p>
+                @endforeach
                 @if ($bag->pointsToEarn > 0)
                     <p class="mt-2 flex items-center gap-1.5 text-xs text-brass-800">
                         <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.3l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>

@@ -43,8 +43,8 @@ Always verify a vendor API in `vendor/` before using it (Filament 5 / Pest 5 are
 ## Local dev on Windows (learned the hard way)
 - Composer isn't on PATH: `php /c/Users/user/composer/composer.phar …`.
 - The first page load after clearing caches compiles hundreds of Blade views and can exceed PHP's 30 s limit. Run `composer warm` (`view:cache` + `filament:optimize`) after `optimize:clear`, and after editing views if pages hang.
-- Dev server: use `.claude/launch.json` (`drive-thru`: `php -S 127.0.0.1:8000` with OPcache loaded via `-d zend_extension=opcache -d opcache.enable_cli=1`; without it every request recompiles the framework, about 1 s). The project-root `server.php` routes requests without depending on the current directory. Don't pass `-d` flags to `artisan serve`: they apply to its supervisor and kill it.
-- PHP's built-in server is single-threaded and blocks on idle browser sockets (requests then wait 30–70 s). For browser checks, start `drive-thru-proxy` too and browse **http://localhost:8010** (`.claude/dev-proxy.cjs` forwards only complete requests). Keep no other tab on :8000.
+- Dev server: use `.claude/launch.json` (`drive-thru`: `php -S 127.0.0.1:8020` with OPcache loaded via `-d zend_extension=opcache -d opcache.enable_cli=1`; without it every request recompiles the framework, about 1 s). The project-root `server.php` routes requests without depending on the current directory. Don't pass `-d` flags to `artisan serve`: they apply to its supervisor and kill it.
+- PHP's built-in server is single-threaded and blocks on idle browser sockets (requests then wait 30–70 s). For browser checks, start `drive-thru-proxy` too and browse **http://localhost:8010** (`.claude/dev-proxy.cjs` forwards only complete requests). Keep no other tab on :8020. (Port 8000 is used by another local project, so Drive-Thru runs on 8020.)
 - After pulling new migrations, run `php artisan migrate` on the local SQLite DB too: tests use their own database, so a missing table only shows up in the browser.
 - Git Bash rewrites arguments that start with `/`; prefix with `MSYS_NO_PATHCONV=1` (e.g. `MSYS_NO_PATHCONV=1 php probe.php /admin`).
 - New Blade folders that use Tailwind classes inside the panels must be added as an `@source` in `resources/css/filament/theme.css`, then `npm run build`.
@@ -66,7 +66,7 @@ Always verify a vendor API in `vendor/` before using it (Filament 5 / Pest 5 are
 - Don't name a Blade view variable `$component`: Blade's anonymous components use it internally.
 - Livewire re-renders morph the DOM: one-time Alpine effects (celebrations, alerts) must render once on the server, not on every refresh.
 
-- Windows PHP here has no OpenSSL config and no CA bundle: `webpush:keys` needs `OPENSSL_CONF=<php dir>\extras\ssl\openssl.cnf` in the environment (setting it at runtime doesn't work), and outgoing HTTPS fails with cURL error 60 until `curl.cainfo`/`openssl.cafile` point to a CA bundle in php.ini. Linux servers are unaffected.
+- Windows PHP here has no OpenSSL config and no CA bundle: `webpush:keys` needs `OPENSSL_CONF=<php dir>\extras\ssl\openssl.cnf` in the environment (setting it at runtime doesn't work), and outgoing HTTPS needs `curl.cainfo`/`openssl.cafile` in php.ini (set on 2026-10-12 to Git for Windows' `ca-bundle.crt`; backup `php.ini.bak-2026-10-12`). Linux servers are unaffected.
 - `php artisan tinker <file>` drops into the REPL after running the file and hangs a non-interactive shell. Use `tinker --execute="require '<path>';"`.
 - Translation keys can't contain dots: an enum value like `order.created` must map to `order_created` in lang files.
 - In Pest, Filament actions whose form includes a `CheckboxList` are driven with `mountAction()->fillForm()->callMountedAction()`; `callAction(data:)` fails with "mountedActionSchema0 not found".
@@ -75,3 +75,7 @@ Always verify a vendor API in `vendor/` before using it (Filament 5 / Pest 5 are
 - Arrow functions capture variables by value when they are created: a `fn () => … $array` helper won't see items appended later. Use a method that takes the array.
 - Eloquent `firstOrCreate(['name->en' => …])` fails (mass assignment of the JSON path). Query with `where('name->en', …)` and create separately.
 - Pest higher-order expectations can't reach a model attribute called `value` (`expect($m)->value` is the expectation's own value). Use `expect($m->value)`.
+- Editing files with Python on Windows: open with `newline=''` (read and write), or text mode silently turns LF into CRLF. Pint fixes PHP files but not Blade.
+- A Livewire public property wins over a view variable of the same name: never pass `'showing' => $model` to a view when the component has `public ?int $showing`.
+- Product photos need `php artisan storage:link` locally (`public/storage` is git-ignored); seeder photos live in `database/seeders/images/` and go through `ProcessProductImage`.
+- Services gate features: `Restaurant::hasService(Service)`; a `PlanFeature` with `service()` comes with that service, not the plan. Test restaurants from `restaurant()` get Drive-Thru; pass `services: [...]` or use `withService()`.

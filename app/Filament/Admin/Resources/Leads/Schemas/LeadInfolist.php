@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Leads\Schemas;
 
 use App\Domain\Growth\Models\Lead;
+use App\Domain\Services\Enums\Service;
 use App\Filament\Admin\Resources\Restaurants\RestaurantResource;
 use App\Support\Bidi;
 use App\Support\Locales;
@@ -29,6 +30,9 @@ class LeadInfolist
                         TextEntry::make('phone')->label(__('leads.fields.phone'))->formatStateUsing(fn (?string $state): ?string => Bidi::ltr($state))->copyable()->copyableState(fn (Lead $record): ?string => $record->phone)->placeholder('—'),
                         TextEntry::make('branches_count')->label(__('leads.fields.branches_count')),
                         TextEntry::make('plan.name')->label(__('leads.fields.plan'))->placeholder('—'),
+                        TextEntry::make('services')->label(__('leads.fields.services'))->badge()->color('primary')
+                            ->formatStateUsing(fn (?string $state): string => Service::tryFrom((string) $state)?->getLabel() ?? (string) $state)
+                            ->placeholder('—'),
                         TextEntry::make('locale')->label(__('leads.fields.locale'))->formatStateUsing(fn (string $state): string => Locales::native($state)),
                         TextEntry::make('message')->label(__('leads.fields.message'))->placeholder('—')->columnSpanFull()->prose(),
                     ]),

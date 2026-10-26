@@ -1,4 +1,4 @@
-@props(['restaurant', 'customer' => null, 'active' => null, 'menuUrl' => null, 'bare' => false])
+@props(['restaurant', 'customer' => null, 'active' => null, 'menuUrl' => null, 'bare' => false, 'wide' => false])
 @php
     use App\Support\Locales;
     $next = Locales::other();
@@ -9,7 +9,7 @@
         ['account', route('customer.account', $restaurant), __('guest.nav.account'), 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0'],
     ];
 @endphp
-<div class="relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col">
+<div @class(['relative mx-auto flex min-h-dvh w-full flex-col', 'max-w-2xl' => ! $wide, 'max-w-2xl lg:max-w-6xl' => $wide])>
     <div aria-hidden="true" class="pointer-events-none fixed inset-x-0 top-0 -z-0 h-[28rem] bg-gradient-to-b from-[color-mix(in_oklab,var(--brand)_10%,transparent)] to-transparent"></div>
 
     <header class="sticky top-0 z-30 bg-ivory-50/80 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-xl sm:px-6">

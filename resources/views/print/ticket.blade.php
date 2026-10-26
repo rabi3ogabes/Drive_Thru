@@ -83,12 +83,22 @@
         <div class="rule"></div>
         <table>
             <tr><td>{{ __('guest.checkout.subtotal') }}</td><td class="amount">{{ Money::format($order->subtotal_minor, $currency) }}</td></tr>
-            @if ($order->discount_minor > 0)<tr><td>{{ __('guest.checkout.discount') }}</td><td class="amount">−{{ Money::format($order->discount_minor, $currency) }}</td></tr>@endif
+            @foreach ($order->adjustments as $adjustment)
+                @continue($adjustment->amount_minor === 0)
+                <tr><td>{{ $adjustment->localLabel() }}</td><td class="amount">−{{ Money::format($adjustment->amount_minor, $currency) }}</td></tr>
+            @endforeach
             @if ($order->service_fee_minor > 0)<tr><td>{{ __('guest.checkout.service_fee') }}</td><td class="amount">{{ Money::format($order->service_fee_minor, $currency) }}</td></tr>@endif
             @if ($order->tax_minor > 0)<tr><td>{{ __('guest.checkout.tax') }}</td><td class="amount">{{ Money::format($order->tax_minor, $currency) }}</td></tr>@endif
             <tr class="total"><td>{{ __('guest.checkout.total') }}</td><td class="amount">{{ Money::format($order->total_minor, $currency) }}</td></tr>
         </table>
         <div class="muted">{{ $order->payment_method->getLabel() }} · {{ $order->staffPaymentLabel() }}</div>
+        @if ($order->points_redeemed > 0 || $order->points_earned > 0)
+            <div class="muted">
+                @if ($order->points_redeemed > 0){{ __('guest.receipt.points_used', ['points' => number_format($order->points_redeemed)]) }}@endif
+                @if ($order->points_redeemed > 0 && $order->points_earned > 0) · @endif
+                @if ($order->points_earned > 0){{ __('guest.order.points_earned', ['points' => number_format($order->points_earned)]) }}@endif
+            </div>
+        @endif
         <div class="rule"></div>
         <div class="center">{{ __('guest.receipt.thanks') }}</div>
     @endif

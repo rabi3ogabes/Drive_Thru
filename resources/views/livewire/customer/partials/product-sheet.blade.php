@@ -148,6 +148,9 @@
         </div>
 
         {{-- Footer: quantity + add --}}
+        @if (! ($ordering ?? true))
+            <p class="shrink-0 border-t border-ink-950/5 bg-white px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center text-sm text-ink-500">{{ __('guest.menu.menu_only') }}</p>
+        @else
         <div class="flex shrink-0 items-center gap-3 border-t border-ink-950/5 bg-white px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
             <div class="flex items-center rounded-full bg-ivory-100 p-1" x-show="p.available">
                 <button type="button" x-on:click="qty = Math.max(1, qty - 1)" :disabled="qty <= 1" class="grid size-10 place-items-center rounded-full text-ink-800 transition disabled:opacity-35 enabled:active:bg-white" aria-label="{{ __('guest.menu.less') }}">
@@ -166,5 +169,6 @@
                 <span class="shrink-0 tabular-nums" dir="ltr" x-show="p.available" x-text="money(unit() * qty)"></span>
             </button>
         </div>
+        @endif
     </div>
 </div>

@@ -89,8 +89,8 @@ class PlanForm
                     ->schema([
                         CheckboxList::make('features')
                             ->hiddenLabel()
-                            ->options(PlanFeature::class)
-                            ->descriptions(collect(PlanFeature::cases())->mapWithKeys(fn (PlanFeature $f): array => [$f->value => $f->getDescription()])->all())
+                            ->options(collect(PlanFeature::addOns())->mapWithKeys(fn (PlanFeature $f): array => [$f->value => $f->getLabel()])->all())
+                            ->descriptions(collect(PlanFeature::addOns())->mapWithKeys(fn (PlanFeature $f): array => [$f->value => $f->getDescription()])->all())
                             ->columns(['default' => 1, 'md' => 2])
                             ->bulkToggleable()
                             ->gridDirection('row'),

@@ -8,6 +8,7 @@ use App\Domain\Billing\Enums\InvoiceStatus;
 use App\Domain\Billing\Models\Invoice;
 use App\Domain\Billing\Models\Subscription;
 use App\Domain\Billing\Notifications\InvoiceIssued;
+use App\Domain\Billing\SubscriptionCharges;
 use App\Domain\Platform\PlatformSettings;
 use App\Support\Money;
 use App\Support\Sequence;
@@ -15,13 +16,17 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Bills one subscription period: numbered invoice (DTP-2026-00001), one line
- * per billed branch, platform tax, due date, and an email to the owner.
- * Billing the same period twice returns the existing invoice.
+ * Bills one subscription period: numbered invoice (DTP-2026-00001), a line
+ * per service (and the plan tier's fee, if any), the bundle discount,
+ * platform tax, due date, and an email to the owner. Billing the same period
+ * twice returns the existing invoice.
  */
 final class IssueInvoice
 {
-    public function __construct(private readonly PlatformSettings $settings) {}
+    public function __construct(
+        private readonly PlatformSettings $settings,
+        private readonly SubscriptionCharges $charges,
+    ) {}
 
     public function handle(Subscription $subscription, CarbonImmutable $periodStart, CarbonImmutable $periodEnd): Invoice
     {
@@ -35,11 +40,28 @@ final class IssueInvoice
             return $existing;
         }
 
-        $invoice = DB::transaction(function () use ($subscription, $periodStart, $periodEnd): Invoice {
-            $subscription->loadMissing('plan');
+        return $this->create($subscription, $this->charges->lines($subscription), $periodStart, $periodEnd);
+    }
+
+    /**
+     * A one-off invoice outside the regular cycle (a service added mid-period).
+     *
+     * @param  list<array{description: array{ar: string, en: string}, quantity: int, unit_price_minor: int, amount_minor: int, is_discount: bool}>  $lines
+     */
+    public function oneOff(Subscription $subscription, array $lines, CarbonImmutable $periodStart, CarbonImmutable $periodEnd): Invoice
+    {
+        return $this->create($subscription, $lines, $periodStart, $periodEnd);
+    }
+
+    /**
+     * @param  list<array{description: array{ar: string, en: string}, quantity: int, unit_price_minor: int, amount_minor: int, is_discount: bool}>  $lines
+     */
+    private function create(Subscription $subscription, array $lines, CarbonImmutable $periodStart, CarbonImmutable $periodEnd): Invoice
+    {
+        $invoice = DB::transaction(function () use ($subscription, $lines, $periodStart, $periodEnd): Invoice {
             $now = CarbonImmutable::now();
 
-            $subtotal = $subscription->amountPerPeriodMinor();
+            $subtotal = SubscriptionCharges::sum($lines);
             $taxRate = $this->settings->int('billing.tax_rate_bp');
             $tax = Money::percentOf($subtotal, $taxRate);
 
@@ -59,15 +81,9 @@ final class IssueInvoice
                 'due_at' => $now->addDays($this->settings->int('billing.invoice_due_days'))->endOfDay(),
             ]);
 
-            $invoice->lines()->create([
-                'description' => [
-                    'ar' => __('billing.invoice.line', ['plan' => $subscription->plan->getTranslation('name', 'ar')], 'ar'),
-                    'en' => __('billing.invoice.line', ['plan' => $subscription->plan->getTranslation('name', 'en')], 'en'),
-                ],
-                'quantity' => $subscription->quantity,
-                'unit_price_minor' => $subscription->unit_price_minor,
-                'amount_minor' => $subtotal,
-            ]);
+            foreach ($lines as $sort => $line) {
+                $invoice->lines()->create([...$line, 'sort' => $sort]);
+            }
 
             return $invoice;
         });
