@@ -43,6 +43,17 @@ class BranchHour extends Model
         return $this->closes_at <= $this->opens_at;
     }
 
+    /** MySQL and MariaDB read TIME back as HH:MM:SS; the schedule compares HH:MM. */
+    protected function getOpensAtAttribute(?string $value): string
+    {
+        return substr((string) $value, 0, 5);
+    }
+
+    protected function getClosesAtAttribute(?string $value): string
+    {
+        return substr((string) $value, 0, 5);
+    }
+
     protected function setOpensAtAttribute(string $value): void
     {
         $this->attributes['opens_at'] = substr($value, 0, 5);

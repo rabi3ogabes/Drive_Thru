@@ -25,6 +25,8 @@ return [
             'alert' => env('WHATSAPP_TEMPLATE_ALERT', 'dtp_staff_alert'),
             'pager_ready' => env('WHATSAPP_TEMPLATE_PAGER_READY', 'dtp_pager_ready'),
             'stamps' => env('WHATSAPP_TEMPLATE_STAMPS', 'dtp_stamp_card'),
+            // Marketing: {{1}} restaurant, {{2}} the offer, {{3}} order link, {{4}} unsubscribe link.
+            'campaign' => env('WHATSAPP_TEMPLATE_CAMPAIGN', 'dtp_offer'),
         ],
 
         // Template language codes as registered with Meta.

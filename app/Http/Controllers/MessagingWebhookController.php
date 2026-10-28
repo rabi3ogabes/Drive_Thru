@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Crm\Consent;
+use App\Domain\Customers\Models\Customer;
+use App\Domain\Messaging\Data\Message;
 use App\Domain\Messaging\Models\MessageDelivery;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,12 +14,16 @@ use Illuminate\Http\Response;
 
 /**
  * Delivery reports from the messaging providers:
- * - Meta WhatsApp: subscription check (GET) and status updates (POST),
- *   accepted only with a valid X-Hub-Signature-256 from our app secret;
+ * - Meta WhatsApp: subscription check (GET), status updates and guests'
+ *   replies (POST), accepted only with a valid X-Hub-Signature-256 from our
+ *   app secret. A STOP / إيقاف reply stops offers;
  * - SMSala: our own signed callback URL per delivery (SMSala doesn't sign).
  */
 final class MessagingWebhookController
 {
+    /** Replies that stop offers, compared after trimming and lower-casing. */
+    public const STOP_WORDS = ['stop', 'stop offers', 'unsubscribe', 'إيقاف', 'ايقاف', 'إيقاف العروض', 'ايقاف العروض', 'إلغاء', 'الغاء'];
+
     /** Meta's one-time subscription check. */
     public function verifyWhatsApp(Request $request): Response
     {
@@ -46,6 +53,10 @@ final class MessagingWebhookController
                         default => null,
                     }, $status['errors'][0]['title'] ?? null);
                 }
+
+                foreach ((array) ($change['value']['messages'] ?? []) as $message) {
+                    $this->reply((string) ($message['from'] ?? ''), (string) ($message['text']['body'] ?? $message['button']['text'] ?? ''));
+                }
             }
         }
 
@@ -70,6 +81,33 @@ final class MessagingWebhookController
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    /**
+     * A STOP reply stops offers from the restaurant whose offer the guest
+     * last received on this number. Without one in the last 30 days it stops
+     * every restaurant's offers to that phone: when unsure, stop more.
+     */
+    private function reply(string $from, string $text): void
+    {
+        $word = mb_strtolower(trim(preg_replace('/[\s\p{P}]+$/u', '', $text) ?? ''));
+
+        if (! in_array($word, self::STOP_WORDS, true) || preg_match('/^\d{6,15}$/', $from) !== 1) {
+            return;
+        }
+
+        $phone = '+'.$from;
+        $restaurantId = MessageDelivery::withoutTenancy()
+            ->where('to_hash', hash('sha256', $phone))
+            ->where('purpose', Message::CAMPAIGN)
+            ->where('created_at', '>=', now()->subDays(30))
+            ->latest('id')
+            ->value('restaurant_id');
+
+        Customer::withoutTenancy()->where('phone', $phone)
+            ->when($restaurantId !== null, fn ($query) => $query->where('restaurant_id', $restaurantId))
+            ->get()
+            ->each(fn (Customer $customer) => app(Consent::class)->withdraw($customer, 'whatsapp_stop'));
     }
 
     private function apply(string $providerId, ?string $status, mixed $error): void

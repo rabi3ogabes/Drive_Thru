@@ -330,8 +330,8 @@ Plan → approve → TDD with Http::fake for every provider. Verify end to end i
 - [x] **Promotions engine** (% / fixed / BOGO / free item / combo price / first order / birthday / happy hour / branch-category-product scope / stacking rules) + **coupon codes** (limits, per-customer limits, validity). *(7A)*
 - [ ] **Referral** program with fraud checks. **Favorites**, birthday reward automation.
 - [ ] Optional gamification: streaks, milestones, badges (admin-configurable, off by default).
-- [ ] **CRM**: customer list + profile (orders, revenue, AOV, favorites, last order, points, tier, segment, campaigns), **auto segments** nightly (New, Regular, VIP, High spender, At risk, Inactive).
-- [ ] **Campaigns** to segments (WhatsApp/SMS/push), scheduling, consent, quiet hours, attribution (orders + revenue).
+- [x] **CRM**: customer list + profile (orders, revenue, AOV, favorites, last order, points, tier, segment, campaigns), **auto segments** nightly (New, Regular, VIP, High spender, At risk, Inactive).
+- [x] **Campaigns** to segments (WhatsApp/SMS/push), scheduling, consent, quiet hours, attribution (orders + revenue). Done 2026-10-27: owner composer with a live bilingual preview, audience count, test send, send/schedule/cancel, results; per-guest frequency cap; unsubscribe link and STOP replies.
 - [ ] **QR campaigns**: create QR per branch/lane/campaign/channel/promo, branded poster PDF, analytics (scans → visits → orders → revenue → conversion).
 - [ ] **Post-pickup rating** + **support tickets** (customer report → manager resolves → WhatsApp reply).
 

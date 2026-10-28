@@ -40,7 +40,7 @@
                     <div class="mt-4 grid grid-cols-3 gap-2 border-t border-gray-950/5 pt-4 dark:border-white/10">
                         @foreach (['pdf' => __('links.download.poster'), 'png' => 'PNG', 'svg' => 'SVG'] as $format => $label)
                             <x-filament::button size="sm" :color="$format === 'pdf' ? 'primary' : 'gray'" :outlined="$format !== 'pdf'" icon="heroicon-m-arrow-down-tray" tag="a" :spa-mode="false"
-                                :href="route('qr.download', array_filter(['restaurant' => $restaurant->slug, 'format' => $format, 'branch' => $item['branch']]))">
+                                :href="route('qr.download', array_filter(['restaurant' => $restaurant->slug, 'format' => $format, 'branch' => $item['branch'], 'kind' => $item['kind'] === 'stamps' ? 'stamps' : null]))">
                                 {{ $label }}
                             </x-filament::button>
                         @endforeach

@@ -26,8 +26,11 @@ final readonly class Message
 
     public const STAMPS = 'stamps';
 
+    public const CAMPAIGN = 'campaign';
+
     /**
      * @param  list<string>  $parameters  template body parameters, in order
+     * @param  list<string>|null  $channels  only these channels, in the platform's order (null = all)
      */
     public function __construct(
         public string $phone,
@@ -38,6 +41,7 @@ final readonly class Message
         public ?int $restaurantId = null,
         public ?Model $subject = null,
         public ?string $buttonParameter = null,
+        public ?array $channels = null,
     ) {}
 
     public function isOtp(): bool

@@ -58,8 +58,8 @@ return new class extends Migration
             $table->unsignedBigInteger('total_minor')->default(0);
             $table->date('period_start')->nullable();
             $table->date('period_end')->nullable();
-            $table->timestamp('issued_at');
-            $table->timestamp('due_at')->index();
+            $table->dateTime('issued_at');
+            $table->dateTime('due_at')->index();
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('voided_at')->nullable();
             $table->string('payment_method', 30)->nullable();

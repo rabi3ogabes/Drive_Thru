@@ -102,7 +102,7 @@ final class CreateRestaurant
     public static function reservedSlugs(): array
     {
         return [
-            'admin', 'app', 'ops', 'api', 'pair', 'screen', 'r', 'o', 'locale', 'login', 'logout', 'up', 'storage', 'build',
+            'admin', 'app', 'install', 'ops', 'api', 'pair', 'screen', 'r', 'o', 'locale', 'login', 'logout', 'up', 'storage', 'build',
             'features', 'pricing', 'services', 'contact', 'demo', 'terms', 'privacy', 'cookies', 'blog', 'help',
             'livewire', 'filament', 'broadcasting', 'realtime', 'pay', 'payments', 'webhooks', 'print', 'push', 'qr', 'invoices', 'impersonation', 'developers', 'sw.js', 'offline.html',
             'sitemap.xml', 'robots.txt', 'manifest.json',

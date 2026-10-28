@@ -49,6 +49,17 @@ class MenuSchedule extends Model
         ];
     }
 
+    /** MySQL and MariaDB read TIME back as HH:MM:SS; availability compares HH:MM. */
+    protected function getStartsAtAttribute(?string $value): string
+    {
+        return substr((string) $value, 0, 5);
+    }
+
+    protected function getEndsAtAttribute(?string $value): string
+    {
+        return substr((string) $value, 0, 5);
+    }
+
     protected function setStartsAtAttribute(string $value): void
     {
         $this->attributes['starts_at'] = substr($value, 0, 5);

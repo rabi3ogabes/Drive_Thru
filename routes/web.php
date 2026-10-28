@@ -142,6 +142,7 @@ Route::middleware(ResolveGuestRestaurant::class)->group(function () use ($slug, 
     Route::livewire('/{restaurant:slug}/p/{token}', Customer\Pager::class)->where(['restaurant' => $slug, 'token' => '[A-Za-z0-9]{32}'])->missing($missing)->middleware('throttle:120,1')->name('customer.pager');
     Route::livewire('/{restaurant:slug}/rewards', Customer\Rewards::class)->where('restaurant', $slug)->missing($missing)->name('customer.rewards');
     Route::livewire('/{restaurant:slug}/account', Customer\Account::class)->where('restaurant', $slug)->missing($missing)->name('customer.account');
+    Route::livewire('/{restaurant:slug}/unsubscribe/{token}', Customer\Unsubscribe::class)->where(['restaurant' => $slug, 'token' => '[0-9a-z]{1,12}\.[A-Za-z0-9_-]{22}'])->missing($missing)->middleware('throttle:30,1')->name('customer.unsubscribe');
     Route::livewire('/{restaurant:slug}/{branch}/checkout', Customer\Checkout::class)->where(['restaurant' => $slug, 'branch' => '[a-z0-9][a-z0-9-]*'])->missing($missing)->name('customer.checkout');
     Route::livewire('/{restaurant:slug}/{branch}', Customer\BranchMenu::class)->where(['restaurant' => $slug, 'branch' => '[a-z0-9][a-z0-9-]*'])->missing($missing)->name('public.branch');
 });

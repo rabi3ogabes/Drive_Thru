@@ -4,6 +4,15 @@
         window.Alpine.store('clock', { now: Date.now() });
         setInterval(() => (window.Alpine.store('clock').now = Date.now()), 1000);
 
+        // Stamp screen: the shell's chime when a new guest asks for a stamp.
+        window.Alpine.data('stampChime', (initial) => ({
+            seen: initial,
+            ring(count) {
+                if (count > this.seen && this.sound) this.chime();
+                this.seen = count;
+            },
+        }));
+
         window.Alpine.data('opsShell', (config) => ({
             time: '',
             live: 'connecting',

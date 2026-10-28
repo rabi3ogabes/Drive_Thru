@@ -20,7 +20,11 @@
 </head>
 <body>
     <div class="frame">
-        <div class="eyebrow"><span class="latin">Drive-thru</span> · <span class="arabic" dir="rtl">درايف ثرو</span></div>
+        @if (($kind ?? 'order') === 'stamps')
+            <div class="eyebrow"><span class="latin">Stamp card</span> · <span class="arabic" dir="rtl">بطاقة الأختام</span></div>
+        @else
+            <div class="eyebrow"><span class="latin">Drive-thru</span> · <span class="arabic" dir="rtl">درايف ثرو</span></div>
+        @endif
         <div class="name-ar" dir="rtl">{{ $restaurant->getTranslation('name', 'ar') }}</div>
         <div class="name-en">{{ $restaurant->getTranslation('name', 'en') }}</div>
         @if ($branch)
@@ -29,8 +33,11 @@
 
         <div class="qr"><img src="{{ $qr }}" width="82mm" height="82mm"></div>
 
-        <div class="cta-ar" dir="rtl">{{ __('links.poster.cta', [], 'ar') }}</div>
-        <div class="cta-en">{{ __('links.poster.cta', [], 'en') }}</div>
+        @php
+            $cta = ($kind ?? 'order') === 'stamps' ? 'links.poster.stamps_cta' : 'links.poster.cta';
+        @endphp
+        <div class="cta-ar" dir="rtl">{{ __($cta, [], 'ar') }}</div>
+        <div class="cta-en">{{ __($cta, [], 'en') }}</div>
         <div class="url">{{ $url }}</div>
         <div class="foot">{{ config('app.name') }}</div>
     </div>

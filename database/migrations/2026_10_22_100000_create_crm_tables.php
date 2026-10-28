@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('segment', 20);
             $table->unsignedBigInteger('product_id')->default(0); // "frequent buyer of" only
-            $table->timestamp('computed_at');
+            $table->dateTime('computed_at');
             $table->unique(['customer_id', 'segment', 'product_id']);
             $table->index(['restaurant_id', 'segment', 'product_id']);
         });

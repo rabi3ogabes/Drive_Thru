@@ -43,7 +43,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('invited_by')->nullable()->constrained('users')->nullOnDelete();
             $table->string('token_hash', 64)->unique();
-            $table->timestamp('expires_at');
+            $table->dateTime('expires_at');
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('revoked_at')->nullable();
             $table->timestamps();
@@ -67,7 +67,7 @@ return new class extends Migration
         Schema::create('announcement_dismissals', function (Blueprint $table) {
             $table->foreignId('announcement_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('dismissed_at');
+            $table->dateTime('dismissed_at');
             $table->primary(['announcement_id', 'user_id']);
         });
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Crm\Enums;
 
+use App\Domain\Crm\CrmSettings;
 use App\Support\Lang;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
@@ -24,9 +25,20 @@ enum Segment: string implements HasColor, HasLabel
         return Lang::text('crm.segments.'.$this->value);
     }
 
-    public function description(): string
+    /** What puts a guest in this segment, with the restaurant's own thresholds. */
+    public function description(?CrmSettings $settings = null): string
     {
-        return Lang::text('crm.segment_hints.'.$this->value);
+        $values = ($settings ?? CrmSettings::fromDefaults())->all();
+
+        return Lang::text('crm.segment_hints.'.$this->value, match ($this) {
+            self::New => ['days' => $values['new_days']],
+            self::Regular => ['orders' => $values['regular_orders']],
+            self::Vip => ['percent' => $values['vip_top_percent']],
+            self::HighSpender => ['factor' => $values['high_spender_factor']],
+            self::AtRisk => ['days' => $values['at_risk_days']],
+            self::Inactive => ['days' => $values['inactive_days']],
+            self::FrequentBuyer => ['orders' => $values['frequent_orders']],
+        });
     }
 
     public function getColor(): string

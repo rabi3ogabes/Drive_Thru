@@ -27,6 +27,11 @@ Schedule::command('payments:expire')->everyFiveMinutes()->withoutOverlapping()->
 // Loyalty: expire old points and wallet rewards, move guests between tiers (quiet hours, Doha time).
 Schedule::command('loyalty:maintain')->dailyAt('03:30')->timezone('Asia/Qatar')->withoutOverlapping()->onOneServer();
 
+Schedule::command('crm:segments')->dailyAt('04:00')->timezone('Asia/Qatar')->withoutOverlapping()->onOneServer();
+
+// Campaigns: start due ones and send the next slice (30 a minute per restaurant, never in quiet hours).
+Schedule::command('campaigns:send')->everyMinute()->withoutOverlapping()->onOneServer();
+
 Schedule::command('pager:expire')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
 
 Schedule::command('model:prune')->daily();

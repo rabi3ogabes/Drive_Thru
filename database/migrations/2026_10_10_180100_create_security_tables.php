@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('login_security_states', function (Blueprint $table) {
             $table->string('principal', 80)->primary();
             $table->unsignedInteger('failed_count')->default(0);
-            $table->timestamp('window_started_at');
-            $table->timestamp('last_failed_at');
+            $table->dateTime('window_started_at');
+            $table->dateTime('last_failed_at');
             $table->timestamp('locked_until')->nullable()->index();
         });
 

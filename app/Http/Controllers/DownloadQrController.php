@@ -36,8 +36,11 @@ final class DownloadQrController
                 ->firstOrFail();
         }
 
-        $url = $links->forQr($restaurant, $branch);
-        $name = Str::slug($restaurant->slug.($branch !== null ? '-'.$branch->code : '').'-qr');
+        $stamps = $request->query('kind') === 'stamps';
+        abort_if($stamps && $branch === null, 404);
+
+        $url = $stamps && $branch !== null ? $links->stampCounter($restaurant, $branch) : $links->forQr($restaurant, $branch);
+        $name = Str::slug($restaurant->slug.($branch !== null ? '-'.$branch->code : '').($stamps ? '-stamps' : '').'-qr');
 
         $this->markDownloaded($restaurant);
 
@@ -50,7 +53,7 @@ final class DownloadQrController
                 'Content-Type' => 'image/png',
                 'Content-Disposition' => "attachment; filename=\"{$name}.png\"",
             ]),
-            default => response($qr->poster($restaurant, $branch, $url), 200, [
+            default => response($qr->poster($restaurant, $branch, $url, $stamps ? 'stamps' : 'order'), 200, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => "attachment; filename=\"{$name}-poster.pdf\"",
             ]),

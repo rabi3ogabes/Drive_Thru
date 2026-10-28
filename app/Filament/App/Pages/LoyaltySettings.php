@@ -8,7 +8,7 @@ use App\Domain\Access\Enums\RestaurantPermission;
 use App\Domain\Billing\Enums\PlanFeature;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Customers\Models\Customer;
-use App\Domain\Loyalty\Enums\LedgerType;
+use App\Domain\Loyalty\Actions\AdjustPoints;
 use App\Domain\Loyalty\Exceptions\NotEnoughPoints;
 use App\Domain\Loyalty\Models\EarnRule;
 use App\Domain\Loyalty\Models\LoyaltyProgram;
@@ -248,7 +248,6 @@ class LoyaltySettings extends Page
                     TextInput::make('reason')->label(__('loyalty.admin.adjust.reason'))->required()->minLength(3)->maxLength(150),
                 ])
                 ->action(function (array $data, Action $action): void {
-                    $restaurant = Workspace::restaurant();
                     $phone = Phone::normalize((string) $data['phone']);
                     $customer = $phone === null ? null : Customer::query()->where('phone', $phone)->first();
 
@@ -263,18 +262,13 @@ class LoyaltySettings extends Page
                     $reason = trim((string) $data['reason']);
 
                     try {
-                        $points > 0
-                            ? app(Points::class)->credit($customer, LedgerType::Adjust, $points, null, $reason, Workspace::user())
-                            : app(Points::class)->debit($customer, LedgerType::Adjust, -$points, null, $reason, Workspace::user());
+                        app(AdjustPoints::class)->handle($customer, $points, $reason, Workspace::user());
                     } catch (NotEnoughPoints) {
                         Notification::make()->danger()->title(__('loyalty.admin.adjust.not_enough', ['balance' => number_format($customer->points_balance)]))->send();
                         $action->halt();
 
                         return;
                     }
-
-                    activity()->performedOn($customer)->causedBy(Workspace::user())->event('loyalty.points_adjusted')
-                        ->withProperties(['points' => $points, 'reason' => $reason, 'restaurant_id' => $restaurant->id])->log('loyalty.points_adjusted');
 
                     Notification::make()->success()->title(__('loyalty.admin.adjust.done', ['balance' => number_format($customer->fresh()->points_balance ?? 0)]))->send();
                 }),

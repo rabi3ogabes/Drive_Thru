@@ -169,7 +169,7 @@ final class ProductForm
             Select::make('modifierGroups')
                 ->label(__('menu.products.fields.option_groups'))
                 ->helperText(__('menu.products.fields.option_groups_hint'))
-                ->relationship('modifierGroups', 'id', modifyQueryUsing: fn (Builder $query) => $query->orderBy('sort'))
+                ->relationship('modifierGroups', 'id', modifyQueryUsing: fn (Builder $query) => $query->orderBy('modifier_groups.sort'))
                 ->getOptionLabelFromRecordUsing(fn (ModifierGroup $g): string => $g->name.' · '.ModifierGroupResource::rule($g))
                 ->multiple()
                 ->preload()

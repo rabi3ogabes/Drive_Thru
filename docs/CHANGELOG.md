@@ -2,6 +2,43 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-10-28: Browser installer and MySQL/MariaDB readiness
+
+### Built
+- **`/install`:** a one-time installer for hosts without SSH.
+  - It checks the server (PHP, extensions, writable folders).
+  - It asks for a setup key that only someone with access to the server's files can read (`storage/app/install-key.txt`).
+  - It tests the database, then saves the details, a new app key and production settings into `.env`. Every value is read back to prove it saved exactly.
+  - It creates the tables and the super admin, then locks itself for good (`storage/app/installed.lock`) and deletes the key.
+  - The page is in Arabic and English and works before the assets are built.
+
+### Fixed (found by running everything on MariaDB, not just SQLite)
+- 10 required date columns are now `dateTime`: on MariaDB/MySQL with older timestamp settings they failed to create, or silently reset to "now" on every update.
+- Opening hours and menu schedules read MySQL `TIME` values (`07:00:00`) as `07:00`, so open/closed checks compare correctly.
+- The product form's option-group ordering named its table, so the `sort` column is no longer ambiguous.
+
+### Verified
+- 659 tests pass on SQLite. The suite also ran on MariaDB 10.4, and every failure it found is fixed above.
+- Migrations, demo seeding, the scheduled jobs and the installer itself ran end to end on MariaDB.
+
+## 2026-10-27: Guests, campaigns and the counter stamp QR (Phase 7B, in progress)
+
+### Built
+- **Guests (CRM):** a guest list with segments, tier, visits and spend; a guest profile (orders, favourites, stamps, wallet, consent); a CSV export; "Guest rules" settings for the segment thresholds, quiet hours and the daily message limit.
+- **Campaigns:**
+  - Owners write an offer in Arabic and English and see a live preview of what each guest receives (with the SMS length).
+  - They choose guest groups and see how many guests it reaches, add an optional gift, and send now or at a set time.
+  - A test goes to the owner's own phone first.
+  - Sending is gentle: only guests who agreed, never in quiet hours, at most one offer a day and three a week per guest, 30 a minute per restaurant, and within the daily limit.
+  - Every message carries a stop link that works without signing in; a STOP / إيقاف reply on WhatsApp works too.
+  - Results: sent, delivered, failed, skipped (and why), and the orders and revenue it brought back (its link, or within 7 days).
+- **Counter stamp QR (Rewards):** a printable QR per branch. The guest scans, taps "Add my stamp", and the waiter approves it on the Stamps screen; the card fills live.
+- **Stamp cards now match paper cards:** one circle per purchase, then a separate "Free" circle ("buy 9, the 10th is free").
+
+### Verified
+- 652 tests pass, Larastan level 8 clean, Pint clean.
+- Browser: the campaign composer and campaign page in Arabic, the stop page and the stamp card on a phone.
+
 ## 2026-10-26: Services model, Order-Ready Call, stamp cards & the new website
 
 ### Built

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamp('last_called_at')->nullable();
             $table->timestamp('collected_at')->nullable();
             $table->timestamp('opened_at')->nullable(); // the guest opened the pager page
-            $table->timestamp('expires_at');
+            $table->dateTime('expires_at');
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
             $table->index(['branch_id', 'status']);
