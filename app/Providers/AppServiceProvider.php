@@ -12,8 +12,11 @@ use App\Domain\Billing\Models\Invoice;
 use App\Domain\Billing\Models\Plan;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Branches\Models\Device;
+use App\Domain\Campaigns\Listeners\AttributeCampaignOrder;
+use App\Domain\Campaigns\Models\Campaign;
 use App\Domain\Crm\Listeners\RefreshGuestStats;
 use App\Domain\Customers\CustomerAuth;
+use App\Domain\Customers\Models\Customer;
 use App\Domain\Growth\Models\Lead;
 use App\Domain\Integrations\Models\ApiClient;
 use App\Domain\Integrations\Models\WebhookEndpoint;
@@ -61,6 +64,8 @@ use App\Models\User;
 use App\Policies\ActivityPolicy;
 use App\Policies\AnnouncementPolicy;
 use App\Policies\BranchPolicy;
+use App\Policies\CampaignPolicy;
+use App\Policies\CustomerPolicy;
 use App\Policies\DevicePolicy;
 use App\Policies\EmployeePolicy;
 use App\Policies\IntegrationPolicy;
@@ -157,6 +162,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(OrderStatusChanged::class, ReturnBenefitsOnCancel::class);
         Event::listen(PaymentRefunded::class, ReversePointsOnRefund::class);
         Event::listen(OrderStatusChanged::class, RefreshGuestStats::class);
+        Event::listen(OrderStatusChanged::class, AttributeCampaignOrder::class);
         Event::listen([OrderStatusChanged::class, PaymentRefunded::class], StampOrders::class);
     }
 
@@ -185,6 +191,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Lead::class, LeadPolicy::class);
         Gate::policy(WebhookEndpoint::class, IntegrationPolicy::class);
         Gate::policy(ApiClient::class, IntegrationPolicy::class);
+        Gate::policy(Customer::class, CustomerPolicy::class);
+        Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(Reward::class, RewardPolicy::class);
         Gate::policy(StampProgram::class, StampProgramPolicy::class);
         Gate::policy(Promotion::class, PromotionPolicy::class);

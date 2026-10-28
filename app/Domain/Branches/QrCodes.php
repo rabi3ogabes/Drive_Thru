@@ -30,7 +30,10 @@ final class QrCodes
         return (new QRCode($this->options(QROutputInterface::GDIMAGE_PNG, scale: 20)))->render($url);
     }
 
-    public function poster(Restaurant $restaurant, ?Branch $branch, string $url): string
+    /**
+     * @param  'order'|'stamps'  $kind  what the guest does after scanning
+     */
+    public function poster(Restaurant $restaurant, ?Branch $branch, string $url, string $kind = 'order'): string
     {
         $tempDir = storage_path('framework/cache/mpdf');
 
@@ -59,6 +62,7 @@ final class QrCodes
             'branch' => $branch,
             'url' => Links::display($url),
             'qr' => 'data:image/png;base64,'.base64_encode($this->png($url)),
+            'kind' => $kind,
         ])->render());
 
         return $pdf->Output('qr.pdf', Destination::STRING_RETURN);

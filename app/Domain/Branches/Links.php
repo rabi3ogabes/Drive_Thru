@@ -29,6 +29,12 @@ final class Links
         return $branch === null ? $this->restaurant($restaurant) : $this->branch($restaurant, $branch);
     }
 
+    /** The counter QR for stamp cards: the guest's card, ready to ask for a stamp at this branch. */
+    public function stampCounter(Restaurant $restaurant, Branch $branch): string
+    {
+        return route('customer.rewards', ['restaurant' => $restaurant->slug, 'at' => $branch->code]);
+    }
+
     /** "drivethru.qa/masar" without the scheme, for print and display. */
     public static function display(string $url): string
     {

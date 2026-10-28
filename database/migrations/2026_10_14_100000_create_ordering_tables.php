@@ -48,7 +48,7 @@ return new class extends Migration
             $table->string('channel', 12);
             $table->unsignedTinyInteger('attempts')->default(0);
             $table->string('ip', 45)->nullable();
-            $table->timestamp('expires_at');
+            $table->dateTime('expires_at');
             $table->timestamp('consumed_at')->nullable();
             $table->timestamps();
 

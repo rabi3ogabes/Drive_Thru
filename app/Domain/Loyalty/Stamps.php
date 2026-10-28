@@ -111,11 +111,12 @@ final class Stamps
     }
 
     /**
-     * Stamps added by the counter (a guest who paid at the till).
+     * Stamps added by the counter (a guest who paid at the till). The guest
+     * gets a WhatsApp/SMS unless they're watching their card on their phone.
      *
      * @return array{program: StampProgram, added: int, completed: int}
      */
-    public function addAtCounter(Customer $customer, StampProgram $program, int $quantity, User $actor, ?string $note = null): array
+    public function addAtCounter(Customer $customer, StampProgram $program, int $quantity, User $actor, ?string $note = null, bool $notify = true): array
     {
         abort_unless($program->restaurant_id === $customer->restaurant_id && $program->isLive(), 404);
 
@@ -124,7 +125,9 @@ final class Stamps
         if ($result['added'] > 0) {
             activity()->performedOn($customer)->causedBy($actor)->event('loyalty.stamps_added')
                 ->withProperties(['program_id' => $program->id, 'stamps' => $result['added'], 'note' => $note])->log('loyalty.stamps_added');
-            $this->tell($customer, $program, $result);
+            if ($notify) {
+                $this->tell($customer, $program, $result);
+            }
         }
 
         return $result;

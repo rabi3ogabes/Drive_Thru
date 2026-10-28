@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\InstallController;
 use App\Http\Middleware\NormalizeDigits;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -15,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
+        // The browser installer runs before the app has a key or tables: no web middleware.
+        then: function (): void {
+            Route::get('/install', [InstallController::class, 'show'])->name('install');
+            Route::post('/install', [InstallController::class, 'run'])->name('install.run');
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(SetLocale::class);

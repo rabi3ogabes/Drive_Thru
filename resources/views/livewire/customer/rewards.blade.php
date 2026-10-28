@@ -94,6 +94,43 @@
         @if ($stampPrograms->isNotEmpty())
             <section class="mt-8" aria-labelledby="stamps-title">
                 <h2 id="stamps-title" class="px-1 font-semibold text-ink-950">{{ __('guest.rewards.stamp_cards') }}</h2>
+
+                {{-- At the counter: ask the waiter for today's stamp --}}
+                @if ($counterBranch && $customer)
+                    <div class="mt-3 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_10%,white)] p-1.5 ring-1 ring-[var(--brand)]/15"
+                         x-data x-on:stamp-added.window="navigator.vibrate?.([60, 40, 120])">
+                        @if ($stampRequest?->isWaiting())
+                            <div wire:poll.3s="checkStamp" class="flex items-start gap-4 rounded-[calc(1.75rem-0.375rem)] bg-white p-4" role="status" aria-live="polite">
+                                <span class="relative grid size-12 shrink-0 place-items-center" aria-hidden="true">
+                                    <span class="absolute inset-0 rounded-full bg-[var(--brand)]/20 motion-safe:animate-ping"></span>
+                                    <span class="relative grid size-12 place-items-center rounded-full bg-[var(--brand)] text-white">
+                                        <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 8v4l2.5 2.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </span>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-semibold text-ink-950">{{ __('guest.rewards.counter.waiting') }}</p>
+                                    <p class="text-sm text-ink-500">{{ __('guest.rewards.counter.waiting_body', ['branch' => $counterBranch->name]) }}</p>
+                                    <button type="button" wire:click="cancelStamp" class="-ms-1 mt-1 min-h-11 rounded-full px-1 text-sm font-medium text-ink-500 underline-offset-4 hover:text-ink-900 hover:underline">{{ __('guest.rewards.counter.cancel') }}</button>
+                                </div>
+                            </div>
+                        @else
+                            <div class="rounded-[calc(1.75rem-0.375rem)] bg-white p-4">
+                                <button type="button" wire:click="askStamp" wire:loading.attr="disabled" wire:target="askStamp"
+                                        class="group flex min-h-14 w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] ps-6 pe-2 text-base font-semibold text-white transition active:scale-[0.98] disabled:opacity-70">
+                                    <span>{{ __('guest.rewards.counter.ask') }}</span>
+                                    <span class="grid size-10 place-items-center rounded-full bg-white/15 transition group-hover:scale-105" aria-hidden="true">
+                                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+                                    </span>
+                                </button>
+                                <p class="mt-2.5 px-2 text-center text-xs text-ink-500">{{ __('guest.rewards.counter.ask_hint', ['branch' => $counterBranch->name]) }}</p>
+                            </div>
+                        @endif
+                    </div>
+                @elseif ($counterBranch)
+                    <p class="mt-2 rounded-2xl bg-white px-4 py-3 text-sm text-ink-600 ring-1 ring-ink-950/5">{{ __('guest.rewards.counter.sign_in') }}</p>
+                @elseif ($customer)
+                    <p class="mt-1 px-1 text-xs text-ink-500">{{ __('guest.rewards.counter.scan_hint') }}</p>
+                @endif
                 <ul class="mt-2 grid gap-3 sm:grid-cols-2">
                     @foreach ($stampPrograms as $stampProgram)
                         @php

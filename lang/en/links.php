@@ -18,7 +18,10 @@ return [
         'heading' => 'No links yet',
         'description' => 'Add a branch to get its link and QR code.',
     ],
+    'stamps_name' => 'Stamp card QR · :branch',
+    'stamps_hint' => 'Put it by the till. Guests scan it, sign in once and tap “Add my stamp”; your team approves it on the Stamps screen.',
     'poster' => [
         'cta' => 'Scan to visit us',
+        'stamps_cta' => 'Scan to collect your stamp',
     ],
 ];

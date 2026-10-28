@@ -143,7 +143,7 @@ it('refuses a change someone else made first (compare-and-set)', function () {
     // Another screen cancels the order right after we read it.
     $raced = false;
     DB::listen(function ($query) use ($order, &$raced) {
-        if (! $raced && str_starts_with($query->sql, 'select') && str_contains($query->sql, '"orders"')) {
+        if (! $raced && str_starts_with($query->sql, 'select') && preg_match('/from ["`]orders["`]/', $query->sql) === 1) {
             $raced = true;
             DB::table('orders')->where('id', $order->id)->update(['status' => 'cancelled']);
         }

@@ -41,7 +41,9 @@ final class Messenger
     /** The delivery that went out, or null if no channel could take the message. */
     public function send(Message $message): ?MessageDelivery
     {
-        foreach ($this->order() as $name) {
+        $order = $message->channels === null ? $this->order() : array_values(array_intersect($this->order(), $message->channels));
+
+        foreach ($order as $name) {
             $channel = $this->resolve($name);
 
             if ($channel === null) {

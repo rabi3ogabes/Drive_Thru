@@ -8,6 +8,7 @@ use App\Domain\Access\Enums\RestaurantPermission;
 use App\Domain\Branches\Links;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Branches\QrCodes;
+use App\Domain\Loyalty\Stamps;
 use App\Filament\App\Workspace;
 use App\Filament\App\WorkspaceNavigationGroup;
 use BackedEnum;
@@ -55,7 +56,7 @@ class LinksCenter extends Page
     }
 
     /**
-     * @return list<array{key: string, name: string, hint: string, url: string, display: string, qr: string, branch: ?string}>
+     * @return list<array{key: string, name: string, hint: string, url: string, display: string, qr: string, branch: ?string, kind: string}>
      */
     public function links(): array
     {
@@ -64,6 +65,7 @@ class LinksCenter extends Page
         $qr = app(QrCodes::class);
 
         $items = [];
+        $stamps = app(Stamps::class)->enabledFor($restaurant) && app(Stamps::class)->programs($restaurant->id)->isNotEmpty();
 
         if (Workspace::branchIds() === null) {
             $url = $links->restaurant($restaurant);
@@ -75,11 +77,12 @@ class LinksCenter extends Page
                 'display' => Links::display($url),
                 'qr' => $qr->svg($url),
                 'branch' => null,
+                'kind' => 'order',
             ];
         }
 
         Workspace::scopeToBranches(Branch::query())->orderBy('sort')->orderBy('id')->get()
-            ->each(function (Branch $branch) use (&$items, $links, $qr, $restaurant): void {
+            ->each(function (Branch $branch) use (&$items, $links, $qr, $restaurant, $stamps): void {
                 $url = $links->branch($restaurant, $branch);
                 $items[] = [
                     'key' => 'branch-'.$branch->id,
@@ -89,7 +92,22 @@ class LinksCenter extends Page
                     'display' => Links::display($url),
                     'qr' => $qr->svg($url),
                     'branch' => $branch->code,
+                    'kind' => 'order',
                 ];
+
+                if ($stamps) {
+                    $counter = $links->stampCounter($restaurant, $branch);
+                    $items[] = [
+                        'key' => 'stamps-'.$branch->id,
+                        'name' => __('links.stamps_name', ['branch' => $branch->name]),
+                        'hint' => __('links.stamps_hint'),
+                        'url' => $counter,
+                        'display' => Links::display($counter),
+                        'qr' => $qr->svg($counter),
+                        'branch' => $branch->code,
+                        'kind' => 'stamps',
+                    ];
+                }
             });
 
         return $items;
