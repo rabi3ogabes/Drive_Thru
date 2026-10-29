@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Domain\Billing\PlanCatalog;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +30,13 @@ final class InstallPlatform extends Command
     {
         $name = $this->option('name') ?: text('Full name', required: true);
         $email = $this->option('email') ?: text('Email', required: true, validate: fn (string $v): ?string => filter_var($v, FILTER_VALIDATE_EMAIL) ? null : 'Enter a valid email.');
-        $password = $this->option('password') ?: password('Password', required: true, hint: 'At least 8 characters.');
+        $password = $this->option('password') ?: $this->askPasswordTwice();
+
+        if ($password === null) {
+            $this->components->error('The two passwords do not match. Nothing was changed.');
+
+            return self::FAILURE;
+        }
 
         $validator = Validator::make(
             ['name' => $name, 'email' => $email, 'password' => $password],
@@ -55,6 +62,9 @@ final class InstallPlatform extends Command
             'email_verified_at' => $user->email_verified_at ?? now(),
         ])->save();
 
+        // A new platform starts with the standard plan tiers (kept as they are if already there).
+        app(PlanCatalog::class)->install();
+
         activity()->performedOn($user)->event('platform.installed')->log($existed ? 'Promoted to super admin' : 'Super admin created');
 
         $this->components->info($existed
@@ -62,5 +72,13 @@ final class InstallPlatform extends Command
             : "Super admin {$user->email} created. Sign in at ".url('/admin'));
 
         return self::SUCCESS;
+    }
+
+    /** Typed blind, so typed twice: a typo here locks the owner out. Null when they differ. */
+    private function askPasswordTwice(): ?string
+    {
+        $password = password('Password', required: true, hint: 'At least 10 characters, upper and lower case letters and a number.');
+
+        return password('Password again', required: true) === $password ? $password : null;
     }
 }

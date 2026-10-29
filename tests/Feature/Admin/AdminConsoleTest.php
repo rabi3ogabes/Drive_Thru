@@ -19,11 +19,13 @@ use App\Domain\Tenancy\Models\Restaurant;
 use App\Filament\Admin\Pages\PlatformSettingsPage;
 use App\Filament\Admin\Resources\Invoices\Pages\ListInvoices;
 use App\Filament\Admin\Resources\Leads\Pages\ViewLead;
+use App\Filament\Admin\Resources\Plans\Pages\CreatePlan;
 use App\Filament\Admin\Resources\Restaurants\Pages\CreateRestaurant;
 use App\Filament\Admin\Resources\Restaurants\Pages\ViewRestaurant;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Once;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
@@ -258,4 +260,31 @@ it('shows live order activity on the dashboard to platform staff who look after 
         ->and($access->platformDashboard(staffWith([PlatformPermission::ViewClients])))->toBeTrue()
         ->and($access->platformDashboard(staffWith([PlatformPermission::ManageLeads])))->toBeFalse()
         ->and($access->platformDashboard(ownerOf(restaurant())))->toBeFalse();
+});
+
+it('offers the standard plans in the wizard on a brand-new platform, and explains when every plan is switched off', function () {
+    Plan::query()->delete();
+    $this->actingAs($this->admin);
+
+    Livewire::test(CreateRestaurant::class)
+        ->assertDontSee(__('clients.wizard.no_plans'));
+
+    expect(Plan::query()->where('key', 'starter')->exists())->toBeTrue();
+
+    Plan::query()->update(['is_active' => false]);
+    Once::flush(); // a new page load
+    Livewire::test(CreateRestaurant::class)->assertSee(__('clients.wizard.no_plans'));
+});
+
+it('makes a plan key from the English name when it is left empty', function () {
+    $this->actingAs($this->admin);
+
+    foreach (['pro-plus', 'pro-plus-2'] as $expected) {
+        Livewire::test(CreatePlan::class)
+            ->fillForm(['name' => ['en' => 'Pro Plus', 'ar' => 'برو بلس'], 'key' => null])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        expect(Plan::query()->where('key', $expected)->exists())->toBeTrue();
+    }
 });

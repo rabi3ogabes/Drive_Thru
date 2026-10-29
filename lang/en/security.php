@@ -5,6 +5,10 @@ return [
         'heading' => 'Welcome back',
         'subheading' => 'Sign in to run your drive-thru.',
         'locked' => 'For your security, sign-in is paused after too many attempts. Please try again in :minutes min or reset your password.',
+        'other_panel' => [
+            'admin' => 'This sign-in is for restaurant teams. Your account runs the platform: sign in at :url',
+            'app' => 'This sign-in is for the platform team. Your restaurant signs in at :url',
+        ],
     ],
     'alerts' => [
         'account_locked' => [
