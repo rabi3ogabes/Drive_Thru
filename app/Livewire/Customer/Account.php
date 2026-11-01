@@ -10,6 +10,7 @@ use App\Domain\Customers\CustomerAuth;
 use App\Domain\Customers\Enums\VehicleType;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Loyalty\Models\LoyaltyProgram;
+use App\Domain\Referrals\ReferralSettings;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Customer\Concerns\GuestPage;
 use App\Livewire\Customer\Concerns\SignsInWithPhone;
@@ -175,6 +176,7 @@ class Account extends Component
             'current' => $current,
             'favorites' => $customer?->favorites()->with('category')->limit(30)->get() ?? collect(),
             'locales' => Locales::codes(),
+            'inviteOn' => $customer !== null && ReferralSettings::for($this->restaurant)->isLive(),
             'rewardsOn' => $this->restaurant->hasFeature(PlanFeature::Loyalty)
                 && (LoyaltyProgram::withoutTenancy()->where('restaurant_id', $this->restaurant->id)->first()?->isActive() ?? false),
         ], __('guest.nav.account'));

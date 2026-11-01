@@ -49,7 +49,7 @@ final class GuestProfile
             ->where('customer_id', $customer->id)
             ->with('branch')
             ->withSum('items as quantity', 'quantity')
-            ->latest('id')
+            ->orderByRaw('coalesce(placed_at, created_at) desc')->latest('id')
             ->limit(self::RECENT_ORDERS)
             ->get();
 

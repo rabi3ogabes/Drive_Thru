@@ -28,6 +28,7 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property int $restaurant_id
  * @property string $phone E.164, e.g. +97455551234
+ * @property ?string $referral_code made by Referrals::codeFor()
  * @property ?string $name
  * @property ?CarbonImmutable $birthday
  * @property ?string $locale
@@ -59,6 +60,7 @@ class Customer extends Model
     /** @var array<string, mixed> */
     protected $attributes = [
         'name' => null,
+        'referral_code' => null,
         'birthday' => null,
         'locale' => null,
         'notification_prefs' => null,

@@ -130,3 +130,27 @@ it('refuses deactivated accounts with the same generic error', function () {
 
     expect(auth()->check())->toBeFalse();
 });
+
+it('tells a platform admin on the restaurant sign-in where to go, only with the right password', function () {
+    $admin = User::factory()->superAdmin()->create(['password' => 'correct-horse']);
+    Filament::setCurrentPanel(Filament::getPanel('app'));
+
+    attemptLogin($admin->email, 'correct-horse')
+        ->assertHasErrors(['data.email'])
+        ->assertSee(Filament::getPanel('admin')->getLoginUrl());
+    expect(auth()->check())->toBeFalse();
+
+    attemptLogin($admin->email, 'wrong-password')
+        ->assertHasErrors(['data.email'])
+        ->assertDontSee(Filament::getPanel('admin')->getLoginUrl());
+});
+
+it('tells a restaurant owner on the platform sign-in where to go', function () {
+    $owner = ownerOf(restaurant());
+    $owner->forceFill(['password' => 'correct-horse'])->save();
+
+    attemptLogin($owner->email, 'correct-horse')
+        ->assertHasErrors(['data.email'])
+        ->assertSee(Filament::getPanel('app')->getLoginUrl());
+    expect(auth()->check())->toBeFalse();
+});

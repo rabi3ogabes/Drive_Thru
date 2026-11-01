@@ -7,6 +7,8 @@ namespace App\Domain\Loyalty\Models;
 use App\Domain\Loyalty\Enums\RewardType;
 use App\Domain\Menu\Models\Product;
 use App\Domain\Tenancy\Concerns\BelongsToRestaurant;
+use App\Support\Lang;
+use App\Support\Money;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -82,6 +84,17 @@ class Reward extends Model
     public function wallet(): HasMany
     {
         return $this->hasMany(WalletReward::class);
+    }
+
+    /** What it gives, in the guest's words: "A free Karak", "10% off your order"… */
+    public function gives(string $currency): string
+    {
+        return match ($this->type) {
+            RewardType::FreeItem => Lang::text('guest.rewards.gives.free_item', ['item' => $this->product->name ?? '']),
+            RewardType::PercentOff => Lang::text('guest.rewards.gives.percent_off', ['percent' => rtrim(rtrim(number_format(($this->value ?? 0) / 100, 2), '0'), '.')]),
+            RewardType::FixedOff => Lang::text('guest.rewards.gives.fixed_off', ['amount' => Money::format((int) $this->value, $currency)]),
+            RewardType::BonusPoints => Lang::text('guest.rewards.gives.bonus_points', ['points' => number_format((int) $this->value)]),
+        };
     }
 
     public function isClaimable(): bool

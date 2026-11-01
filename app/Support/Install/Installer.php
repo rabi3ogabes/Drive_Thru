@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support\Install;
 
+use App\Domain\Billing\PlanCatalog;
 use App\Models\User;
 use Dotenv\Dotenv;
 use Illuminate\Support\Facades\Artisan;
@@ -206,6 +207,9 @@ class Installer
             'is_active' => true,
             'email_verified_at' => $user->email_verified_at ?? now(),
         ])->save();
+
+        // A new platform starts with the standard plan tiers (kept as they are if already there).
+        app(PlanCatalog::class)->install();
 
         activity()->performedOn($user)->event('platform.installed')->log('Super admin created from /install');
 

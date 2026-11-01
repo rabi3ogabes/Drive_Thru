@@ -90,6 +90,8 @@ return [
     ],
 
     'wizard' => [
+        'no_plans' => 'Every plan is switched off, so there is nothing to choose here.',
+        'no_plans_link' => 'Open Plans to switch one on or add one',
         'title' => 'New client',
         'steps' => [
             'brand' => 'Restaurant',

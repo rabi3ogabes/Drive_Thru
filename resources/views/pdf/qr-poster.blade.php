@@ -1,21 +1,24 @@
+@php
+    $z = $zoom ?? 1;
+@endphp
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <style>
         body { font-family: dejavusans; color: #0b1220; }
-        .frame { border: 0.6mm solid #0f3b3a; border-radius: 6mm; padding: 9mm 8mm 7mm; text-align: center; }
-        .eyebrow { font-size: 7.5pt; color: #8a6a3f; }
-        .eyebrow .latin { letter-spacing: 1.5pt; text-transform: uppercase; }
-        .eyebrow .arabic { font-family: xbriyaz; font-size: 9pt; letter-spacing: 0; }
-        .name-ar { font-family: xbriyaz; font-size: 24pt; color: #0f3b3a; margin-top: 3mm; }
-        .name-en { font-size: 17pt; color: #0f3b3a; margin-top: 1mm; }
-        .branch { font-size: 10.5pt; color: #4b5563; margin-top: 2mm; }
-        .qr { margin: 6mm auto 4mm; padding: 3mm; border-radius: 4mm; background: #f7f5f0; width: 88mm; }
-        .cta-ar { font-family: xbriyaz; font-size: 15pt; color: #0b1220; }
-        .cta-en { font-size: 11pt; color: #0b1220; margin-top: 0.5mm; }
-        .url { font-size: 9.5pt; color: #0f3b3a; margin-top: 3mm; }
-        .foot { font-size: 6.5pt; color: #9ca3af; margin-top: 5mm; }
+        .frame { border: {{ round(0.6 * $z, 2) }}mm solid #0f3b3a; border-radius: {{ round(6 * $z, 2) }}mm; padding: {{ round(9 * $z, 2) }}mm {{ round(8 * $z, 2) }}mm {{ round(7 * $z, 2) }}mm; text-align: center; }
+        .eyebrow { font-size: {{ round(7.5 * $z, 2) }}pt; color: #8a6a3f; }
+        .eyebrow .latin { letter-spacing: {{ round(1.5 * $z, 2) }}pt; text-transform: uppercase; }
+        .eyebrow .arabic { font-family: xbriyaz; font-size: {{ round(9 * $z, 2) }}pt; letter-spacing: 0; }
+        .name-ar { font-family: xbriyaz; font-size: {{ round(24 * $z, 2) }}pt; color: #0f3b3a; margin-top: {{ round(3 * $z, 2) }}mm; }
+        .name-en { font-size: {{ round(17 * $z, 2) }}pt; color: #0f3b3a; margin-top: {{ round(1 * $z, 2) }}mm; }
+        .branch { font-size: {{ round(10.5 * $z, 2) }}pt; color: #4b5563; margin-top: {{ round(2 * $z, 2) }}mm; }
+        .qr { margin: {{ round(6 * $z, 2) }}mm auto {{ round(4 * $z, 2) }}mm; padding: {{ round(3 * $z, 2) }}mm; border-radius: {{ round(4 * $z, 2) }}mm; background: #f7f5f0; width: {{ round(88 * $z, 2) }}mm; }
+        .cta-ar { font-family: xbriyaz; font-size: {{ round(15 * $z, 2) }}pt; color: #0b1220; }
+        .cta-en { font-size: {{ round(11 * $z, 2) }}pt; color: #0b1220; margin-top: {{ round(0.5 * $z, 2) }}mm; }
+        .url { font-size: {{ round(9.5 * $z, 2) }}pt; color: #0f3b3a; margin-top: {{ round(3 * $z, 2) }}mm; }
+        .foot { font-size: {{ round(6.5 * $z, 2) }}pt; color: #9ca3af; margin-top: {{ round(5 * $z, 2) }}mm; }
     </style>
 </head>
 <body>
@@ -31,7 +34,7 @@
             <div class="branch"><span dir="rtl">{{ $branch->getTranslation('name', 'ar') }}</span> · {{ $branch->getTranslation('name', 'en') }}</div>
         @endif
 
-        <div class="qr"><img src="{{ $qr }}" width="82mm" height="82mm"></div>
+        <div class="qr"><img src="{{ $qr }}" width="{{ round(82 * $z, 2) }}mm" height="{{ round(82 * $z, 2) }}mm"></div>
 
         @php
             $cta = ($kind ?? 'order') === 'stamps' ? 'links.poster.stamps_cta' : 'links.poster.cta';

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Customer\Concerns;
 
 use App\Domain\Branches\Models\Branch;
+use App\Domain\Campaigns\QrTracking;
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Ordering\Cart;
@@ -53,6 +54,11 @@ trait GuestPage
 
         if ($source !== []) {
             session()->put("source.{$this->restaurant->id}", $source);
+        }
+
+        // Arrived from a tracked QR code: that scan counts as a visit.
+        if (($source['source'] ?? null) === 'qr') {
+            app(QrTracking::class)->visited($this->restaurant->id);
         }
     }
 

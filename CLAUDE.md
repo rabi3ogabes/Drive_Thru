@@ -78,4 +78,7 @@ Always verify a vendor API in `vendor/` before using it (Filament 5 / Pest 5 are
 - Editing files with Python on Windows: open with `newline=''` (read and write), or text mode silently turns LF into CRLF. Pint fixes PHP files but not Blade.
 - A Livewire public property wins over a view variable of the same name: never pass `'showing' => $model` to a view when the component has `public ?int $showing`.
 - Product photos need `php artisan storage:link` locally (`public/storage` is git-ignored); seeder photos live in `database/seeders/images/` and go through `ProcessProductImage`.
+- `Cookie::queue('name', $value, $minutes, httpOnly: true)` mis-maps the named argument (the cookie got `path=1` and never came back). Queue a built cookie: `Cookie::queue(Cookie::make(...))`.
+- mPDF never fails on overflow: content that doesn't fit spills onto a second page silently. Poster tests assert one page with `preg_match_all('/\/Type\s*\/Page[^s]/', $pdf)`; look at a PDF by writing it to the scratchpad and reading it.
+- Demo history written straight to the database (seeders) skips listeners: credit points yourself, dated with `Carbon::setTestNow($at)` and restore the previous test time afterwards.
 - Services gate features: `Restaurant::hasService(Service)`; a `PlanFeature` with `service()` comes with that service, not the plan. Test restaurants from `restaurant()` get Drive-Thru; pass `services: [...]` or use `withService()`.
