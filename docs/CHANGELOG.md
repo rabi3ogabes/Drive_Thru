@@ -2,6 +2,73 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-01: Phase 7B final pass (task 8)
+
+### Built
+- **Growth demo data** (`DemoCrmSeeder`, run by `db:seed` for Masar, safe to run twice): 14 guests with months of picked-up orders, points and tiers, segments computed, consent for most, a sent WhatsApp campaign with delivery receipts and 3 attributed orders, a car-window QR sticker with a month of scans and 7 orders, invites switched on with one rewarded and one waiting referral.
+
+### Fixed
+- The 5 × 5 cm sticker spilled its English line and link onto a second page; it now fits one sticker (and every poster size is tested to stay on one page).
+- A guest's recent orders were listed by record number, not by order time.
+- A sent campaign said its guests "will receive it"; it now says "Sent to 9 guests".
+- The invite settings button said "Submit"; it says "Save".
+
+### Verified
+- Full suite, Pint, Larastan 0, `npm run build`, `composer warm`.
+- Browser (local Masar, owner signed in): guests list and profile, campaign composer and results, the QR funnel, referrals with settings, in Arabic and English, light and dark, at 375, 768 and 1280 px: no sideways scrolling, no console errors except the realtime socket when Reverb isn't running. Guest pages (Rewards invite card, invite page, unsubscribe page; light only by design) in both languages at all three widths. The A5 poster and the sticker checked as rendered PDFs.
+
+## 2026-11-01: Invite friends (Phase 7B, task 7)
+
+### Built
+- **An invite link for every guest** on their Rewards page: copy it, or share it with the phone's share sheet. The card says what each side gets and how many friends joined. The Account page links to it.
+- **The invite page** `/{restaurant}/invite/{code}`: who invited the friend, their welcome gift, three steps, and sign-in right there. The invite is remembered for 30 days, so signing in later (at checkout, say) still counts. Own link, existing guest and inactive invites each get their own calm message.
+- **Rewards after the first picked-up order**, through `GrantReward` (source `referral`), once. A cancelled order rewards nobody; the referral waits for the next pickup.
+- **Fraud checks**, each recorded with its reason: the friend signs up on the inviter's phone (a first-party device cookie, stored only as a hash), picks up in the inviter's car (plates compared however they are typed, Arabic digits and spaces included), was already a guest, opens their own link, or the inviter passed the monthly cap.
+- **Owner screen** (Growth → Referrals): totals, every referral with its status and reason, and the settings (on or off, the two rewards from the catalog, the monthly cap, 10 by default). Staff need "Manage campaigns".
+
+### Verified
+- 11 new tests: the happy path rewards both once, a cancelled first order, signing in later, each fraud rule, the cap, restaurant isolation and invites switched off, the guest card, the owner list and settings, access.
+- Browser (local Masar): the invite page in Arabic and English on a phone, a real sign-in through it (referral pending, device recorded), the Rewards card; own-link and invalid-link states.
+
+## 2026-11-01: Tracked QR codes and WhatsApp offer guide (Phase 7B, tasks 5–6)
+
+### Built
+- **Tracked QR codes** (Growth → Tracked QR codes): one code per placement (a car-window sticker, a flyer, a table).
+  - Each opens a branch menu (with an optional lane and promo code) or the restaurant page.
+  - The short link `/q/{code}` counts the scan, then opens the menu carrying `source=qr` and the code, so the order remembers where it came from.
+  - **Counting honestly:** one scan per device per 30 minutes (the device is a salted hash of IP and browser, never the raw values); link previews and crawlers are kept but never counted; a visit is counted only when the scan reached the menu.
+  - **The funnel:** scans → visits → orders → revenue → conversion, with a 30-day chart of scans and orders.
+  - **Downloads:** PNG, SVG, an A5 or A4 poster and a 5 × 5 cm sticker (PDF, bilingual).
+  - A code can be switched off, or given dates; outside them it opens the restaurant page without counting.
+  - The Links & QR page points to tracked codes.
+- **WhatsApp offer template guide** in `docs/WHATSAPP_TEMPLATES.md`:
+  - `dtp_offer` (Marketing) wording in both languages, its opt-out button and sample values for Meta's review.
+  - The sending rules, and why quality and pricing matter.
+- A tap on Meta's marketing opt-out button ("Stop promotions") now stops offers too.
+
+### Verified
+- 15 new tests: scan and redirect, dedupe, bots, scan → visit → order in the funnel, switched off and out of dates, downloads and posters in every size, access and restaurant isolation.
+- Browser: a code's page in Arabic at 1280 px and on a phone.
+
+## 2026-11-01: Service showcase on the home page
+
+### Built
+- **The three services as a showcase:** one tab per service, each with a progress line, and one slide each, with its copy, price, free-demo line and a link to the service page.
+- **A scene in motion for each service** (9 seconds):
+  - **Drive-Thru:** tap and pay on the phone, the kitchen ticket goes from New to Preparing to Ready, and the car rolls to the window and away.
+  - **Order-Ready Call:** the guest's pager rings and buzzes, the WhatsApp backup arrives, and 27 moves to Ready on the TV board.
+  - **Rewards:** stamps land one by one, the Free circle lights up and the gift arrives in the wallet.
+- **Usability:**
+  - Plays only on screen, pauses on hover, focus or a hidden tab, and has a pause/play button.
+  - Swipe on phones; arrow, Home and End keys, mirrored in Arabic.
+  - Built as accessible tabs (only the visible slide can be reached).
+  - With reduced motion nothing plays by itself and each scene shows its finished state.
+  - Animates only transform and opacity.
+
+### Verified
+- Home page tests in English and Arabic; the full suite passes.
+- Browser: each scene checked at set moments, at 1280 px and on a 375 px phone, in Arabic and English, light and dark. No sideways scroll, no console errors, and keyboard, pause and tabs work.
+
 ## 2026-10-28: Browser installer and MySQL/MariaDB readiness
 
 ### Built

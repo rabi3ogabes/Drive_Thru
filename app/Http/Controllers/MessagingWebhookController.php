@@ -21,8 +21,14 @@ use Illuminate\Http\Response;
  */
 final class MessagingWebhookController
 {
-    /** Replies that stop offers, compared after trimming and lower-casing. */
-    public const STOP_WORDS = ['stop', 'stop offers', 'unsubscribe', 'إيقاف', 'ايقاف', 'إيقاف العروض', 'ايقاف العروض', 'إلغاء', 'الغاء'];
+    /**
+     * Replies that stop offers, compared after trimming and lower-casing.
+     * Includes the label of Meta's marketing opt-out button ("Stop promotions").
+     */
+    public const STOP_WORDS = [
+        'stop', 'stop offers', 'stop promotions', 'unsubscribe',
+        'إيقاف', 'ايقاف', 'إيقاف العروض', 'ايقاف العروض', 'إيقاف العروض الترويجية', 'ايقاف العروض الترويجية', 'إلغاء', 'الغاء',
+    ];
 
     /** Meta's one-time subscription check. */
     public function verifyWhatsApp(Request $request): Response

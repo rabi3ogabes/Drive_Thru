@@ -19,8 +19,10 @@
             <h1 class="display text-3xl text-ink-950">{{ __('guest.rewards.title') }}</h1>
             @if ($program)
                 <p class="mt-1 text-sm text-ink-500">{{ __('guest.rewards.subtitle', ['points' => number_format((int) $program->earn_points_per_unit), 'currency' => Money::symbol($currency)]) }}</p>
-            @else
+            @elseif ($stampPrograms->isNotEmpty())
                 <p class="mt-1 text-sm text-ink-500">{{ __('guest.rewards.stamps_subtitle') }}</p>
+            @else
+                <p class="mt-1 text-sm text-ink-500">{{ __('referrals.card.invite_friends') }}</p>
             @endif
         </section>
 
@@ -87,6 +89,52 @@
                     </ul>
                     <p class="mt-2 px-1 text-xs text-ink-400">{{ __('guest.rewards.wallet_hint') }}</p>
                 @endif
+            </section>
+        @endif
+
+        {{-- Invite friends --}}
+        @if ($invite)
+            <section class="mt-8 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="invite-title"
+                     x-data="{
+                        copied: false,
+                        url: @js($invite['url']),
+                        copy() { navigator.clipboard?.writeText(this.url); this.copied = true; setTimeout(() => this.copied = false, 1800) },
+                        share() {
+                            if (navigator.share) { navigator.share({ title: @js($restaurant->name), text: @js(__('referrals.card.share_text', ['restaurant' => $restaurant->name, 'theirs' => $invite['friend']->name])), url: this.url }).catch(() => {}) }
+                            else { this.copy() }
+                        },
+                     }">
+                <div class="{{ $core }} bg-white">
+                    <div class="flex items-start gap-3.5">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--brand)] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.2)]" aria-hidden="true">
+                            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 8v6M22 11h-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <div class="min-w-0 flex-1">
+                            <h2 id="invite-title" class="font-semibold text-ink-950">{{ __('referrals.card.title') }}</h2>
+                            <p class="mt-0.5 text-sm text-ink-500">{{ __('referrals.card.body', ['mine' => $invite['referrer']->name, 'theirs' => $invite['friend']->name]) }}</p>
+                        </div>
+                    </div>
+
+                    @if ($invite['url'])
+                        <div class="mt-4 flex items-center gap-2 rounded-2xl bg-ivory-100 p-1.5 ps-4 ring-1 ring-ink-950/5">
+                            <span class="min-w-0 flex-1 truncate text-sm font-medium text-ink-700" dir="ltr">{{ preg_replace('#^https?://#', '', $invite['url']) }}</span>
+                            <button type="button" x-on:click="copy()" class="min-h-10 shrink-0 rounded-full bg-white px-4 text-sm font-semibold text-ink-800 ring-1 ring-ink-950/10 transition active:scale-95">
+                                <span x-show="! copied">{{ __('referrals.card.copy') }}</span>
+                                <span x-show="copied" x-cloak>{{ __('referrals.card.copied') }}</span>
+                            </button>
+                        </div>
+                        <button type="button" x-on:click="share()"
+                                class="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-6 text-[0.9375rem] font-semibold text-white transition active:scale-[0.98]">
+                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            {{ __('referrals.card.share') }}
+                        </button>
+                        <p class="mt-3 text-center text-xs text-ink-500">
+                            {{ trans_choice('referrals.card.joined', $invite['stats']['joined'], ['count' => $invite['stats']['joined']]) }}{{ trans_choice('referrals.card.rewarded', $invite['stats']['rewarded'], ['count' => $invite['stats']['rewarded']]) }}
+                        </p>
+                    @else
+                        <p class="mt-3 text-sm font-medium text-[var(--brand)]">{{ __('referrals.card.sign_in') }}</p>
+                    @endif
+                </div>
             </section>
         @endif
 

@@ -137,16 +137,16 @@
 
 ### Task 8: Quality gate, browser verification, docs
 
-- [ ] Full suite, Pint, Larastan 0, `npm run build`, `composer warm`.
-- [ ] Demo data for Masar: segments computed, one sent campaign with attribution, one QR campaign with scans and orders, two referrals.
-- [ ] Browser checks in AR/EN, light/dark, at 375/768/1280:
+- [x] Full suite, Pint, Larastan 0, `npm run build`, `composer warm`.
+- [x] Demo data for Masar: segments computed, one sent campaign with attribution, one QR campaign with scans and orders, two referrals.
+- [x] Browser checks in AR/EN, light/dark, at 375/768/1280:
   - the CRM list and profile;
   - the campaign composer and its results;
   - the QR funnel;
   - a poster;
   - the invite card;
   - the unsubscribe page.
-- [ ] Tick ROADMAP, update CHANGELOG, add ARCHITECTURE §4.8, update CLAUDE.md gotchas.
+- [x] Tick ROADMAP, update CHANGELOG, add ARCHITECTURE §4.8, update CLAUDE.md gotchas.
 
 ## Milestone 7C (after 7B)
 

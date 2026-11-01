@@ -112,7 +112,7 @@
                 {{-- Audience --}}
                 <x-filament::section icon="heroicon-o-user-group" :heading="__('campaigns.admin.sections.audience')">
                     <p class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ CampaignResource::audienceLabel($campaign) }}</p>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ trans_choice('campaigns.admin.audience.count', $audienceCount, ['count' => Digits::number($audienceCount)]) }}</p>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ trans_choice(in_array($campaign->status, [CampaignStatus::Draft, CampaignStatus::Scheduled], true) ? 'campaigns.admin.audience.count' : 'campaigns.admin.audience.reached', $audienceCount, ['count' => Digits::number($audienceCount)]) }}</p>
                 </x-filament::section>
 
                 {{-- Skipped, and why --}}

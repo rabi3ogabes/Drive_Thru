@@ -14,6 +14,7 @@ use App\Domain\Branches\Models\Branch;
 use App\Domain\Branches\Models\Device;
 use App\Domain\Campaigns\Listeners\AttributeCampaignOrder;
 use App\Domain\Campaigns\Models\Campaign;
+use App\Domain\Campaigns\Models\QrCampaign;
 use App\Domain\Crm\Listeners\RefreshGuestStats;
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Customers\Models\Customer;
@@ -50,6 +51,8 @@ use App\Domain\Platform\Models\Announcement;
 use App\Domain\Printing\Listeners\AutoPrintKitchenTicket;
 use App\Domain\Promotions\Models\Coupon;
 use App\Domain\Promotions\Models\Promotion;
+use App\Domain\Referrals\Listeners\RewardReferral;
+use App\Domain\Referrals\Models\Referral;
 use App\Domain\Security\Events\PrincipalLocked;
 use App\Domain\Security\Listeners\HandleSuccessfulSignIn;
 use App\Domain\Security\Listeners\RaiseSecurityAlert;
@@ -76,6 +79,8 @@ use App\Policies\PlanPolicy;
 use App\Policies\PlatformRolePolicy;
 use App\Policies\PositionPolicy;
 use App\Policies\PromotionPolicy;
+use App\Policies\QrCampaignPolicy;
+use App\Policies\ReferralPolicy;
 use App\Policies\RestaurantPolicy;
 use App\Policies\RewardPolicy;
 use App\Policies\SecurityAlertPolicy;
@@ -163,6 +168,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(PaymentRefunded::class, ReversePointsOnRefund::class);
         Event::listen(OrderStatusChanged::class, RefreshGuestStats::class);
         Event::listen(OrderStatusChanged::class, AttributeCampaignOrder::class);
+        Event::listen(OrderStatusChanged::class, RewardReferral::class);
         Event::listen([OrderStatusChanged::class, PaymentRefunded::class], StampOrders::class);
     }
 
@@ -193,6 +199,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ApiClient::class, IntegrationPolicy::class);
         Gate::policy(Customer::class, CustomerPolicy::class);
         Gate::policy(Campaign::class, CampaignPolicy::class);
+        Gate::policy(QrCampaign::class, QrCampaignPolicy::class);
+        Gate::policy(Referral::class, ReferralPolicy::class);
         Gate::policy(Reward::class, RewardPolicy::class);
         Gate::policy(StampProgram::class, StampProgramPolicy::class);
         Gate::policy(Promotion::class, PromotionPolicy::class);

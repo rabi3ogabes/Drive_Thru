@@ -19,6 +19,8 @@ use App\Domain\Loyalty\Models\StampRequest;
 use App\Domain\Loyalty\Models\WalletReward;
 use App\Domain\Loyalty\Stamps;
 use App\Domain\Loyalty\Tiers;
+use App\Domain\Referrals\Referrals;
+use App\Domain\Referrals\ReferralSettings;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Customer\Concerns\GuestPage;
 use App\Livewire\Customer\Concerns\SignsInWithPhone;
@@ -30,7 +32,8 @@ use Livewire\Component;
 /**
  * The guest's rewards: stamp cards filling up, points (balance, tier and
  * progress, the catalog to claim from, every movement) and the wallet.
- * Shown when the restaurant has Rewards and runs points or stamp cards.
+ * Shown when the restaurant has Rewards and runs points, stamp cards or
+ * invites (each guest's invite link and how many friends joined).
  *
  * Opened from a branch's counter QR (?at=branch), it also lets the guest
  * ask for their stamp: the request waits on the branch's stamp screen and
@@ -50,7 +53,7 @@ class Rewards extends Component
     public function mount(Restaurant $restaurant): void
     {
         $this->restaurant = $restaurant;
-        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty(), 404);
+        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty() || ReferralSettings::for($restaurant)->isLive(), 404);
 
         $code = request()->query('at');
 
@@ -158,8 +161,14 @@ class Rewards extends Component
         $cards = $customer === null || $programs->isEmpty() ? collect() : StampCard::withoutTenancy()
             ->where('customer_id', $customer->id)->whereIn('stamp_program_id', $programs->modelKeys())->get()->keyBy('stamp_program_id');
 
+        $invite = ReferralSettings::for($this->restaurant)->liveRewards();
+
         return $this->page('livewire.customer.rewards', [
             'customer' => $customer,
+            'invite' => $invite === null ? null : $invite + [
+                'url' => $customer === null ? null : app(Referrals::class)->url($this->restaurant, $customer),
+                'stats' => $customer === null ? null : app(Referrals::class)->stats($customer),
+            ],
             'counterBranch' => $programs->isEmpty() ? null : $this->counterBranch(),
             'stampRequest' => $this->stampRequest(),
             'program' => $program,

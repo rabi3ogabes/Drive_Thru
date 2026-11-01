@@ -84,6 +84,7 @@ return [
         ],
         'audience' => [
             'count' => '{0} Nobody in this audience accepts offers yet|{1} 1 guest will receive it|[2,*] :count guests will receive it',
+            'reached' => '{0} Nobody received it|{1} Sent to 1 guest|[2,*] Sent to :count guests',
             'sample' => 'For example',
             'note' => 'Counted now; it is counted again when sending starts, and each guest is checked at the moment of sending.',
         ],

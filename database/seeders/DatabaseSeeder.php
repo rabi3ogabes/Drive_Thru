@@ -93,6 +93,7 @@ class DatabaseSeeder extends Seeder
         $this->screens($masar);
         app(DemoMenuSeeder::class)->run($masar);
         app(DemoGrowthSeeder::class)->run($masar);
+        app(DemoCrmSeeder::class)->run($masar);
 
         // A paid invoice so billing screens show real history.
         Invoice::withoutTenancy()->where('restaurant_id', $masar->id)->get()
