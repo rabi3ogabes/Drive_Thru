@@ -130,5 +130,6 @@ return [
         'too_much' => 'That is more than what is left to refund.',
         'refund_failed' => 'The payment provider didn’t accept the refund. Try again in a moment.',
         'reward_unavailable' => 'That reward is no longer available. Pick another one.',
+        'slow_down' => 'You have sent several messages. The branch will reply soon; you can write again in a few minutes.',
     ],
 ];

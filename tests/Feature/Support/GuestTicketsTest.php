@@ -122,6 +122,21 @@ it('lets the guest follow and reply in the conversation on the order page', func
     expect(TicketMessage::withoutTenancy()->where('author', 'guest')->count())->toBe(2);
 });
 
+it('slows a guest down after many replies in a few minutes', function () {
+    [, $guest, $order] = ticketShop();
+    $ticket = app(OpenTicket::class)->handle($order, $guest, TicketCategory::Other, [], 'Hi');
+
+    foreach (range(1, GuestReply::PER_TEN_MINUTES) as $i) {
+        app(GuestReply::class)->handle($ticket->fresh(), $guest, 'Line '.$i);
+    }
+
+    expect(ticketRefusal(fn () => app(GuestReply::class)->handle($ticket->fresh(), $guest, 'One more')))->toBe('slow_down')
+        ->and(TicketMessage::withoutTenancy()->where('support_ticket_id', $ticket->id)->count())->toBe(1 + GuestReply::PER_TEN_MINUTES);
+
+    $this->travel(11)->minutes();
+    expect(app(GuestReply::class)->handle($ticket->fresh(), $guest, 'Later')->body)->toBe('Later');
+});
+
 it('stops guest replies once the ticket is resolved', function () {
     [, $guest, $order] = ticketShop();
     $ticket = app(OpenTicket::class)->handle($order, $guest, TicketCategory::Other, [], 'Hi');
