@@ -122,6 +122,19 @@
                     @endif
                 </x-filament::section>
 
+                {{-- Badges earned (streaks and badges) --}}
+                @if ($profile['badges']->isNotEmpty())
+                    <x-filament::section icon="heroicon-o-trophy" :heading="__('loyalty.badges.profile')">
+                        <ul class="flex flex-wrap gap-2">
+                            @foreach ($profile['badges'] as $badge)
+                                <li>
+                                    <x-filament::badge color="warning" :tooltip="__('loyalty.badges.earned_on', ['date' => $badge->earned_at->setTimezone($restaurant->timezone)->format('d/m/Y')])">{{ $badge->badge->label() }}</x-filament::badge>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </x-filament::section>
+                @endif
+
                 {{-- What they said after pickup --}}
                 @if ($profile['ratings']->isNotEmpty())
                     <x-filament::section icon="heroicon-o-star" :heading="__('feedback.admin.profile')">

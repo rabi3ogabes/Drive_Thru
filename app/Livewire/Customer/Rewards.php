@@ -9,6 +9,10 @@ use App\Domain\Branches\Models\Branch;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Loyalty\Actions\ClaimReward;
 use App\Domain\Loyalty\Actions\StampRequests;
+use App\Domain\Loyalty\Badges\Badge;
+use App\Domain\Loyalty\Badges\BadgeProgress;
+use App\Domain\Loyalty\Badges\BadgeSettings;
+use App\Domain\Loyalty\Badges\CustomerBadge;
 use App\Domain\Loyalty\Birthdays\BirthdayGift;
 use App\Domain\Loyalty\Birthdays\BirthdaySettings;
 use App\Domain\Loyalty\Exceptions\RewardUnavailable;
@@ -26,6 +30,7 @@ use App\Domain\Referrals\ReferralSettings;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Customer\Concerns\GuestPage;
 use App\Livewire\Customer\Concerns\SignsInWithPhone;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Locked;
@@ -36,7 +41,8 @@ use Livewire\Component;
  * progress, the catalog to claim from, every movement) and the wallet.
  * Shown when the restaurant has Rewards and runs points, stamp cards or
  * invites (each guest's invite link and how many friends joined). With the
- * birthday gift on, it asks for the guest's birthday and celebrates it.
+ * birthday gift on, it asks for the guest's birthday and celebrates it; with
+ * badges on, it shows the guest's achievements and their weekly streak.
  *
  * Opened from a branch's counter QR (?at=branch), it also lets the guest
  * ask for their stamp: the request waits on the branch's stamp screen and
@@ -59,7 +65,7 @@ class Rewards extends Component
     public function mount(Restaurant $restaurant): void
     {
         $this->restaurant = $restaurant;
-        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty() || ReferralSettings::for($restaurant)->isLive() || BirthdaySettings::for($restaurant)->isLive(), 404);
+        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty() || ReferralSettings::for($restaurant)->isLive() || BirthdaySettings::for($restaurant)->isLive() || BadgeSettings::for($restaurant)->isLive(), 404);
 
         $code = request()->query('at');
 
@@ -191,6 +197,7 @@ class Rewards extends Component
         return $this->page('livewire.customer.rewards', [
             'customer' => $customer,
             'askBirthday' => $birthdayOn && $customer->birthday === null,
+            'achievements' => $this->achievements($customer),
             // A gift that arrived this week: the birthday card shows for seven days.
             'birthdayGift' => $customer === null ? null : BirthdayGift::withoutTenancy()->with('walletReward.reward')
                 ->where('customer_id', $customer->id)->where('sent_at', '>=', now()->subDays(7))->latest('sent_at')->first(),
@@ -218,6 +225,36 @@ class Rewards extends Component
                 ->get(),
             'history' => $customer === null ? collect() : LedgerEntry::withoutTenancy()->with('order')->where('customer_id', $customer->id)->latest('id')->limit(50)->get(),
         ], __('guest.rewards.title'));
+    }
+
+    /**
+     * The guest's badges (earned, or how far along), the weekly streak, and
+     * badges they haven't seen yet: those are celebrated in this render only.
+     *
+     * @return array{badges: list<Badge>, progress: array<string, array{current: int, target: int, earned: ?CarbonImmutable}>, streak: ?array{weeks: int, keepBy: CarbonImmutable}, fresh: \Illuminate\Support\Collection<int, CustomerBadge>}|null
+     */
+    private function achievements(?Customer $customer): ?array
+    {
+        $settings = BadgeSettings::for($this->restaurant);
+
+        if ($customer === null || ! $settings->isLive() || $settings->active() === []) {
+            return null;
+        }
+
+        $now = now()->toImmutable();
+        $fresh = CustomerBadge::withoutTenancy()->with('walletReward.reward')
+            ->where('customer_id', $customer->id)->whereNull('seen_at')->get();
+
+        if ($fresh->isNotEmpty()) {
+            CustomerBadge::withoutTenancy()->whereKey($fresh->modelKeys())->update(['seen_at' => $now]);
+        }
+
+        return [
+            'badges' => $settings->active(),
+            'progress' => BadgeProgress::for($customer, $settings, $now),
+            'streak' => $settings->isOn(Badge::Streak) ? BadgeProgress::streak($customer, $this->restaurant->timezone, $now) : null,
+            'fresh' => $fresh->toBase(),
+        ];
     }
 
     protected function signedIn(Customer $customer): void

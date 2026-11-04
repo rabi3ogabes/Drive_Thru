@@ -8,6 +8,7 @@ use App\Domain\Campaigns\Models\CampaignMessage;
 use App\Domain\Crm\Models\CustomerSegment;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Feedback\Models\OrderRating;
+use App\Domain\Loyalty\Badges\CustomerBadge;
 use App\Domain\Loyalty\Models\StampCard;
 use App\Domain\Loyalty\Models\WalletReward;
 use App\Domain\Menu\Models\Product;
@@ -38,6 +39,7 @@ final class GuestProfile
      *     stamps: Collection<int, StampCard>,
      *     campaigns: array{received: int, orders: int, revenue_minor: int},
      *     ratings: Collection<int, OrderRating>,
+     *     badges: Collection<int, CustomerBadge>,
      * }
      */
     public function for(Customer $customer): array
@@ -108,6 +110,7 @@ final class GuestProfile
             'segments' => $customer->segments,
             'wallet' => $wallet,
             'stamps' => $stamps,
+            'badges' => CustomerBadge::query()->where('customer_id', $customer->id)->orderBy('earned_at')->get(),
             'ratings' => OrderRating::query()->with('branch')->where('customer_id', $customer->id)->latest('created_at')->limit(self::RATINGS)->get(),
             'campaigns' => [
                 'received' => (int) $campaigns?->getAttribute('received'),

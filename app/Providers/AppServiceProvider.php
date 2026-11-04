@@ -25,6 +25,7 @@ use App\Domain\Integrations\Models\ApiClient;
 use App\Domain\Integrations\Models\WebhookEndpoint;
 use App\Domain\Integrations\Pos\SendAcceptedOrdersToPos;
 use App\Domain\Integrations\Webhooks\Listeners\SendWebhooks;
+use App\Domain\Loyalty\Badges\AwardBadges;
 use App\Domain\Loyalty\Listeners\AwardPointsOnPickup;
 use App\Domain\Loyalty\Listeners\ReturnBenefitsOnCancel;
 use App\Domain\Loyalty\Listeners\ReversePointsOnRefund;
@@ -175,6 +176,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(OrderStatusChanged::class, AttributeCampaignOrder::class);
         Event::listen(OrderStatusChanged::class, RewardReferral::class);
         Event::listen(OrderStatusChanged::class, AskForRating::class);
+        Event::listen(OrderStatusChanged::class, AwardBadges::class);
         Event::listen([OrderStatusChanged::class, PaymentRefunded::class], StampOrders::class);
     }
 

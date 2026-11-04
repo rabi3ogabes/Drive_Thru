@@ -9,6 +9,9 @@ use App\Domain\Billing\Enums\PlanFeature;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Loyalty\Actions\AdjustPoints;
+use App\Domain\Loyalty\Badges\Badge;
+use App\Domain\Loyalty\Badges\BadgeSettings;
+use App\Domain\Loyalty\Badges\CustomerBadge;
 use App\Domain\Loyalty\Birthdays\BirthdayGift;
 use App\Domain\Loyalty\Birthdays\BirthdaySettings;
 use App\Domain\Loyalty\Exceptions\NotEnoughPoints;
@@ -116,6 +119,7 @@ class LoyaltySettings extends Page
                 'benefits' => $t->getTranslations('benefits'),
             ])->all(),
             'birthday' => BirthdaySettings::for($restaurant)->toArray(),
+            'badges' => BadgeSettings::for($restaurant)->toArray(),
             'rules' => EarnRule::query()->orderBy('id')->get()->map(fn (EarnRule $r): array => [
                 'id' => $r->id,
                 'scope' => $r->scope,
@@ -239,6 +243,31 @@ class LoyaltySettings extends Page
                                         ->state(fn (): string => $this->birthdayOutlook()),
                                 ]),
                         ]),
+                    Tab::make(__('loyalty.admin.tabs.badges'))
+                        ->icon('heroicon-o-trophy')
+                        ->schema([
+                            Section::make(__('loyalty.badges.section'))
+                                ->description(__('loyalty.badges.section_hint'))
+                                ->columns(['default' => 1, 'md' => 2])
+                                ->schema([
+                                    Toggle::make('badges.enabled')->label(__('loyalty.badges.enabled'))->helperText(__('loyalty.badges.enabled_hint'))->live(),
+                                    TextInput::make('badges.streak_weeks')->label(__('loyalty.badges.streak_weeks'))->helperText(__('loyalty.badges.streak_weeks_hint'))
+                                        ->numeric()->integer()->minValue(BadgeSettings::MIN_STREAK_WEEKS)->maxValue(BadgeSettings::MAX_STREAK_WEEKS)->required(),
+                                ]),
+                            ...array_map(fn (Badge $badge): Section => Section::make($badge->label())
+                                ->description(fn (Get $get): string => $badge->description((int) ($get('badges.streak_weeks') ?: BadgeSettings::DEFAULT_STREAK_WEEKS)))
+                                ->icon('heroicon-o-trophy')
+                                ->compact()
+                                ->columns(['default' => 1, 'md' => 3])
+                                ->visible(fn (Get $get): bool => (bool) $get('badges.enabled'))
+                                ->schema([
+                                    Toggle::make('badges.badges.'.$badge->value.'.on')->label(__('loyalty.badges.badge_on'))->inline(false),
+                                    Select::make('badges.badges.'.$badge->value.'.reward_id')->label(__('loyalty.badges.reward'))
+                                        ->placeholder(__('loyalty.badges.no_reward'))->options(fn (): array => $this->rewardOptions())->native(false),
+                                    TextEntry::make('holders_'.$badge->value)->label(__('loyalty.badges.profile'))
+                                        ->state(fn (): string => trans_choice('loyalty.badges.holders', $this->holders()[$badge->value] ?? 0, ['count' => $this->holders()[$badge->value] ?? 0])),
+                                ]), Badge::cases()),
+                        ]),
                 ]),
             ]);
     }
@@ -334,6 +363,13 @@ class LoyaltySettings extends Page
                 ->withProperties(['birthday' => BirthdaySettings::for($restaurant)->toArray()])->log('loyalty.birthday_settings_updated');
         }
 
+        $badges = (array) ($state['badges'] ?? []);
+
+        if (BadgeSettings::for($restaurant)->toArray() !== BadgeSettings::save($restaurant, $badges)->toArray()) {
+            activity()->performedOn($restaurant)->causedBy(Workspace::user())->event('loyalty.badge_settings_updated')
+                ->withProperties(['badges' => BadgeSettings::for($restaurant)->toArray()])->log('loyalty.badge_settings_updated');
+        }
+
         $this->mount();
 
         $program->refresh()->is_enabled && ! $program->isActive()
@@ -352,6 +388,19 @@ class LoyaltySettings extends Page
 
         return Reward::query()->with('product')->where('is_active', true)->whereNull('archived_at')->orderBy('id')->get()
             ->mapWithKeys(fn (Reward $reward): array => [$reward->id => $reward->name.' · '.$reward->gives($currency)])
+            ->all();
+    }
+
+    /** @var array<string, int>|null guests holding each badge, counted once per request */
+    private ?array $holders = null;
+
+    /**
+     * @return array<string, int>
+     */
+    private function holders(): array
+    {
+        return $this->holders ??= CustomerBadge::query()->selectRaw('badge, count(*) as total')->groupBy('badge')->pluck('total', 'badge')
+            ->mapWithKeys(fn (mixed $total, mixed $badge): array => [$badge instanceof Badge ? $badge->value : (string) $badge => (int) $total])
             ->all();
     }
 

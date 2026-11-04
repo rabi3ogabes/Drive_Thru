@@ -130,6 +130,65 @@
             </section>
         @endif
 
+        {{-- Achievements: badges earned and the weekly streak --}}
+        @if ($achievements)
+            <section class="mt-8" aria-labelledby="achievements-title">
+                <h2 id="achievements-title" class="px-1 font-semibold text-ink-950">{{ __('loyalty.badges.achievements') }}</h2>
+                @if ($achievements['streak'])
+                    <p class="mt-1 flex items-center gap-1.5 px-1 text-sm text-ink-600">
+                        <svg class="size-4 shrink-0 text-brass-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="{{ \App\Domain\Loyalty\Badges\Badge::Streak->icon() }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        {{ trans_choice('loyalty.badges.streak_line', $achievements['streak']['weeks'], ['count' => $achievements['streak']['weeks'], 'date' => $achievements['streak']['keepBy']->setTimezone($tz)->translatedFormat('l j M')]) }}
+                    </p>
+                @endif
+                <ul class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    @foreach ($achievements['badges'] as $badge)
+                        @php
+                            $row = $achievements['progress'][$badge->value];
+                            $earned = $row['earned'] !== null;
+                            $share = $row['target'] > 0 ? min(100, (int) round($row['current'] / $row['target'] * 100)) : 0;
+                        @endphp
+                        <li @class(['rounded-2xl p-3.5 ring-1', 'bg-white ring-brass-500/25' => $earned, 'bg-white/60 ring-ink-950/5' => ! $earned]) wire:key="badge-{{ $badge->value }}">
+                            <span @class(['grid size-11 place-items-center rounded-full', 'bg-brass-500 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]' => $earned, 'bg-ink-950/5 text-ink-300' => ! $earned]) aria-hidden="true">
+                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="{{ $badge->icon() }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <p @class(['mt-2.5 text-sm font-semibold', 'text-ink-950' => $earned, 'text-ink-600' => ! $earned])>{{ $badge->label() }}</p>
+                            <p class="mt-0.5 text-xs leading-snug text-ink-500">{{ $badge->description($achievements['progress']['streak']['target']) }}</p>
+                            @if ($earned)
+                                <p class="mt-2 text-xs font-medium text-brass-800">{{ __('loyalty.badges.earned_on', ['date' => $row['earned']->setTimezone($tz)->format('d/m/Y')]) }}</p>
+                            @else
+                                <div class="mt-2.5 h-1.5 overflow-hidden rounded-full bg-ink-950/8" role="progressbar" aria-valuemin="0" aria-valuemax="{{ $row['target'] }}" aria-valuenow="{{ min($row['current'], $row['target']) }}" aria-label="{{ $badge->label() }}">
+                                    <div class="h-full rounded-full bg-[var(--brand)]" style="inline-size: {{ $share }}%"></div>
+                                </div>
+                                <p class="mt-1 text-[0.6875rem] tabular-nums text-ink-400">{{ __('loyalty.badges.progress', ['current' => min($row['current'], $row['target']), 'target' => $row['target']]) }}</p>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+
+            {{-- A badge the guest hasn't seen yet: celebrated once, then marked seen --}}
+            @if ($achievements['fresh']->isNotEmpty())
+                @php
+                    $newest = $achievements['fresh']->sortByDesc('earned_at')->first();
+                @endphp
+                <div x-data="{ open: true }" x-show="open" x-cloak class="fixed inset-0 z-50 grid place-items-center bg-ink-950/40 px-6 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-labelledby="unlocked-title"
+                     x-on:keydown.escape.window="open = false" wire:key="unlocked-{{ $newest->id }}">
+                    <div class="w-full max-w-sm rounded-[2rem] bg-white p-6 text-center shadow-2xl" x-on:click.outside="open = false"
+                         x-init="matchMedia('(prefers-reduced-motion: reduce)').matches || $el.animate([{ transform: 'scale(.9)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.32,.72,0,1)' })">
+                        <span class="mx-auto grid size-20 place-items-center rounded-full bg-brass-500 text-white shadow-[0_18px_40px_-18px_var(--color-brass-700,currentColor)]" aria-hidden="true">
+                            <svg class="size-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="{{ $newest->badge->icon() }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <p id="unlocked-title" class="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-brass-700 rtl:tracking-normal">{{ __('loyalty.badges.unlocked') }}</p>
+                        <p class="display mt-1 text-2xl text-ink-950">{{ $newest->badge->label() }}</p>
+                        @if ($newest->walletReward)
+                            <p class="mt-2 text-sm text-ink-600">{{ __('loyalty.badges.unlocked_reward', ['reward' => $newest->walletReward->reward->name]) }}</p>
+                        @endif
+                        <button type="button" x-on:click="open = false" class="mt-6 w-full rounded-full bg-ink-950 py-3.5 font-semibold text-white transition active:scale-[0.98]">{{ __('guest.close') }}</button>
+                    </div>
+                </div>
+            @endif
+        @endif
+
         {{-- Invite friends --}}
         @if ($invite)
             <section class="mt-8 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="invite-title"
