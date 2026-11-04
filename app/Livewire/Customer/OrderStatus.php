@@ -21,6 +21,11 @@ use App\Domain\Ordering\Exceptions\OrderRejected;
 use App\Domain\Ordering\Models\Order;
 use App\Domain\Payments\Actions\StartPayment;
 use App\Domain\Payments\GatewayResolver;
+use App\Domain\Support\Actions\GuestReply;
+use App\Domain\Support\Actions\OpenTicket;
+use App\Domain\Support\Enums\TicketCategory;
+use App\Domain\Support\Exceptions\TicketRefused;
+use App\Domain\Support\Models\SupportTicket;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Http\Controllers\RealtimeAuthController;
 use App\Livewire\Customer\Concerns\GuestPage;
@@ -32,8 +37,9 @@ use Livewire\Component;
 /**
  * The live order: progress, ready time, pickup code and QR. The guest who
  * placed it can also pay again, cancel within the window, say "I'm on the
- * way" and order the same again, and once it is picked up, rate it. Anyone
- * else with the link sees progress only.
+ * way" and order the same again, and once it is picked up, rate it or report
+ * a problem and follow the conversation. Anyone else with the link sees
+ * progress only.
  */
 class OrderStatus extends Component
 {
@@ -49,6 +55,9 @@ class OrderStatus extends Component
     #[Locked]
     public ?string $shownStatus = null;
 
+    /** The "report a problem" form, pre-filled after a low rating that names a missing or wrong item. */
+    public ?string $reportCategory = null;
+
     public function mount(Restaurant $restaurant, Order $order): void
     {
         $this->restaurant = $restaurant;
@@ -56,6 +65,7 @@ class OrderStatus extends Component
 
         $this->orderId = $order->id;
         $this->justPlaced = request()->boolean('placed') && $this->isOwner($order);
+        $this->reportCategory = $this->suggestedCategory($order);
     }
 
     public function cancel(): void
@@ -134,6 +144,45 @@ class OrderStatus extends Component
         }
     }
 
+    /**
+     * @param  array<int, mixed>  $items  order lines that were missing or wrong
+     */
+    public function reportProblem(string $category, array $items = [], string $body = ''): void
+    {
+        $category = TicketCategory::tryFrom($category);
+
+        try {
+            if ($category === null) {
+                throw new TicketRefused('invalid');
+            }
+
+            app(OpenTicket::class)->handle($this->ownOrder(), $this->customer() ?? abort(403), $category, $items, $body);
+        } catch (TicketRefused $refused) {
+            $this->toast($refused->getMessage(), 'error');
+
+            return;
+        }
+
+        $this->reportCategory = null;
+        $this->dispatch('ticket-opened');
+        $this->toast(__('support.guest.sent'));
+    }
+
+    public function replyToTicket(string $body): void
+    {
+        $ticket = $this->ticket($this->ownOrder()) ?? abort(404);
+
+        try {
+            app(GuestReply::class)->handle($ticket, $this->customer() ?? abort(403), $body);
+        } catch (TicketRefused $refused) {
+            $this->toast($refused->getMessage(), 'error');
+
+            return;
+        }
+
+        $this->dispatch('ticket-replied');
+    }
+
     public function orderAgain(): void
     {
         $order = $this->ownOrder();
@@ -172,6 +221,8 @@ class OrderStatus extends Component
             'steps' => [Status::Received, Status::Preparing, Status::Ready, Status::PickedUp],
             'rating' => $owner ? OrderRating::withoutTenancy()->where('order_id', $order->id)->first() : null,
             'canRate' => $owner && app(RateOrder::class)->canRate($order, $this->customer()),
+            'ticket' => $owner ? $this->ticket($order)?->load(['messages', 'refund', 'walletReward.reward']) : null,
+            'canReport' => $owner && app(OpenTicket::class)->canOpen($order, $this->customer()),
             // Live updates for the guest who ordered, or a browser opened through a signed staff link.
             'live' => $owner || in_array($order->id, (array) session(RealtimeAuthController::STAFF_VIEW_SESSION, []), true),
             'lanes' => $order->branch->lanes()->where('is_active', true)->orderBy('sort')->get(),
@@ -186,6 +237,28 @@ class OrderStatus extends Component
             ->with(['items', 'adjustments', 'branch.restaurant', 'payment', 'history', 'lane'])
             ->where('restaurant_id', $this->restaurant->id)
             ->findOrFail($this->orderId));
+    }
+
+    /** The latest report on this order, open or resolved. */
+    private function ticket(Order $order): ?SupportTicket
+    {
+        return SupportTicket::withoutTenancy()->where('order_id', $order->id)->latest('id')->first();
+    }
+
+    private function suggestedCategory(Order $order): ?string
+    {
+        if (! $this->isOwner($order) || $this->ticket($order) !== null) {
+            return null;
+        }
+
+        $tags = OrderRating::withoutTenancy()->where('order_id', $order->id)->where('stars', '<=', 3)->value('tags');
+        $tags = is_string($tags) ? (array) json_decode($tags, true) : (array) $tags;
+
+        return match (true) {
+            in_array('missing_item', $tags, true) => TicketCategory::MissingItem->value,
+            in_array('wrong_order', $tags, true) => TicketCategory::WrongItem->value,
+            default => null,
+        };
     }
 
     private function isOwner(Order $order): bool

@@ -25,7 +25,7 @@ final class DefaultPositions
             'branch_manager' => [
                 P::OperateBranch, P::ManageStaff, P::ManageAvailability, P::ViewOrders, P::OperateOrders,
                 P::OperateKitchen, P::OperatePickup, P::OperatePager, P::CollectPayments, P::RefundPayments,
-                P::ViewCustomers, P::ViewReports, P::ExportReports,
+                P::ViewCustomers, P::HandleSupport, P::ViewReports, P::ExportReports,
             ],
             'cashier' => [P::ViewOrders, P::OperateOrders, P::OperatePickup, P::OperatePager, P::CollectPayments],
             'kitchen' => [P::ViewOrders, P::OperateKitchen],

@@ -13,6 +13,7 @@ enum AlertKind: string
     case KitchenOverloaded = 'kitchen_overloaded';
     case WebhookDisabled = 'webhook_disabled';
     case LowRating = 'low_rating';
+    case TicketOpened = 'ticket_opened';
 
     /** Critical alerts ignore quiet hours and also go by email (money, or a connected system going dark). */
     public function isCritical(): bool
@@ -29,6 +30,7 @@ enum AlertKind: string
             self::KitchenOverloaded => 'heroicon-o-fire',
             self::WebhookDisabled => 'heroicon-o-link-slash',
             self::LowRating => 'heroicon-o-star',
+            self::TicketOpened => 'heroicon-o-lifebuoy',
         };
     }
 

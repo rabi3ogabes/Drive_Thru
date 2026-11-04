@@ -29,6 +29,10 @@ return [
         'title' => 'Order :number was rated :stars/5',
         'body' => 'A guest at :branch was not happy. Read what they said and put it right.',
     ],
+    'ticket_opened' => [
+        'title' => 'Problem reported: :number',
+        'body' => ':category on order :order at :branch. Reply to the guest from Support.',
+    ],
 
     'preferences' => [
         'menu' => 'Alerts',

@@ -29,6 +29,10 @@ return [
         'title' => 'تقييم الطلب :number كان :stars من 5',
         'body' => 'ضيف في :branch لم يكن راضيًا. اقرأ ما كتبه وعالج الأمر.',
     ],
+    'ticket_opened' => [
+        'title' => 'بلاغ جديد: :number',
+        'body' => ':category في الطلب :order في :branch. ردّ على الضيف من الدعم.',
+    ],
 
     'preferences' => [
         'menu' => 'التنبيهات',
