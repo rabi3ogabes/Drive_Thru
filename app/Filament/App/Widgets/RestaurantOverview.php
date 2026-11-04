@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Widgets;
 
+use App\Domain\Access\Enums\RestaurantPermission;
 use App\Domain\Branches\BranchSchedule;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Branches\Models\Device;
+use App\Domain\Feedback\RatingStats;
+use App\Domain\Services\Enums\Service;
 use App\Domain\Staff\Enums\EmployeeStatus;
 use App\Domain\Staff\Models\Employee;
+use App\Filament\App\Resources\Ratings\RatingResource;
 use App\Filament\App\Workspace;
 use App\Support\Digits;
+use Carbon\CarbonImmutable;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 /**
  * The live pulse of the restaurant: branches open right now, the team,
- * screens online and the account. Order and sales figures join in Phase 8.
+ * screens online, the account and, for people who see reports, the last
+ * 30 days of guest ratings. Order and sales figures join in Phase 8.
  */
 class RestaurantOverview extends StatsOverviewWidget
 {
@@ -52,7 +58,7 @@ class RestaurantOverview extends StatsOverviewWidget
             default => '—',
         };
 
-        return [
+        $stats = [
             Stat::make(__('dashboard.app.stats.branches_open'), __('dashboard.app.stats.of', ['count' => Digits::number($open), 'total' => Digits::number($branches->count())]))
                 ->description($paused > 0
                     ? trans_choice('dashboard.app.stats.branches_paused', $paused, ['count' => Digits::number($paused)])
@@ -72,10 +78,33 @@ class RestaurantOverview extends StatsOverviewWidget
                 ->descriptionIcon($restaurant->isOperational() ? 'heroicon-m-check-badge' : 'heroicon-m-pause-circle')
                 ->color($restaurant->status->getColor()),
         ];
+
+        if ($this->showsRating()) {
+            $now = CarbonImmutable::now($restaurant->timezone);
+            $rating = RatingStats::for($restaurant->id, Workspace::branchIds(), $now->subDays(29)->startOfDay(), $now);
+
+            $stats[] = Stat::make(__('feedback.admin.stat'), $rating['average'] !== null ? number_format($rating['average'], 1).' ★' : '—')
+                ->description($rating['count'] > 0 ? trans_choice('feedback.admin.stat_count', $rating['count'], ['count' => Digits::number($rating['count'])]) : __('feedback.admin.stat_none'))
+                ->descriptionIcon('heroicon-m-star')
+                ->color(match (true) {
+                    $rating['average'] === null => 'gray',
+                    $rating['average'] >= 4 => 'success',
+                    $rating['average'] >= 3 => 'warning',
+                    default => 'danger',
+                })
+                ->url(RatingResource::getUrl());
+        }
+
+        return $stats;
+    }
+
+    private function showsRating(): bool
+    {
+        return Workspace::can(RestaurantPermission::ViewReports) && Workspace::restaurant()->hasService(Service::DriveThru);
     }
 
     protected function getColumns(): int|array|null
     {
-        return ['default' => 2, 'xl' => 4];
+        return ['default' => 2, 'xl' => $this->showsRating() ? 5 : 4];
     }
 }

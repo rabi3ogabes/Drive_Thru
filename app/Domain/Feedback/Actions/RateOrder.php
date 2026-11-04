@@ -12,6 +12,7 @@ use App\Domain\Notifications\Alerts\AlertKind;
 use App\Domain\Notifications\Alerts\StaffAlerts;
 use App\Domain\Ordering\Enums\OrderStatus;
 use App\Domain\Ordering\Models\Order;
+use App\Filament\App\Resources\Ratings\RatingResource;
 use Illuminate\Database\QueryException;
 
 /**
@@ -91,6 +92,6 @@ final class RateOrder
             'number' => $order->number,
             'stars' => $rating->stars,
             'branch' => $order->branch->getTranslations('name'),
-        ], route('ops.screen', [$order->branch->restaurant, $order->branch->code, 'live']));
+        ], RatingResource::getUrl(panel: 'app', tenant: $order->branch->restaurant).'?'.http_build_query(['tableFilters' => ['stars' => ['value' => $rating->stars]]]));
     }
 }
