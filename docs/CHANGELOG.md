@@ -2,6 +2,27 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-04: Ratings, support, birthday gifts and badges (Phase 7C)
+
+### Built
+- **Ratings after pickup:** on the order page, 1-5 stars with tags that fit the score (praise for 4-5, problems for 1-3) and an optional comment, for 48 hours, once. One push reminder 30 minutes after pickup to guests who allowed notifications (no paid messages). 1-2 stars alert the branch managers.
+  - **Ratings page** (Operations): the last 30 days' average, share of 4-5 and 1-2, scores, most-mentioned tags and a daily chart, then every rating with branch, stars, tag and comment filters. Needs "View reports".
+  - A "Rating, 30 days" tile on the dashboard, and ratings on the guest profile.
+- **Support tickets:** "Report a problem" on the order page up to 7 days after pickup (missing item, wrong item, quality, charged incorrectly, other; the lines that were wrong), as a conversation the guest can reply in. After a low rating naming a missing or wrong item, the report is offered straight away, pre-filled.
+  - **Support inbox** (Operations, with an open-ticket badge and an "over 24 hours" marker): the order, the guest and the conversation; reply (WhatsApp utility template `dtp_ticket_reply`, then SMS, and on the order page); **refund** all or part of an online payment; **give a reward** (works for cash orders too); **resolve** with an optional note, telling the guest how it was put right. Audited.
+  - New permission **Handle support**, given to managers (existing restaurants too).
+- **Birthday gifts** (Loyalty → Birthday gift): a reward from the catalog N days before the birthday (0-7, default 3) in the restaurant's time zone, once per guest per 365 days even if the birthday changes, 29 February on 28 February in other years. A message only to guests who accepted offers (the approved offer template), a push to guests who allowed notifications. The Rewards page asks for the birthday and shows a "Happy birthday" card that week.
+- **Streaks and badges** (Loyalty → Badges, **off by default**): a weekly streak (Sunday to Saturday) and six badges, each counting unless switched off and optionally unlocking a reward. Achievements on the Rewards page with progress and "order by Saturday to keep it going"; a new badge is celebrated once. Guests who qualified before badges were switched on get them when they open the page. Badges on the guest profile and holders per badge in settings.
+- Demo data (`DemoFeedbackSeeder`): ratings, three tickets, the birthday gift with two birthdays this week, badges on with earned ones.
+
+### Fixed
+- The workspace sidebar showed the Operations group twice and hid the live-screen links once a page joined it (enum vs string group names).
+- Guest text in another language (an English comment in Arabic) now lays out in its own direction.
+
+### Verified
+- 740 tests (full suite), Pint, Larastan 0, build.
+- Browser (local Masar): Ratings, Support inbox and a ticket, the Loyalty Birthday and Badges tabs and the dashboard tile in Arabic and English, light and dark, at 375, 768 and 1280 px; the guest rating card, report sheet and conversation, Rewards birthday prompt, Achievements and the badge celebration at 375 and 768 px in both languages. No sideways scrolling, no console errors.
+
 ## 2026-11-01: Phase 7B final pass (task 8)
 
 ### Built

@@ -151,6 +151,24 @@ it('shows achievements with progress and celebrates a new badge once', function 
     Livewire::test(Rewards::class, ['restaurant' => $restaurant])->assertDontSee(__('loyalty.badges.unlocked'));
 });
 
+it('awards badges guests already reached when the owner switches badges on later', function () {
+    [$restaurant, $guest] = badgeShop(on: false);
+    pickedUp($guest);
+    expect(badgesOf($guest))->toBe([]);
+
+    BadgeSettings::save($restaurant, ['enabled' => true]);
+    $token = Str::random(64);
+    CustomerSession::withoutTenancy()->create(['restaurant_id' => $restaurant->id, 'customer_id' => $guest->id, 'token_hash' => hash('sha256', $token), 'last_active_at' => now()]);
+    session()->put("customer.{$restaurant->id}", $token);
+    app()->forgetScopedInstances();
+
+    Livewire::test(Rewards::class, ['restaurant' => $restaurant->fresh()])
+        ->assertSee(__('loyalty.badges.unlocked'))
+        ->assertSee(__('loyalty.badges.earned_on', ['date' => now()->setTimezone('Asia/Qatar')->format('d/m/Y')]));
+
+    expect(badgesOf($guest))->toBe(['first_order']);
+});
+
 it('saves badge settings, shows who holds each badge, and keeps badges to their restaurant', function () {
     [$other, $theirGuest] = badgeShop('elsewhere');
     pickedUp($theirGuest);

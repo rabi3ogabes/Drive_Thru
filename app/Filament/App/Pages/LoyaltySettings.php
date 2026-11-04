@@ -244,7 +244,7 @@ class LoyaltySettings extends Page
                                 ]),
                         ]),
                     Tab::make(__('loyalty.admin.tabs.badges'))
-                        ->icon('heroicon-o-trophy')
+                        ->icon('heroicon-o-check-badge')
                         ->schema([
                             Section::make(__('loyalty.badges.section'))
                                 ->description(__('loyalty.badges.section_hint'))
@@ -256,7 +256,7 @@ class LoyaltySettings extends Page
                                 ]),
                             ...array_map(fn (Badge $badge): Section => Section::make($badge->label())
                                 ->description(fn (Get $get): string => $badge->description((int) ($get('badges.streak_weeks') ?: BadgeSettings::DEFAULT_STREAK_WEEKS)))
-                                ->icon('heroicon-o-trophy')
+                                ->icon('heroicon-o-check-badge')
                                 ->compact()
                                 ->columns(['default' => 1, 'md' => 3])
                                 ->visible(fn (Get $get): bool => (bool) $get('badges.enabled'))
@@ -264,7 +264,7 @@ class LoyaltySettings extends Page
                                     Toggle::make('badges.badges.'.$badge->value.'.on')->label(__('loyalty.badges.badge_on'))->inline(false),
                                     Select::make('badges.badges.'.$badge->value.'.reward_id')->label(__('loyalty.badges.reward'))
                                         ->placeholder(__('loyalty.badges.no_reward'))->options(fn (): array => $this->rewardOptions())->native(false),
-                                    TextEntry::make('holders_'.$badge->value)->label(__('loyalty.badges.profile'))
+                                    TextEntry::make('holders_'.$badge->value)->label(__('loyalty.badges.holders_label'))
                                         ->state(fn (): string => trans_choice('loyalty.badges.holders', $this->holders()[$badge->value] ?? 0, ['count' => $this->holders()[$badge->value] ?? 0])),
                                 ]), Badge::cases()),
                         ]),

@@ -310,7 +310,7 @@
                     <h2 id="rate-title" class="font-semibold text-ink-950">{{ __('feedback.card.title') }}</h2>
                     <p class="mt-0.5 text-sm text-ink-500">{{ __('feedback.card.subtitle', ['branch' => $order->branch->name]) }}</p>
 
-                    <div class="mt-4 flex items-center justify-between gap-2" dir="ltr" role="radiogroup" aria-labelledby="rate-title" x-on:mouseleave="hover = 0">
+                    <div class="mt-4 flex items-center justify-between gap-2" role="radiogroup" aria-labelledby="rate-title" x-on:mouseleave="hover = 0">
                         @for ($i = 1; $i <= 5; $i++)
                             <button type="button" role="radio" x-bind:aria-checked="stars === {{ $i }}"
                                     aria-label="{{ trans_choice('feedback.card.stars', $i, ['count' => $i]) }} · {{ __('feedback.card.scale')[$i] }}"
@@ -376,7 +376,7 @@
                                 <div @class(['max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[0.9375rem] leading-relaxed',
                                              'rounded-ee-md bg-ink-950 text-white' => $message->fromGuest(),
                                              'rounded-es-md bg-ivory-100 text-ink-900 ring-1 ring-ink-950/5' => ! $message->fromGuest()])>
-                                    <p class="whitespace-pre-line break-words">{{ $message->body }}</p>
+                                    <p class="whitespace-pre-line break-words" dir="auto">{{ $message->body }}</p>
                                     <p @class(['mt-1 text-[0.6875rem]', 'text-white/60' => $message->fromGuest(), 'text-ink-400' => ! $message->fromGuest()])>
                                         {{ $message->fromGuest() ? __('support.guest.you') : __('support.guest.team', ['restaurant' => $restaurant->name]) }} · <span dir="ltr">{{ $message->created_at->setTimezone($tz)->format('d/m H:i') }}</span>
                                     </p>
@@ -410,8 +410,9 @@
             </section>
         @endif
 
-        {{-- Report a problem: a bottom sheet over the page --}}
+        {{-- Report a problem: a bottom sheet over the page (moved to <body>, above the tab bar) --}}
         @if ($canReport)
+            @teleport('body')
             <div x-data="{
                     open: false,
                     category: @js($reportCategory),
@@ -469,6 +470,7 @@
                     </div>
                 </div>
             </div>
+            @endteleport
         @endif
 
         {{-- Pickup pass --}}

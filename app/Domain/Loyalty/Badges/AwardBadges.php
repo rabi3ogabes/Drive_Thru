@@ -16,6 +16,7 @@ use Carbon\CarbonImmutable;
  * After each picked-up order, records the badges the guest just reached
  * (once each: a unique row, so a repeated event changes nothing) and gives
  * each badge's reward, if it has one. Nothing happens while badges are off.
+ * The Rewards page runs the same check when the guest opens it.
  */
 final class AwardBadges
 {
@@ -31,7 +32,21 @@ final class AwardBadges
         $settings = $restaurant === null ? null : BadgeSettings::for($restaurant);
         $customer = Customer::withoutTenancy()->find($event->order->customer_id);
 
-        if ($settings === null || ! $settings->isLive() || $customer === null) {
+        if ($settings === null || $customer === null) {
+            return;
+        }
+
+        $this->check($customer, $settings);
+    }
+
+    /**
+     * Records every badge the guest has reached and doesn't hold yet. Also
+     * run when the guest opens their Rewards page, so guests who qualified
+     * before the owner switched badges on get them without another order.
+     */
+    public function check(Customer $customer, BadgeSettings $settings): void
+    {
+        if (! $settings->isLive()) {
             return;
         }
 

@@ -34,7 +34,7 @@ final class OperationsNavigation
             NavigationItem::make('ops-overview')
                 ->label(fn (): string => __('ops.screens.overview'))
                 ->icon('heroicon-o-squares-2x2')
-                ->group(WorkspaceNavigationGroup::Operations->name)
+                ->group(WorkspaceNavigationGroup::Operations)
                 ->sort(0)
                 ->url(fn (): string => route('ops.overview', self::restaurant()))
                 ->visible(fn (): bool => self::restaurant() !== null && self::user() !== null && app(ChannelAccess::class)->restaurantDashboard(self::user(), self::restaurant()->id)),
@@ -44,7 +44,7 @@ final class OperationsNavigation
             $items[] = NavigationItem::make('ops-'.$screen)
                 ->label(fn (): string => __('ops.screens.'.$screen))
                 ->icon($icon)
-                ->group(WorkspaceNavigationGroup::Operations->name)
+                ->group(WorkspaceNavigationGroup::Operations)
                 ->sort($sort)
                 ->url(fn (): string => route('ops.go', [self::restaurant(), $screen]))
                 ->visible(fn (): bool => self::allowed(OpsController::SCREENS[$screen][1]));

@@ -140,6 +140,17 @@ it('opens the report form pre-filled after a low rating with a missing item', fu
         ->assertSet('reportCategory', 'missing_item');
 });
 
+it('offers the report right after a low rating that names a missing item, without a reload', function () {
+    [$restaurant, $guest, $order] = ticketShop();
+    signInReporter($guest);
+
+    Livewire::test(OrderPage::class, ['restaurant' => $restaurant, 'order' => $order])
+        ->assertDontSee(__('support.guest.report_after_rating'))
+        ->call('rate', 2, ['missing_item'], null)
+        ->assertSee(__('support.guest.report_after_rating'))
+        ->assertSet('reportCategory', 'missing_item');
+});
+
 it('blocks a double tap: a second open on the same order is refused', function () {
     [, $guest, $order] = ticketShop();
 

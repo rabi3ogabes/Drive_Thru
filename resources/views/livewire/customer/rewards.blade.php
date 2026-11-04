@@ -171,6 +171,7 @@
                 @php
                     $newest = $achievements['fresh']->sortByDesc('earned_at')->first();
                 @endphp
+                @teleport('body')
                 <div x-data="{ open: true }" x-show="open" x-cloak class="fixed inset-0 z-50 grid place-items-center bg-ink-950/40 px-6 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-labelledby="unlocked-title"
                      x-on:keydown.escape.window="open = false" wire:key="unlocked-{{ $newest->id }}">
                     <div class="w-full max-w-sm rounded-[2rem] bg-white p-6 text-center shadow-2xl" x-on:click.outside="open = false"
@@ -186,6 +187,7 @@
                         <button type="button" x-on:click="open = false" class="mt-6 w-full rounded-full bg-ink-950 py-3.5 font-semibold text-white transition active:scale-[0.98]">{{ __('guest.close') }}</button>
                     </div>
                 </div>
+                @endteleport
             @endif
         @endif
 

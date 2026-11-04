@@ -33,7 +33,7 @@
                         <div @class(['max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed',
                                      'rounded-ss-md bg-gray-100 text-gray-900 dark:bg-white/5 dark:text-gray-100' => $message->fromGuest(),
                                      'rounded-se-md bg-primary-600 text-white dark:bg-primary-500' => ! $message->fromGuest()])>
-                            <p class="whitespace-pre-line break-words">{{ $message->body }}</p>
+                            <p class="whitespace-pre-line break-words" dir="auto">{{ $message->body }}</p>
                             <p @class(['mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs', 'text-gray-500 dark:text-gray-400' => $message->fromGuest(), 'text-white/75' => ! $message->fromGuest()])>
                                 <span>{{ $message->fromGuest() ? ($ticket->customer->name ?: __('support.admin.guest')) : ($message->user->name ?? __('support.admin.team')) }}</span>
                                 <span aria-hidden="true">·</span>

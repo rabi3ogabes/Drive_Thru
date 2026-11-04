@@ -150,7 +150,7 @@
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ collect($rating->tags)->map(fn ($tag) => __('feedback.tags.'.$tag))->join(' · ') }}</p>
                                     @endif
                                     @if ($rating->comment)
-                                        <p class="mt-1 text-sm text-gray-800 dark:text-gray-100">“{{ $rating->comment }}”</p>
+                                        <p class="mt-1 text-sm text-gray-800 dark:text-gray-100" dir="auto">“{{ $rating->comment }}”</p>
                                     @endif
                                 </li>
                             @endforeach

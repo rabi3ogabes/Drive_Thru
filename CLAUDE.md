@@ -81,4 +81,8 @@ Always verify a vendor API in `vendor/` before using it (Filament 5 / Pest 5 are
 - `Cookie::queue('name', $value, $minutes, httpOnly: true)` mis-maps the named argument (the cookie got `path=1` and never came back). Queue a built cookie: `Cookie::queue(Cookie::make(...))`.
 - mPDF never fails on overflow: content that doesn't fit spills onto a second page silently. Poster tests assert one page with `preg_match_all('/\/Type\s*\/Page[^s]/', $pdf)`; look at a PDF by writing it to the scratchpad and reading it.
 - Demo history written straight to the database (seeders) skips listeners: credit points yourself, dated with `Carbon::setTestNow($at)` and restore the previous test time afterwards.
+- Workspace sidebar groups must all use the same form: `WorkspaceNavigationGroup::X` (the enum). Filament groups items by the serialized value, so an enum and its `->name` string make two groups sharing one object, and the second hides the first's items.
+- Guest pages: overlays (bottom sheets, dialogs) inside the shell sit under the tab bar, because `<main>` is `relative z-10`. Wrap them in `@teleport('body') … @endteleport` (one root element).
+- Text typed by guests or staff (comments, ticket messages) can be in either language: give it `dir="auto"` so its punctuation lands on the right side.
+- `pastOrder()` stores the given time as-is: pass UTC (`->utc()`) when the test depends on the restaurant's local hour.
 - Services gate features: `Restaurant::hasService(Service)`; a `PlanFeature` with `service()` comes with that service, not the plan. Test restaurants from `restaurant()` get Drive-Thru; pass `services: [...]` or use `withService()`.

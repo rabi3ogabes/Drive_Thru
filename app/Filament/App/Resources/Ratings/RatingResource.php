@@ -71,7 +71,7 @@ class RatingResource extends Resource
                     ->formatStateUsing(fn (string $state): string => Lang::text('feedback.tags.'.$state))
                     ->color(fn (string $state): string => in_array($state, RatingTags::POSITIVE, true) ? 'success' : 'gray')
                     ->placeholder('—'),
-                TextColumn::make('comment')->label(__('feedback.admin.columns.comment'))->wrap()->limit(140)->placeholder('—'),
+                TextColumn::make('comment')->label(__('feedback.admin.columns.comment'))->wrap()->limit(140)->placeholder('—')->extraAttributes(['dir' => 'auto']),
                 TextColumn::make('branch.name')->label(__('feedback.admin.columns.branch'))->toggleable(),
                 TextColumn::make('customer.name')->label(__('feedback.admin.columns.guest'))
                     ->state(fn (OrderRating $record): string => trim(($record->customer->name ?? '').' · '.(string) Bidi::ltr($record->customer->maskedPhone()), ' ·'))

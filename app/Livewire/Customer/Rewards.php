@@ -9,6 +9,7 @@ use App\Domain\Branches\Models\Branch;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Loyalty\Actions\ClaimReward;
 use App\Domain\Loyalty\Actions\StampRequests;
+use App\Domain\Loyalty\Badges\AwardBadges;
 use App\Domain\Loyalty\Badges\Badge;
 use App\Domain\Loyalty\Badges\BadgeProgress;
 use App\Domain\Loyalty\Badges\BadgeSettings;
@@ -240,6 +241,8 @@ class Rewards extends Component
         if ($customer === null || ! $settings->isLive() || $settings->active() === []) {
             return null;
         }
+
+        app(AwardBadges::class)->check($customer, $settings);
 
         $now = now()->toImmutable();
         $fresh = CustomerBadge::withoutTenancy()->with('walletReward.reward')

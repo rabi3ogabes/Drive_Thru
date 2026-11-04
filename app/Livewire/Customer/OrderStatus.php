@@ -141,7 +141,12 @@ class OrderStatus extends Component
             app(RateOrder::class)->handle($this->ownOrder(), $this->customer() ?? abort(403), $stars, $tags, $comment);
         } catch (RatingRefused $refused) {
             $this->toast($refused->getMessage(), 'error');
+
+            return;
         }
+
+        // A missing or wrong item is worth reporting: offer it straight away.
+        $this->reportCategory = $this->suggestedCategory($this->order());
     }
 
     /**
