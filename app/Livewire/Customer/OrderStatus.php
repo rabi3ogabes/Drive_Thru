@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Customer;
 
 use App\Domain\Branches\QrCodes;
+use App\Domain\Feedback\Actions\RateOrder;
+use App\Domain\Feedback\Exceptions\RatingRefused;
+use App\Domain\Feedback\Models\OrderRating;
 use App\Domain\Ordering\Actions\CancelOrder;
 use App\Domain\Ordering\Actions\MarkArrived;
 use App\Domain\Ordering\Actions\MarkOnTheWay;
@@ -29,7 +32,8 @@ use Livewire\Component;
 /**
  * The live order: progress, ready time, pickup code and QR. The guest who
  * placed it can also pay again, cancel within the window, say "I'm on the
- * way" and order the same again. Anyone else with the link sees progress only.
+ * way" and order the same again, and once it is picked up, rate it. Anyone
+ * else with the link sees progress only.
  */
 class OrderStatus extends Component
 {
@@ -116,6 +120,20 @@ class OrderStatus extends Component
         }
     }
 
+    /**
+     * The guest's rating, from the card shown after pickup.
+     *
+     * @param  array<int, mixed>  $tags
+     */
+    public function rate(int $stars, array $tags = [], ?string $comment = null): void
+    {
+        try {
+            app(RateOrder::class)->handle($this->ownOrder(), $this->customer() ?? abort(403), $stars, $tags, $comment);
+        } catch (RatingRefused $refused) {
+            $this->toast($refused->getMessage(), 'error');
+        }
+    }
+
     public function orderAgain(): void
     {
         $order = $this->ownOrder();
@@ -152,6 +170,8 @@ class OrderStatus extends Component
             'paymentFailed' => $order->payment_status === PaymentState::Failed,
             'onlineMethods' => app(GatewayResolver::class)->for($this->restaurant)?->methods() ?? [],
             'steps' => [Status::Received, Status::Preparing, Status::Ready, Status::PickedUp],
+            'rating' => $owner ? OrderRating::withoutTenancy()->where('order_id', $order->id)->first() : null,
+            'canRate' => $owner && app(RateOrder::class)->canRate($order, $this->customer()),
             // Live updates for the guest who ordered, or a browser opened through a signed staff link.
             'live' => $owner || in_array($order->id, (array) session(RealtimeAuthController::STAFF_VIEW_SESSION, []), true),
             'lanes' => $order->branch->lanes()->where('is_active', true)->orderBy('sort')->get(),

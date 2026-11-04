@@ -18,6 +18,7 @@ use App\Domain\Campaigns\Models\QrCampaign;
 use App\Domain\Crm\Listeners\RefreshGuestStats;
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Customers\Models\Customer;
+use App\Domain\Feedback\Listeners\AskForRating;
 use App\Domain\Growth\Models\Lead;
 use App\Domain\Integrations\Models\ApiClient;
 use App\Domain\Integrations\Models\WebhookEndpoint;
@@ -169,6 +170,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(OrderStatusChanged::class, RefreshGuestStats::class);
         Event::listen(OrderStatusChanged::class, AttributeCampaignOrder::class);
         Event::listen(OrderStatusChanged::class, RewardReferral::class);
+        Event::listen(OrderStatusChanged::class, AskForRating::class);
         Event::listen([OrderStatusChanged::class, PaymentRefunded::class], StampOrders::class);
     }
 

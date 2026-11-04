@@ -25,6 +25,10 @@ return [
         'title' => 'Kitchen is overloaded at :branch',
         'body' => ':count orders are waiting. Consider pausing new orders.',
     ],
+    'low_rating' => [
+        'title' => 'Order :number was rated :stars/5',
+        'body' => 'A guest at :branch was not happy. Read what they said and put it right.',
+    ],
 
     'preferences' => [
         'menu' => 'Alerts',
