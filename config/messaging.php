@@ -27,6 +27,8 @@ return [
             'stamps' => env('WHATSAPP_TEMPLATE_STAMPS', 'dtp_stamp_card'),
             // Marketing: {{1}} restaurant, {{2}} the offer, {{3}} order link, {{4}} unsubscribe link.
             'campaign' => env('WHATSAPP_TEMPLATE_CAMPAIGN', 'dtp_offer'),
+            // Utility: {{1}} restaurant, {{2}} ticket number, {{3}} the reply, {{4}} order link.
+            'support' => env('WHATSAPP_TEMPLATE_SUPPORT', 'dtp_ticket_reply'),
         ],
 
         // Template language codes as registered with Meta.

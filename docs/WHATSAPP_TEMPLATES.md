@@ -14,6 +14,7 @@ If Meta asks for different names, put yours in `.env` (`WHATSAPP_TEMPLATE_OTP`, 
 | `dtp_pager_ready` | Utility | 1. pager number · 2. branch name (Order-Ready Call) |
 | `dtp_stamp_card` | Utility | 1. stamps added · 2. card name · 3. stamps to go (Rewards) |
 | `dtp_offer` | **Marketing** | 1. restaurant name · 2. the offer · 3. order link · 4. stop-offers link (Campaigns) |
+| `dtp_ticket_reply` | Utility | 1. restaurant name · 2. ticket number · 3. the reply · 4. link to the conversation (Support) |
 
 ## Suggested wording
 
@@ -63,6 +64,14 @@ The only marketing template. Campaigns use it to send owners' offers, only to gu
 - **Pricing:** Meta charges marketing conversations at a higher rate than utility ones. A campaign shows its audience count before it is sent, and a test can go to the owner’s own phone first.
 
 If WhatsApp can’t deliver a campaign message (or the template isn’t approved yet), it falls back to SMS with the same text and the stop link.
+
+### `dtp_ticket_reply` (Support, Utility)
+Sent when staff reply to a problem the guest reported, and once more when the ticket is resolved (with how it was put right). The reply (`{{3}}`) is what staff typed, shortened to 900 characters; the full conversation is on the guest's order page (`{{4}}`).
+- **Category:** Utility. It answers the guest's own report about their order, so it is not marketing.
+- **en:** `{{1}} · {{2}}: {{3}}` / `Reply or see the conversation: {{4}}`
+- **ar:** `{{1}} · {{2}}: {{3}}` / `للرد أو لعرض المحادثة: {{4}}`
+- **Sample values for review:** `Masar Grill` · `T-1001` · `So sorry, Sara. We have refunded the fries.` · `https://dhawq.net/masar/orders/AB12CD34#support`.
+- Set `WHATSAPP_TEMPLATE_SUPPORT` only if you register it under another name. If WhatsApp can't deliver it, the same text goes by SMS.
 
 ## Webhook (delivery and read receipts)
 

@@ -13,6 +13,7 @@ use App\Domain\Support\Enums\TicketCategory;
 use App\Domain\Support\Exceptions\TicketRefused;
 use App\Domain\Support\Models\SupportTicket;
 use App\Domain\Support\Models\TicketMessage;
+use App\Filament\App\Resources\SupportTickets\SupportTicketResource;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -104,6 +105,6 @@ final class OpenTicket
                 'en' => __('support.categories.'.$ticket->category->value, [], 'en'),
             ],
             'branch' => $order->branch->getTranslations('name'),
-        ], route('ops.screen', [$order->branch->restaurant, $order->branch->code, 'live']));
+        ], SupportTicketResource::getUrl('view', ['record' => $ticket], panel: 'app', tenant: $order->branch->restaurant));
     }
 }

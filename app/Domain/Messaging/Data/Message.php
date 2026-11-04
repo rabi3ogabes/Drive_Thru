@@ -28,6 +28,9 @@ final readonly class Message
 
     public const CAMPAIGN = 'campaign';
 
+    /** A reply about a guest's reported problem (utility template). */
+    public const SUPPORT = 'support';
+
     /**
      * @param  list<string>  $parameters  template body parameters, in order
      * @param  list<string>|null  $channels  only these channels, in the platform's order (null = all)

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class GrantReward
 {
-    public const SOURCES = ['tier', 'birthday', 'referral', 'campaign', 'stamps', 'manual'];
+    public const SOURCES = ['tier', 'birthday', 'referral', 'campaign', 'stamps', 'support', 'manual'];
 
     public function __construct(private readonly Points $points) {}
 
