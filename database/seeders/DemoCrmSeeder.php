@@ -94,6 +94,40 @@ final class DemoCrmSeeder extends Seeder
     }
 
     /**
+     * A real person's own guest account in a demo restaurant (their phone, so
+     * sign-in codes and replies reach them): offers accepted, a car, and a
+     * picked-up order at each of the given moments (hours ago).
+     *
+     * @param  list<float>  $hoursAgo
+     */
+    public function ownGuest(Restaurant $restaurant, string $phone, string $name, array $hoursAgo): Customer
+    {
+        $branch = Branch::withoutTenancy()->where('restaurant_id', $restaurant->id)->orderBy('id')->firstOrFail();
+        $products = Product::withoutTenancy()->where('restaurant_id', $restaurant->id)->where('is_available', true)->orderBy('id')->limit(12)->get();
+        $this->currency = $restaurant->currency;
+        $program = LoyaltyProgram::withoutTenancy()->where('restaurant_id', $restaurant->id)->first();
+        $this->earnRate = $program !== null && $program->isActive() ? (int) $program->earn_points_per_unit : 0;
+
+        $guest = Customer::withoutTenancy()->where('restaurant_id', $restaurant->id)->where('phone', $phone)->first()
+            ?? Customer::withoutTenancy()->create(['restaurant_id' => $restaurant->id, 'phone' => $phone, 'name' => $name, 'locale' => 'ar']);
+
+        if (! CustomerVehicle::withoutTenancy()->where('customer_id', $guest->id)->exists()) {
+            CustomerVehicle::withoutTenancy()->create(['restaurant_id' => $restaurant->id, 'customer_id' => $guest->id, 'plate' => '777001', 'color' => 'White', 'make' => 'Lexus', 'is_default' => true]);
+        }
+
+        app(Consent::class)->give($guest, 'account');
+        $now = CarbonImmutable::now();
+
+        foreach (array_values($hoursAgo) as $i => $hours) {
+            $this->order($guest, $branch, $products->slice($i % max(1, $products->count()), 2)->values(), $now->subMinutes((int) round($hours * 60)));
+        }
+
+        app(Tiers::class)->recompute($guest);
+
+        return $guest;
+    }
+
+    /**
      * @param  Collection<int, Product>  $products
      * @return array<string, Customer> by phone
      */
