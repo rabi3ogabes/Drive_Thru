@@ -9,6 +9,8 @@ use App\Domain\Branches\Models\Branch;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Loyalty\Actions\ClaimReward;
 use App\Domain\Loyalty\Actions\StampRequests;
+use App\Domain\Loyalty\Birthdays\BirthdayGift;
+use App\Domain\Loyalty\Birthdays\BirthdaySettings;
 use App\Domain\Loyalty\Exceptions\RewardUnavailable;
 use App\Domain\Loyalty\Models\LedgerEntry;
 use App\Domain\Loyalty\Models\LoyaltyProgram;
@@ -33,7 +35,8 @@ use Livewire\Component;
  * The guest's rewards: stamp cards filling up, points (balance, tier and
  * progress, the catalog to claim from, every movement) and the wallet.
  * Shown when the restaurant has Rewards and runs points, stamp cards or
- * invites (each guest's invite link and how many friends joined).
+ * invites (each guest's invite link and how many friends joined). With the
+ * birthday gift on, it asks for the guest's birthday and celebrates it.
  *
  * Opened from a branch's counter QR (?at=branch), it also lets the guest
  * ask for their stamp: the request waits on the branch's stamp screen and
@@ -50,10 +53,13 @@ class Rewards extends Component
     #[Locked]
     public ?int $stampRequestId = null;
 
+    /** Filled in by guests who haven't told us their birthday yet. */
+    public string $birthday = '';
+
     public function mount(Restaurant $restaurant): void
     {
         $this->restaurant = $restaurant;
-        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty() || ReferralSettings::for($restaurant)->isLive(), 404);
+        abort_unless($this->program() !== null || $this->stampPrograms()->isNotEmpty() || ReferralSettings::for($restaurant)->isLive() || BirthdaySettings::for($restaurant)->isLive(), 404);
 
         $code = request()->query('at');
 
@@ -128,6 +134,24 @@ class Rewards extends Component
         $this->dispatch('stamp-added');
     }
 
+    public function saveBirthday(): void
+    {
+        $customer = $this->customer() ?? abort(403);
+
+        if ($customer->birthday !== null) {
+            return;
+        }
+
+        $this->validate(
+            ['birthday' => ['required', 'date', 'before:today', 'after:1900-01-01']],
+            attributes: ['birthday' => __('loyalty.birthday.ask_label')],
+        );
+
+        $customer->forceFill(['birthday' => $this->birthday])->save();
+        $this->birthday = '';
+        $this->toast(__('loyalty.birthday.saved'));
+    }
+
     public function claim(int $rewardId): void
     {
         $customer = $this->customer();
@@ -162,9 +186,14 @@ class Rewards extends Component
             ->where('customer_id', $customer->id)->whereIn('stamp_program_id', $programs->modelKeys())->get()->keyBy('stamp_program_id');
 
         $invite = ReferralSettings::for($this->restaurant)->liveRewards();
+        $birthdayOn = $customer !== null && BirthdaySettings::for($this->restaurant)->isLive();
 
         return $this->page('livewire.customer.rewards', [
             'customer' => $customer,
+            'askBirthday' => $birthdayOn && $customer->birthday === null,
+            // A gift that arrived this week: the birthday card shows for seven days.
+            'birthdayGift' => $customer === null ? null : BirthdayGift::withoutTenancy()->with('walletReward.reward')
+                ->where('customer_id', $customer->id)->where('sent_at', '>=', now()->subDays(7))->latest('sent_at')->first(),
             'invite' => $invite === null ? null : $invite + [
                 'url' => $customer === null ? null : app(Referrals::class)->url($this->restaurant, $customer),
                 'stats' => $customer === null ? null : app(Referrals::class)->stats($customer),

@@ -9,9 +9,12 @@ use App\Domain\Billing\Enums\PlanFeature;
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Loyalty\Actions\AdjustPoints;
+use App\Domain\Loyalty\Birthdays\BirthdayGift;
+use App\Domain\Loyalty\Birthdays\BirthdaySettings;
 use App\Domain\Loyalty\Exceptions\NotEnoughPoints;
 use App\Domain\Loyalty\Models\EarnRule;
 use App\Domain\Loyalty\Models\LoyaltyProgram;
+use App\Domain\Loyalty\Models\Reward;
 use App\Domain\Loyalty\Models\Tier;
 use App\Domain\Loyalty\Points;
 use App\Domain\Loyalty\Tiers;
@@ -24,6 +27,7 @@ use App\Support\Lang;
 use App\Support\Money;
 use App\Support\Phone;
 use BackedEnum;
+use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
@@ -45,6 +49,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use UnitEnum;
 
@@ -110,6 +115,7 @@ class LoyaltySettings extends Page
                 'multiplier' => $t->earn_multiplier_bp / 10_000,
                 'benefits' => $t->getTranslations('benefits'),
             ])->all(),
+            'birthday' => BirthdaySettings::for($restaurant)->toArray(),
             'rules' => EarnRule::query()->orderBy('id')->get()->map(fn (EarnRule $r): array => [
                 'id' => $r->id,
                 'scope' => $r->scope,
@@ -215,6 +221,24 @@ class LoyaltySettings extends Page
                                         ->collapsible(),
                                 ]),
                         ]),
+                    Tab::make(__('loyalty.admin.tabs.birthday'))
+                        ->icon('heroicon-o-cake')
+                        ->schema([
+                            Section::make(__('loyalty.birthday.section'))
+                                ->description(__('loyalty.birthday.section_hint'))
+                                ->columns(['default' => 1, 'md' => 2])
+                                ->schema([
+                                    Toggle::make('birthday.enabled')->label(__('loyalty.birthday.enabled'))->live()->columnSpanFull(),
+                                    Select::make('birthday.reward_id')->label(__('loyalty.birthday.reward'))->helperText(__('loyalty.birthday.reward_hint'))
+                                        ->options(fn (): array => $this->rewardOptions())->native(false)
+                                        ->required(fn (Get $get): bool => (bool) $get('birthday.enabled')),
+                                    TextInput::make('birthday.days_before')->label(__('loyalty.birthday.days_before'))->helperText(__('loyalty.birthday.days_before_hint'))
+                                        ->numeric()->integer()->minValue(0)->maxValue(BirthdaySettings::MAX_DAYS_BEFORE)->required(),
+                                    Toggle::make('birthday.send_message')->label(__('loyalty.birthday.send_message'))->helperText(__('loyalty.birthday.send_message_hint'))->columnSpanFull(),
+                                    TextEntry::make('birthday_outlook')->hiddenLabel()->columnSpanFull()
+                                        ->state(fn (): string => $this->birthdayOutlook()),
+                                ]),
+                        ]),
                 ]),
             ]);
     }
@@ -303,11 +327,51 @@ class LoyaltySettings extends Page
                 ->log('loyalty.program_saved');
         });
 
+        $birthday = (array) ($state['birthday'] ?? []);
+
+        if (BirthdaySettings::for($restaurant)->toArray() !== BirthdaySettings::save($restaurant, $birthday)->toArray()) {
+            activity()->performedOn($restaurant)->causedBy(Workspace::user())->event('loyalty.birthday_settings_updated')
+                ->withProperties(['birthday' => BirthdaySettings::for($restaurant)->toArray()])->log('loyalty.birthday_settings_updated');
+        }
+
         $this->mount();
 
         $program->refresh()->is_enabled && ! $program->isActive()
             ? Notification::make()->warning()->title(__('loyalty.admin.notifications.incomplete'))->send()
             : Notification::make()->success()->title(__('loyalty.admin.notifications.saved'))->send();
+    }
+
+    /**
+     * Rewards that can be given: active and not archived.
+     *
+     * @return array<int, string>
+     */
+    private function rewardOptions(): array
+    {
+        $currency = Workspace::restaurant()->currency;
+
+        return Reward::query()->with('product')->where('is_active', true)->whereNull('archived_at')->orderBy('id')->get()
+            ->mapWithKeys(fn (Reward $reward): array => [$reward->id => $reward->name.' · '.$reward->gives($currency)])
+            ->all();
+    }
+
+    /** "3 birthdays in the next 7 days · 12 gifts sent this month", in the restaurant's time zone. */
+    private function birthdayOutlook(): string
+    {
+        $restaurant = Workspace::restaurant();
+        $today = CarbonImmutable::now($restaurant->timezone)->startOfDay();
+
+        $upcoming = Customer::query()->whereNotNull('birthday')->where(function (Builder $query) use ($today): void {
+            for ($day = 0; $day < 7; $day++) {
+                $date = $today->addDays($day);
+                $query->orWhere(fn (Builder $query) => $query->whereMonth('birthday', $date->month)->whereDay('birthday', $date->day));
+            }
+        })->count();
+
+        $sent = BirthdayGift::query()->where('sent_at', '>=', $today->startOfMonth()->utc())->count();
+
+        return trans_choice('loyalty.birthday.upcoming', $upcoming, ['count' => $upcoming]).' · '
+            .trans_choice('loyalty.birthday.sent_this_month', $sent, ['count' => $sent]);
     }
 
     private function program(): LoyaltyProgram

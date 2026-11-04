@@ -92,6 +92,44 @@
             </section>
         @endif
 
+        {{-- Happy birthday: the gift that arrived this week --}}
+        @if ($birthdayGift && $birthdayGift->walletReward)
+            <section class="mt-6 overflow-hidden rounded-[1.75rem] bg-brass-50 p-1.5 ring-1 ring-brass-500/20" aria-labelledby="birthday-title" wire:key="birthday-{{ $birthdayGift->id }}">
+                <div class="{{ $core }} relative bg-white">
+                    <div aria-hidden="true" class="pointer-events-none absolute -end-10 -top-12 size-40 rounded-full bg-brass-100/70 blur-2xl"></div>
+                    <div class="relative flex items-start gap-3.5">
+                        <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-brass-500 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]" aria-hidden="true">
+                            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7M5 16c1.2 1 2.4 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0M12 12V8m0 0c-1 0-1.6-.8-1.6-1.6S12 4 12 4s1.6 1.6 1.6 2.4S13 8 12 8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <div class="min-w-0">
+                            <h2 id="birthday-title" class="display text-xl text-ink-950">{{ __('loyalty.birthday.card_title', ['name' => $customer?->firstName() ?? '']) }}</h2>
+                            <p class="mt-1 text-sm text-ink-600">{{ __('loyalty.birthday.card_body', ['reward' => $birthdayGift->walletReward->reward->name]) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        {{-- Ask for the birthday, when a gift is waiting for it --}}
+        @if ($askBirthday)
+            <section class="mt-6 {{ $card }}" aria-labelledby="ask-birthday-title">
+                <form wire:submit="saveBirthday" class="{{ $core }}">
+                    <h2 id="ask-birthday-title" class="font-semibold text-ink-950">{{ __('loyalty.birthday.ask_title') }}</h2>
+                    <p class="mt-0.5 text-sm text-ink-500">{{ __('loyalty.birthday.ask_body', ['restaurant' => $restaurant->name]) }}</p>
+                    <div class="mt-3 flex items-end gap-2">
+                        <label class="min-w-0 flex-1">
+                            <span class="sr-only">{{ __('loyalty.birthday.ask_label') }}</span>
+                            <input wire:model="birthday" type="date" max="{{ now()->subDay()->format('Y-m-d') }}" min="1900-01-02" dir="ltr" required
+                                   class="min-h-12 w-full rounded-2xl border-0 bg-ivory-100 px-4 text-[1rem] text-ink-950 ring-1 ring-ink-950/5 focus:ring-2 focus:ring-[var(--brand)]">
+                        </label>
+                        <button type="submit" wire:loading.attr="disabled" wire:target="saveBirthday"
+                                class="min-h-12 shrink-0 rounded-full bg-[var(--brand)] px-5 font-semibold text-white transition active:scale-95 disabled:opacity-60">{{ __('loyalty.birthday.ask_save') }}</button>
+                    </div>
+                    @error('birthday')<p class="mt-1.5 text-sm text-status-delayed" role="alert">{{ $message }}</p>@enderror
+                </form>
+            </section>
+        @endif
+
         {{-- Invite friends --}}
         @if ($invite)
             <section class="mt-8 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="invite-title"
