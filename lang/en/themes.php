@@ -12,7 +12,7 @@ return [
         ],
         'fields' => [
             'key' => 'Key',
-            'key_hint' => 'Lower-case letters, numbers and dashes. Built-in keys can’t change.',
+            'key_hint' => 'Lower-case letters, numbers and dashes. It can’t change after the template is created.',
             'name' => 'Name',
             'description' => 'Description',
             'active' => 'Offered to restaurants',
@@ -58,6 +58,8 @@ return [
         'fonts_hint' => 'A pair for headings and one for body text, each with an English and an Arabic face.',
         'brand' => 'Logo, cover and corners',
         'brand_hint' => 'Your logo and cover are shared with Restaurant settings.',
+        'brand_instant' => 'Logo and cover changes apply straight away; colours, fonts and corners wait for Save theme.',
+        'remove_cover_confirm' => 'Remove the cover image? Guests will see the template’s colours instead.',
         'logo' => 'Logo',
         'logo_hint' => 'Square PNG, JPEG or WebP, up to 2 MB.',
         'cover' => 'Cover image',

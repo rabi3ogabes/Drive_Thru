@@ -40,18 +40,18 @@
             <section class="mt-6 rounded-[calc(2rem*var(--radius-scale))] bg-[color-mix(in_oklab,var(--brand)_12%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="balance-title">
                 <div class="relative overflow-hidden rounded-[max(0px,calc(2rem*var(--radius-scale)-0.375rem))] bg-[var(--brand)] p-5 text-on-brand shadow-[inset_0_1px_0_rgb(255_255_255/0.18)]">
                     <div aria-hidden="true" class="pointer-events-none absolute -end-16 -top-20 size-56 rounded-full bg-white/10 blur-2xl"></div>
-                    <p id="balance-title" class="text-xs font-medium uppercase tracking-[0.18em] text-white/70 rtl:tracking-normal">{{ __('guest.rewards.balance') }}</p>
+                    <p id="balance-title" class="text-xs font-medium uppercase tracking-[0.18em] text-on-brand/70 rtl:tracking-normal">{{ __('guest.rewards.balance') }}</p>
                     <p class="mt-1 text-5xl font-semibold tabular-nums tracking-tight" dir="ltr">{{ number_format($customer->points_balance) }}</p>
-                    <p class="mt-1 text-sm text-white/75" dir="ltr">≈ {{ Money::format($program->valueOf($customer->points_balance), $currency) }}</p>
+                    <p class="mt-1 text-sm text-on-brand/75" dir="ltr">≈ {{ Money::format($program->valueOf($customer->points_balance), $currency) }}</p>
 
                     @if ($progress && $tiers->isNotEmpty())
                         <div class="mt-5 rounded-2xl bg-white/10 p-3.5 ring-1 ring-white/15">
                             <div class="flex items-center justify-between gap-3 text-sm">
                                 <span class="font-semibold">{{ $progress['tier']?->name ?? __('guest.rewards.no_tier') }}</span>
                                 @if ($progress['next'])
-                                    <span class="text-white/75">{{ __('guest.rewards.to_next', ['points' => number_format($progress['needed']), 'tier' => $progress['next']->name]) }}</span>
+                                    <span class="text-on-brand/75">{{ __('guest.rewards.to_next', ['points' => number_format($progress['needed']), 'tier' => $progress['next']->name]) }}</span>
                                 @else
-                                    <span class="text-white/75">{{ __('guest.rewards.top_tier') }}</span>
+                                    <span class="text-on-brand/75">{{ __('guest.rewards.top_tier') }}</span>
                                 @endif
                             </div>
                             <div class="mt-2.5 h-2 overflow-hidden rounded-full bg-white/20" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $progress['percent'] }}" aria-label="{{ __('guest.rewards.progress') }}">

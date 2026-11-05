@@ -87,20 +87,22 @@ class MenuTheme extends Model
     }
 
     /**
-     * Restaurants per template, in one query.
+     * Restaurants per template, in one query, once per request.
      *
      * @return array<string, int>
      */
     public static function usage(): array
     {
-        $usage = [];
+        return once(function (): array {
+            $usage = [];
 
-        foreach (Restaurant::query()->get(['id', 'menu_theme']) as $restaurant) {
-            $key = is_array($restaurant->menu_theme) ? (string) ($restaurant->menu_theme['template'] ?? self::CLASSIC) : self::CLASSIC;
-            $usage[$key] = ($usage[$key] ?? 0) + 1;
-        }
+            foreach (Restaurant::query()->get(['id', 'menu_theme']) as $restaurant) {
+                $key = is_array($restaurant->menu_theme) ? (string) ($restaurant->menu_theme['template'] ?? self::CLASSIC) : self::CLASSIC;
+                $usage[$key] = ($usage[$key] ?? 0) + 1;
+            }
 
-        return $usage;
+            return $usage;
+        });
     }
 
     /**

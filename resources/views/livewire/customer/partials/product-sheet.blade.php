@@ -162,8 +162,8 @@
                 </button>
             </div>
             <button type="button" x-on:click="submit()" :disabled="! p.available || busy"
-                    class="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-full py-3.5 pe-5 ps-5 font-semibold text-white shadow-lg transition active:scale-[0.98] disabled:opacity-60"
-                    :class="valid() ? 'bg-[var(--brand)]' : 'bg-ink-700'">
+                    class="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-full py-3.5 pe-5 ps-5 font-semibold shadow-lg transition active:scale-[0.98] disabled:opacity-60"
+                    :class="valid() ? 'bg-[var(--brand)] text-on-brand' : 'bg-ink-700 text-white'">
                 <span x-show="! busy" class="truncate whitespace-nowrap" x-text="p.available ? (valid() ? t.add : t.choose_options) : t.unavailable"></span>
                 <span x-show="busy" x-cloak>{{ __('guest.loading') }}</span>
                 <span class="shrink-0 tabular-nums" dir="ltr" x-show="p.available" x-text="money(unit() * qty)"></span>

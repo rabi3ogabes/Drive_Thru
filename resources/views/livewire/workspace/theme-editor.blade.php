@@ -215,7 +215,7 @@
             </x-filament::section>
 
             {{-- 4. Logo, cover and corners --}}
-            <x-filament::section :heading="__('themes.editor.brand')" :description="__('themes.editor.brand_hint')" icon="heroicon-o-photo">
+            <x-filament::section :heading="__('themes.editor.brand')" :description="__('themes.editor.brand_hint').' '.__('themes.editor.brand_instant')" icon="heroicon-o-photo">
                 <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
                     <div class="flex items-center gap-4 rounded-xl p-4 ring-1 ring-gray-950/5 dark:ring-white/10">
                         <span class="grid size-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-gray-50 ring-1 ring-gray-950/5 dark:bg-white/5 dark:ring-white/10">
@@ -257,7 +257,7 @@
                                     <input type="file" wire:model="coverUpload" accept="image/png,image/jpeg,image/webp" class="sr-only">
                                 </label>
                                 @if ($restaurant->cover_path)
-                                    <button type="button" wire:click="removeCover" class="text-sm text-gray-500 hover:text-danger-600 dark:text-gray-400">{{ __('themes.editor.remove') }}</button>
+                                    <button type="button" wire:click="removeCover" wire:confirm="{{ __('themes.editor.remove_cover_confirm') }}" class="text-sm text-gray-500 hover:text-danger-600 dark:text-gray-400">{{ __('themes.editor.remove') }}</button>
                                 @endif
                             </span>
                         </div>

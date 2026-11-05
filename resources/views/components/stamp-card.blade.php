@@ -17,8 +17,8 @@
 @endphp
 {{-- A guest's stamp card, like the paper one: their restaurant's colour, one circle per purchase, then the free one. --}}
 <div {{ $attributes->class('theme-fixed relative overflow-hidden rounded-[calc(1.75rem*var(--radius-scale))] p-1.5 ring-1 ring-black/5') }}
-     style="--card: {{ $accent ?? 'var(--brand, var(--color-teal-800))' }}; background: color-mix(in oklab, var(--card) 14%, white);">
-    <div class="relative overflow-hidden rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] p-5 text-white shadow-[inset_0_1px_0_color-mix(in_oklab,white_18%,transparent)]"
+     style="--card: {{ $accent ?? 'var(--brand, var(--color-teal-800))' }}; --card-text: {{ $accent === null ? 'var(--color-on-brand, #ffffff)' : '#ffffff' }}; background: color-mix(in oklab, var(--card) 14%, white);">
+    <div class="relative overflow-hidden rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] p-5 text-[color:var(--card-text)] shadow-[inset_0_1px_0_color-mix(in_oklab,white_18%,transparent)]"
          style="background: linear-gradient(140deg, color-mix(in oklab, var(--card) 88%, white) 0%, var(--card) 55%, color-mix(in oklab, var(--card) 80%, var(--color-ink-950)) 100%);">
         <div aria-hidden="true" class="pointer-events-none absolute -end-14 -top-16 size-44 rounded-full bg-white/10 blur-2xl"></div>
 
@@ -26,7 +26,7 @@
             <div class="min-w-0">
                 <p class="truncate text-lg font-semibold tracking-tight">{{ $name }}</p>
                 @if ($target || $reward)
-                    <p class="mt-0.5 text-sm text-white/75">
+                    <p class="mt-0.5 text-sm text-[color:color-mix(in_oklab,var(--card-text)_75%,transparent)]">
                         {{ __('loyalty.stamps.card_line', ['count' => $needed, 'item' => $target ?? '…', 'reward' => $reward ?? '…']) }}
                     </p>
                 @endif

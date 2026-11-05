@@ -36,8 +36,9 @@ class MenuThemeForm
                         ->maxLength(60)
                         ->regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')
                         ->unique(ignoreRecord: true)
-                        ->disabled(fn (?MenuTheme $record): bool => $record?->is_built_in === true)
-                        ->dehydrated(fn (?MenuTheme $record): bool => $record?->is_built_in !== true),
+                        // Restaurants store the key, so it never changes once the template exists.
+                        ->disabled(fn (?MenuTheme $record): bool => $record !== null)
+                        ->dehydrated(fn (?MenuTheme $record): bool => $record === null),
                     Bilingual::text('name', __('themes.admin.fields.name'), maxLength: 60),
                     Bilingual::textarea('description', __('themes.admin.fields.description'), maxLength: 200),
                     Toggle::make('is_active')->label(__('themes.admin.fields.active'))->helperText(__('themes.admin.fields.active_hint'))->default(true),
