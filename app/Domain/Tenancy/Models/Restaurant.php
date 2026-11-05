@@ -56,6 +56,7 @@ use Spatie\Translatable\HasTranslations;
  * @property string $default_locale
  * @property ?string $logo_path
  * @property ?string $accent_color
+ * @property ?array{template?: string, overrides?: array<string, mixed>, updated_at?: string} $menu_theme
  * @property ?string $cover_path
  * @property int $tax_rate_bp
  * @property int $service_fee_bp
@@ -105,6 +106,7 @@ class Restaurant extends Model implements HasAvatar, HasName
         'quiet_hours_start' => null,
         'quiet_hours_end' => null,
         'menu_layout' => null,
+        'menu_theme' => null,
         'settings' => null,
         'legal_name' => null,
         'contact_email' => null,
@@ -123,6 +125,7 @@ class Restaurant extends Model implements HasAvatar, HasName
             'status' => RestaurantStatus::class,
             'settings' => 'array',
             'menu_layout' => 'array',
+            'menu_theme' => 'array',
             'tax_rate_bp' => 'integer',
             'service_fee_bp' => 'integer',
             'menu_link_mode' => MenuLinkMode::class,

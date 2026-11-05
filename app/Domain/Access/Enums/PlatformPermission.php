@@ -26,6 +26,7 @@ enum PlatformPermission: string implements Permission
     case ViewSecurity = 'security.view';
     case ViewAuditLog = 'audit.view';
     case ViewReports = 'reports.view';
+    case ManageThemes = 'themes.manage';
 
     public function scope(): string
     {
@@ -37,7 +38,7 @@ enum PlatformPermission: string implements Permission
         return match ($this) {
             self::ViewClients, self::ManageClients, self::ImpersonateOwners => 'clients',
             self::ManageBilling => 'billing',
-            self::ManageLeads, self::ManageWebsite => 'growth',
+            self::ManageLeads, self::ManageWebsite, self::ManageThemes => 'growth',
             self::ManagePlatformStaff, self::ManageSettings => 'platform',
             self::ViewSecurity, self::ViewAuditLog => 'security',
             self::ViewReports => 'reports',

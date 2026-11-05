@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Menu;
 
 use App\Domain\Tenancy\Models\Restaurant;
+use App\Domain\Themes\ThemeResolver;
 
 /**
  * How the guest menu looks: card style, image shape, what to show and
@@ -27,7 +28,7 @@ final readonly class MenuLayout
 
     public static function for(Restaurant $restaurant): self
     {
-        return self::fromArray($restaurant->menu_layout ?? []);
+        return ThemeResolver::for($restaurant)->layout;
     }
 
     /**

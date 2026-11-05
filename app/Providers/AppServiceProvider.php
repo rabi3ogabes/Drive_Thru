@@ -66,6 +66,7 @@ use App\Domain\Staff\Models\Employee;
 use App\Domain\Support\Models\SupportTicket;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Domain\Tenancy\TenantContext;
+use App\Domain\Themes\ThemeResolver;
 use App\Livewire\WorkspaceNotices;
 use App\Models\User;
 use App\Policies\ActivityPolicy;
@@ -115,6 +116,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped(TenantContext::class);
+        $this->app->scoped(ThemeResolver::class);
         $this->app->scoped(CustomerAuth::class);
         $this->app->scoped(Messenger::class);
         $this->app->scoped(KitchenLoad::class);

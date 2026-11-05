@@ -7,8 +7,8 @@ namespace App\Filament\App\Pages;
 use App\Domain\Access\Enums\RestaurantPermission;
 use App\Domain\Branches\Links;
 use App\Domain\Branches\Models\Branch;
-use App\Domain\Menu\MenuCache;
 use App\Domain\Menu\MenuLayout;
+use App\Domain\Themes\ThemeResolver;
 use App\Filament\App\Workspace;
 use App\Filament\App\WorkspaceNavigationGroup;
 use BackedEnum;
@@ -132,8 +132,7 @@ class MenuDesign extends Page
         abort_unless(self::canAccess(), 403);
 
         $restaurant = Workspace::restaurant();
-        $restaurant->forceFill(['menu_layout' => MenuLayout::fromArray($this->form->getState())->toArray()])->save();
-        MenuCache::bump($restaurant->id);
+        ThemeResolver::save($restaurant, ThemeResolver::template($restaurant)->key, ThemeResolver::for($restaurant)->with(['layout' => MenuLayout::fromArray($this->form->getState())->toArray()]));
 
         Notification::make()->success()->title(__('menu.design.saved'))->send();
     }

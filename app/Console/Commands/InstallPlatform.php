@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Domain\Billing\PlanCatalog;
+use App\Domain\Themes\ThemeCatalog;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
@@ -64,6 +65,7 @@ final class InstallPlatform extends Command
 
         // A new platform starts with the standard plan tiers (kept as they are if already there).
         app(PlanCatalog::class)->install();
+        app(ThemeCatalog::class)->install();
 
         activity()->performedOn($user)->event('platform.installed')->log($existed ? 'Promoted to super admin' : 'Super admin created');
 

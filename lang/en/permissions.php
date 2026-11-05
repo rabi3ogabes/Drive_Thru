@@ -29,6 +29,7 @@ return [
         'security.view' => ['label' => 'Security center', 'description' => 'See security alerts, locked sign-ins and unlock accounts.'],
         'audit.view' => ['label' => 'Audit log', 'description' => 'Read the full history of who changed what.'],
         'reports.view' => ['label' => 'Platform reports', 'description' => 'Revenue, growth and usage across all restaurants.'],
+        'themes.manage' => ['label' => 'Menu themes', 'description' => 'Add, edit, hide and set the default theme templates restaurants choose from.'],
     ],
 
     'restaurant' => [
