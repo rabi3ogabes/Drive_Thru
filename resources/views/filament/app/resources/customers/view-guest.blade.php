@@ -121,6 +121,42 @@
                         </ol>
                     @endif
                 </x-filament::section>
+
+                {{-- Badges earned (streaks and badges) --}}
+                @if ($profile['badges']->isNotEmpty())
+                    <x-filament::section icon="heroicon-o-trophy" :heading="__('loyalty.badges.profile')">
+                        <ul class="flex flex-wrap gap-2">
+                            @foreach ($profile['badges'] as $badge)
+                                <li>
+                                    <x-filament::badge color="warning" :tooltip="__('loyalty.badges.earned_on', ['date' => $badge->earned_at->setTimezone($restaurant->timezone)->format('d/m/Y')])">{{ $badge->badge->label() }}</x-filament::badge>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </x-filament::section>
+                @endif
+
+                {{-- What they said after pickup --}}
+                @if ($profile['ratings']->isNotEmpty())
+                    <x-filament::section icon="heroicon-o-star" :heading="__('feedback.admin.profile')">
+                        <ul class="divide-y divide-gray-950/5 dark:divide-white/10">
+                            @foreach ($profile['ratings'] as $rating)
+                                <li class="py-3 first:pt-0 last:pb-0">
+                                    <div class="flex items-center justify-between gap-3 text-sm">
+                                        <span @class(['tracking-wider', 'text-danger-600 dark:text-danger-400' => $rating->stars <= 2, 'text-warning-600 dark:text-warning-400' => $rating->stars === 3, 'text-success-600 dark:text-success-400' => $rating->stars >= 4]) dir="ltr"
+                                              aria-label="{{ trans_choice('feedback.card.stars', $rating->stars, ['count' => $rating->stars]) }}">{{ str_repeat('★', $rating->stars) }}{{ str_repeat('☆', 5 - $rating->stars) }}</span>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ $rating->branch->name }} · {{ $rating->created_at->setTimezone($restaurant->timezone)->format('d/m/Y') }}</span>
+                                    </div>
+                                    @if ($rating->tags !== [])
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ collect($rating->tags)->map(fn ($tag) => __('feedback.tags.'.$tag))->join(' · ') }}</p>
+                                    @endif
+                                    @if ($rating->comment)
+                                        <p class="mt-1 text-sm text-gray-800 dark:text-gray-100" dir="auto">“{{ $rating->comment }}”</p>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </x-filament::section>
+                @endif
             </div>
 
             <div class="grid min-w-0 grid-cols-1 content-start gap-6 lg:col-span-2">

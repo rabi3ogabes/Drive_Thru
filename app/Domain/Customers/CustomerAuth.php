@@ -6,6 +6,7 @@ namespace App\Domain\Customers;
 
 use App\Domain\Customers\Models\Customer;
 use App\Domain\Customers\Models\CustomerSession;
+use App\Domain\Referrals\GuestDevice;
 use App\Domain\Tenancy\Models\Restaurant;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
@@ -64,6 +65,7 @@ final class CustomerAuth
             'token_hash' => hash('sha256', $token),
             'ip' => $this->request->ip(),
             'user_agent' => Str::limit((string) $this->request->userAgent(), 250, ''),
+            'device_hash' => app(GuestDevice::class)->hash(),
             'last_active_at' => now(),
         ]);
 

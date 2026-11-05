@@ -266,6 +266,213 @@
             </ol>
         @endif
 
+        {{-- After pickup: how was it? --}}
+        @if ($rating)
+            <section id="rate" class="mt-6 {{ $card }}" aria-labelledby="rated-title" wire:key="rated-{{ $rating->id }}">
+                <div class="{{ $core }} flex items-start gap-3.5">
+                    <span class="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-white" aria-hidden="true">
+                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <h2 id="rated-title" class="font-semibold text-ink-950">{{ __('feedback.thanks.title') }}</h2>
+                        <p class="mt-0.5 flex items-center gap-0.5 text-brass-500" role="img" aria-label="{{ trans_choice('feedback.card.stars', $rating->stars, ['count' => $rating->stars]) }}">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <svg @class(['size-4', 'text-ink-200' => $i > $rating->stars]) viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4-4.7-4.4 6.4-.8L12 2.8Z"/></svg>
+                            @endfor
+                        </p>
+                        <p class="mt-1 text-sm text-ink-500">{{ $rating->isLow() ? __('feedback.thanks.low') : __('feedback.thanks.body') }}</p>
+                        @if ($canReport && $reportCategory)
+                            <button type="button" x-on:click="$dispatch('open-report')"
+                                    class="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-ink-950 px-4 text-sm font-semibold text-white transition active:scale-95">
+                                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 8v5m0 3.5v.01M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                {{ __('support.guest.report_after_rating') }}
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        @elseif ($canRate)
+            <section id="rate" class="mt-6 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="rate-title"
+                     x-data="{
+                        stars: 0,
+                        hover: 0,
+                        tags: [],
+                        comment: '',
+                        positive: @js(\App\Domain\Feedback\RatingTags::POSITIVE),
+                        negative: @js(\App\Domain\Feedback\RatingTags::NEGATIVE),
+                        labels: @js(collect(\App\Domain\Feedback\RatingTags::all())->mapWithKeys(fn ($t) => [$t => __('feedback.tags.'.$t)])),
+                        scale: @js(__('feedback.card.scale')),
+                        get options() { return this.stars >= 4 ? this.positive : this.negative },
+                        pick(n) { if ((this.stars >= 4) !== (n >= 4)) this.tags = []; this.stars = n },
+                        toggle(tag) { this.tags = this.tags.includes(tag) ? this.tags.filter(t => t !== tag) : [...this.tags, tag] },
+                     }">
+                <div class="{{ $core }} bg-white">
+                    <h2 id="rate-title" class="font-semibold text-ink-950">{{ __('feedback.card.title') }}</h2>
+                    <p class="mt-0.5 text-sm text-ink-500">{{ __('feedback.card.subtitle', ['branch' => $order->branch->name]) }}</p>
+
+                    <div class="mt-4 flex items-center justify-between gap-2" role="radiogroup" aria-labelledby="rate-title" x-on:mouseleave="hover = 0">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <button type="button" role="radio" x-bind:aria-checked="stars === {{ $i }}"
+                                    aria-label="{{ trans_choice('feedback.card.stars', $i, ['count' => $i]) }} · {{ __('feedback.card.scale')[$i] }}"
+                                    x-on:click="pick({{ $i }})" x-on:mouseenter="hover = {{ $i }}"
+                                    class="grid size-12 place-items-center rounded-2xl transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-90"
+                                    x-bind:class="(hover || stars) >= {{ $i }} ? 'text-brass-500 scale-105' : 'text-ink-200'">
+                                <svg class="size-8 drop-shadow-sm" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4-4.7-4.4 6.4-.8L12 2.8Z"/></svg>
+                            </button>
+                        @endfor
+                    </div>
+                    <p class="mt-1 h-5 text-center text-sm font-medium text-ink-700" aria-live="polite" x-text="scale[hover || stars] ?? ''"></p>
+
+                    <div x-show="stars > 0" x-cloak x-transition:enter="transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" x-transition:enter-start="opacity-0 -translate-y-1">
+                        <p class="mt-3 text-sm font-medium text-ink-700" x-text="stars >= 4 ? @js(__('feedback.card.what_went_well')) : @js(__('feedback.card.what_went_wrong'))"></p>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            <template x-for="tag in options" :key="tag">
+                                <button type="button" x-on:click="toggle(tag)" x-bind:aria-pressed="tags.includes(tag)"
+                                        class="min-h-10 rounded-full px-3.5 text-sm font-medium ring-1 transition active:scale-95"
+                                        x-bind:class="tags.includes(tag) ? 'bg-ink-950 text-white ring-ink-950' : 'bg-white text-ink-700 ring-ink-950/10'"
+                                        x-text="labels[tag]"></button>
+                            </template>
+                        </div>
+
+                        <label class="mt-4 block">
+                            <span class="text-sm font-medium text-ink-700">{{ __('feedback.card.comment') }}</span>
+                            <textarea x-model="comment" rows="2" maxlength="{{ \App\Domain\Feedback\Actions\RateOrder::COMMENT_LENGTH }}" placeholder="{{ __('feedback.card.comment_placeholder') }}"
+                                      class="mt-1.5 w-full resize-none rounded-2xl border-0 bg-ivory-100 px-4 py-3 text-[1rem] text-ink-950 ring-1 ring-ink-950/5 placeholder:text-ink-400 focus:ring-2 focus:ring-[var(--brand)]"></textarea>
+                        </label>
+
+                        <button type="button" x-on:click="$wire.rate(stars, tags, comment)" wire:loading.attr="disabled" wire:target="rate"
+                                class="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-6 font-semibold text-white transition active:scale-[0.98] disabled:opacity-60">
+                            <svg wire:loading wire:target="rate" class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                            {{ __('feedback.card.send') }}
+                        </button>
+                    </div>
+                    @if ($order->picked_up_at)
+                        <p class="mt-3 text-center text-xs text-ink-400">{{ __('feedback.card.closes', ['time' => $order->picked_up_at->addHours(\App\Domain\Feedback\Actions\RateOrder::WINDOW_HOURS)->setTimezone($tz)->format('d/m H:i')]) }}</p>
+                    @endif
+                </div>
+            </section>
+        @endif
+
+        {{-- A reported problem: the conversation with the branch --}}
+        @if ($ticket)
+            <section id="support" class="mt-6 {{ $card }}" aria-labelledby="ticket-title" wire:key="ticket-{{ $ticket->id }}-{{ $ticket->messages->count() }}-{{ $ticket->status }}">
+                <div class="{{ $core }}">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <h2 id="ticket-title" class="font-semibold text-ink-950">{{ __('support.guest.title', ['number' => $ticket->displayNumber()]) }}</h2>
+                            <p class="text-sm text-ink-500">{{ $ticket->category->getLabel() }}</p>
+                        </div>
+                        <span @class(['shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ring-1',
+                                      'bg-brass-50 text-brass-800 ring-brass-500/20' => $ticket->status === \App\Domain\Support\Models\SupportTicket::OPEN,
+                                      'bg-[color-mix(in_oklab,var(--brand)_10%,white)] text-[var(--brand)] ring-[var(--brand)]/20' => $ticket->status === \App\Domain\Support\Models\SupportTicket::ANSWERED,
+                                      'bg-ivory-100 text-ink-600 ring-ink-950/10' => $ticket->status === \App\Domain\Support\Models\SupportTicket::RESOLVED])>
+                            {{ __('support.guest.status.'.$ticket->status) }}
+                        </span>
+                    </div>
+
+                    <ol class="mt-4 space-y-3" aria-label="{{ __('support.guest.title', ['number' => $ticket->displayNumber()]) }}">
+                        @foreach ($ticket->messages as $message)
+                            <li @class(['flex', 'justify-end' => $message->fromGuest(), 'justify-start' => ! $message->fromGuest()])>
+                                <div @class(['max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[0.9375rem] leading-relaxed',
+                                             'rounded-ee-md bg-ink-950 text-white' => $message->fromGuest(),
+                                             'rounded-es-md bg-ivory-100 text-ink-900 ring-1 ring-ink-950/5' => ! $message->fromGuest()])>
+                                    <p class="whitespace-pre-line break-words" dir="auto">{{ $message->body }}</p>
+                                    <p @class(['mt-1 text-[0.6875rem]', 'text-white/60' => $message->fromGuest(), 'text-ink-400' => ! $message->fromGuest()])>
+                                        {{ $message->fromGuest() ? __('support.guest.you') : __('support.guest.team', ['restaurant' => $restaurant->name]) }} · <span dir="ltr">{{ $message->created_at->setTimezone($tz)->format('d/m H:i') }}</span>
+                                    </p>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ol>
+
+                    @if (! $ticket->isOpen())
+                        <p class="mt-4 flex items-center gap-2 rounded-2xl bg-[color-mix(in_oklab,var(--brand)_8%,white)] px-3.5 py-3 text-sm font-medium text-ink-800">
+                            <svg class="size-5 shrink-0 text-[var(--brand)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            {{ match (true) {
+                                $ticket->outcome === 'refund' && $ticket->refund => __('support.guest.outcome.refund', ['amount' => Money::format($ticket->refund->amount_minor, $currency)]),
+                                $ticket->outcome === 'reward' && $ticket->walletReward => __('support.guest.outcome.reward', ['reward' => $ticket->walletReward->reward->name]),
+                                default => __('support.guest.outcome.none'),
+                            } }}
+                        </p>
+                    @else
+                        <form class="mt-4 flex items-end gap-2" x-data="{ body: '' }" x-on:submit.prevent="if (body.trim()) { $wire.replyToTicket(body).then(() => body = '') }">
+                            <label class="sr-only" for="ticket-reply">{{ __('support.guest.reply_placeholder') }}</label>
+                            <textarea id="ticket-reply" x-model="body" rows="1" maxlength="{{ \App\Domain\Support\Models\TicketMessage::LENGTH }}" placeholder="{{ __('support.guest.reply_placeholder') }}"
+                                      class="max-h-32 min-h-12 flex-1 resize-none rounded-2xl border-0 bg-ivory-100 px-4 py-3 text-[1rem] text-ink-950 ring-1 ring-ink-950/5 placeholder:text-ink-400 focus:ring-2 focus:ring-[var(--brand)]"
+                                      x-on:input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"></textarea>
+                            <button type="submit" x-bind:disabled="! body.trim()" wire:loading.attr="disabled" wire:target="replyToTicket"
+                                    class="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-white transition active:scale-90 disabled:opacity-40" aria-label="{{ __('support.guest.reply') }}">
+                                <svg class="flip-rtl size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </section>
+        @endif
+
+        {{-- Report a problem: a bottom sheet over the page (moved to <body>, above the tab bar) --}}
+        @if ($canReport)
+            @teleport('body')
+            <div x-data="{
+                    open: false,
+                    category: @js($reportCategory),
+                    items: [],
+                    body: '',
+                    withItems: @js(collect(\App\Domain\Support\Enums\TicketCategory::cases())->filter->asksForItems()->map->value->values()),
+                    show() { this.open = true; this.$nextTick(() => this.$refs.panel?.focus()) },
+                 }"
+                 x-on:open-report.window="show()" x-on:ticket-opened.window="open = false; items = []; body = ''"
+                 x-on:keydown.escape.window="open = false">
+                <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="report-title">
+                    <button type="button" class="absolute inset-0 bg-ink-950/40 backdrop-blur-[2px]" x-on:click="open = false" aria-label="{{ __('support.guest.cancel') }}"
+                            x-show="open" x-transition.opacity.duration.300ms></button>
+                    <div x-ref="panel" tabindex="-1" class="relative max-h-[92dvh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl outline-none"
+                         x-show="open" x-transition:enter="transition duration-[320ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none" x-transition:enter-start="translate-y-full" x-transition:leave="transition duration-200 ease-in" x-transition:leave-end="translate-y-full">
+                        <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-ink-200"></div>
+                        <h2 id="report-title" class="display text-2xl text-ink-950">{{ __('support.guest.sheet_title') }}</h2>
+                        <p class="mt-1 text-sm text-ink-500">{{ __('support.guest.report_hint') }}</p>
+
+                        <div class="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="report-title">
+                            @foreach (\App\Domain\Support\Enums\TicketCategory::cases() as $category)
+                                <button type="button" role="radio" x-on:click="category = @js($category->value)" x-bind:aria-checked="category === @js($category->value)"
+                                        class="min-h-11 rounded-full px-4 text-sm font-medium ring-1 transition active:scale-95"
+                                        x-bind:class="category === @js($category->value) ? 'bg-ink-950 text-white ring-ink-950' : 'bg-white text-ink-700 ring-ink-950/10'">{{ $category->getLabel() }}</button>
+                            @endforeach
+                        </div>
+
+                        <fieldset class="mt-5" x-show="withItems.includes(category)" x-cloak>
+                            <legend class="text-sm font-medium text-ink-700">{{ __('support.guest.which_items') }}</legend>
+                            <div class="mt-2 divide-y divide-ink-950/5 rounded-2xl bg-ivory-100/70 ring-1 ring-ink-950/5">
+                                @foreach ($order->items as $item)
+                                    <label class="flex min-h-12 cursor-pointer items-center gap-3 px-4 py-2.5">
+                                        <input type="checkbox" value="{{ $item->id }}" x-model.number="items" class="size-5 rounded-md border-ink-300 text-[var(--brand)] focus:ring-[var(--brand)]">
+                                        <span class="min-w-0 flex-1 text-[0.9375rem] text-ink-900"><span class="tabular-nums text-ink-500">{{ $item->quantity }}×</span> {{ $item->localName() }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </fieldset>
+
+                        <label class="mt-5 block">
+                            <span class="text-sm font-medium text-ink-700">{{ __('support.guest.describe') }}</span>
+                            <textarea x-model="body" rows="3" maxlength="{{ \App\Domain\Support\Models\TicketMessage::LENGTH }}" placeholder="{{ __('support.guest.describe_placeholder') }}"
+                                      class="mt-1.5 w-full resize-none rounded-2xl border-0 bg-ivory-100 px-4 py-3 text-[1rem] text-ink-950 ring-1 ring-ink-950/5 placeholder:text-ink-400 focus:ring-2 focus:ring-[var(--brand)]"></textarea>
+                        </label>
+
+                        <div class="mt-5 flex gap-3">
+                            <button type="button" x-on:click="open = false" class="flex-1 rounded-full bg-ivory-100 py-3.5 font-semibold text-ink-800 transition active:scale-[0.98]">{{ __('support.guest.cancel') }}</button>
+                            <button type="button" x-on:click="$wire.reportProblem(category ?? '', items, body)" x-bind:disabled="! category || ! body.trim()"
+                                    wire:loading.attr="disabled" wire:target="reportProblem"
+                                    class="flex flex-[1.4] items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-3.5 font-semibold text-white transition active:scale-[0.98] disabled:opacity-40">
+                                <svg wire:loading wire:target="reportProblem" class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                                {{ __('support.guest.send') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endteleport
+        @endif
+
         {{-- Pickup pass --}}
         @if ($owner && $qr)
             <section class="mt-6 {{ $card }}" aria-labelledby="pass-title">
@@ -354,6 +561,13 @@
             <div class="mt-6 grid gap-2">
                 @if ($status->isFinal())
                     <button type="button" wire:click="orderAgain" class="rounded-full bg-[var(--brand)] py-3.5 font-semibold text-white transition active:scale-[0.98]">{{ __('guest.order.again') }}</button>
+                @endif
+                @if ($canReport)
+                    <button type="button" x-on:click="$dispatch('open-report')"
+                            class="flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold text-ink-600 ring-1 ring-ink-950/10 transition hover:text-ink-900 active:scale-[0.98]">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 8v5m0 3.5v.01M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        {{ __('support.guest.report') }}
+                    </button>
                 @endif
                 @if ($canCancel)
                     <button type="button" wire:click="cancel" wire:confirm="{{ __('guest.order.cancel_confirm') }}" class="rounded-full py-3 text-sm font-semibold text-ink-500 transition hover:text-ink-900">{{ __('guest.order.cancel') }}</button>

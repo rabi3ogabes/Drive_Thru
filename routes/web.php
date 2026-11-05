@@ -15,6 +15,7 @@ use App\Http\Controllers\MessagingWebhookController;
 use App\Http\Controllers\OpsController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\QrScanController;
 use App\Http\Controllers\RealtimeAuthController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SadadController;
@@ -120,6 +121,9 @@ Route::match(['get', 'post'], '/webhooks/smsala/{delivery}', [MessagingWebhookCo
 Route::post('/push/subscriptions', [PushSubscriptionController::class, 'store'])->middleware('throttle:30,1')->name('push.subscribe');
 Route::delete('/push/subscriptions', [PushSubscriptionController::class, 'destroy'])->middleware('throttle:30,1')->name('push.unsubscribe');
 
+// Tracked QR codes (stickers, flyers, tables): /q/7KQ2MX counts the scan, then opens the menu.
+Route::get('/q/{code}', QrScanController::class)->where('code', '[2-9A-HJ-NP-Za-hj-np-z]{6}')->middleware('throttle:60,1')->name('qr.scan');
+
 // Short tracking links printed on receipts and shared by guests: /o/7KQ2MX
 Route::get('/o/{code}', ShortLinkController::class)->where('code', '[2-9A-HJ-NP-Za-hj-np-z]{6}')->middleware('throttle:60,1')->name('short.order');
 Route::get('/o/{code}/view', [ShortLinkController::class, 'staff'])->where('code', '[2-9A-HJ-NP-Za-hj-np-z]{6}')->middleware(['signed', 'throttle:60,1'])->name('short.order.staff');
@@ -142,6 +146,7 @@ Route::middleware(ResolveGuestRestaurant::class)->group(function () use ($slug, 
     Route::livewire('/{restaurant:slug}/p/{token}', Customer\Pager::class)->where(['restaurant' => $slug, 'token' => '[A-Za-z0-9]{32}'])->missing($missing)->middleware('throttle:120,1')->name('customer.pager');
     Route::livewire('/{restaurant:slug}/rewards', Customer\Rewards::class)->where('restaurant', $slug)->missing($missing)->name('customer.rewards');
     Route::livewire('/{restaurant:slug}/account', Customer\Account::class)->where('restaurant', $slug)->missing($missing)->name('customer.account');
+    Route::livewire('/{restaurant:slug}/invite/{code}', Customer\Invite::class)->where(['restaurant' => $slug, 'code' => '[2-9A-HJ-NP-Za-hj-np-z]{6}'])->missing($missing)->middleware('throttle:30,1')->name('customer.invite');
     Route::livewire('/{restaurant:slug}/unsubscribe/{token}', Customer\Unsubscribe::class)->where(['restaurant' => $slug, 'token' => '[0-9a-z]{1,12}\.[A-Za-z0-9_-]{22}'])->missing($missing)->middleware('throttle:30,1')->name('customer.unsubscribe');
     Route::livewire('/{restaurant:slug}/{branch}/checkout', Customer\Checkout::class)->where(['restaurant' => $slug, 'branch' => '[a-z0-9][a-z0-9-]*'])->missing($missing)->name('customer.checkout');
     Route::livewire('/{restaurant:slug}/{branch}', Customer\BranchMenu::class)->where(['restaurant' => $slug, 'branch' => '[a-z0-9][a-z0-9-]*'])->missing($missing)->name('public.branch');

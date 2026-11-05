@@ -27,6 +27,9 @@ Schedule::command('payments:expire')->everyFiveMinutes()->withoutOverlapping()->
 // Loyalty: expire old points and wallet rewards, move guests between tiers (quiet hours, Doha time).
 Schedule::command('loyalty:maintain')->dailyAt('03:30')->timezone('Asia/Qatar')->withoutOverlapping()->onOneServer();
 
+// Birthday gifts land in the morning, Doha time (each restaurant's own day decides who is due).
+Schedule::command('loyalty:birthdays')->dailyAt('06:00')->timezone('Asia/Qatar')->withoutOverlapping()->onOneServer();
+
 Schedule::command('crm:segments')->dailyAt('04:00')->timezone('Asia/Qatar')->withoutOverlapping()->onOneServer();
 
 // Campaigns: start due ones and send the next slice (30 a minute per restaurant, never in quiet hours).
