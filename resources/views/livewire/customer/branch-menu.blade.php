@@ -35,7 +35,7 @@
     <x-customer.shell :restaurant="$restaurant" :customer="$customer" active="menu" :menu-url="url()->current()" wide>
         {{-- Hero: the place, its state, and the three things guests need --}}
         <section class="pt-2" aria-labelledby="branch-title">
-            <div class="rounded-[calc(2.25rem*var(--radius-scale))] bg-white/60 p-1.5 shadow-[0_30px_60px_-40px_color-mix(in_oklab,var(--color-ink-950)_55%,transparent)] ring-1 ring-ink-950/5">
+            <div class="rounded-[calc(2.25rem*var(--radius-scale))] bg-white/60 p-1.5 shadow-[0_30px_60px_-40px_color-mix(in_oklab,var(--color-scrim)_55%,transparent)] ring-1 ring-ink-950/5">
                 <div class="relative isolate overflow-hidden rounded-[max(0px,calc(2.25rem*var(--radius-scale)-0.375rem))] bg-[var(--brand)]">
                     {{-- Photography: the restaurant's cover, or its dishes --}}
                     @if ($cover)
@@ -47,7 +47,7 @@
                             @endforeach
                         </div>
                     @endif
-                    <div aria-hidden="true" class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-ink-950)_15%,transparent)_0%,color-mix(in_oklab,var(--color-ink-950)_35%,transparent)_45%,color-mix(in_oklab,var(--color-ink-950)_82%,transparent)_100%)]"></div>
+                    <div aria-hidden="true" class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-scrim)_15%,transparent)_0%,color-mix(in_oklab,var(--color-scrim)_35%,transparent)_45%,color-mix(in_oklab,var(--color-scrim)_82%,transparent)_100%)]"></div>
 
                     <div class="flex min-h-[19rem] flex-col justify-between p-5 text-paper sm:min-h-[22rem] sm:p-7 lg:min-h-[24rem] lg:p-9">
                         <a href="{{ route('public.restaurant', $restaurant) }}#branches" wire:navigate
@@ -134,10 +134,10 @@
                         @php $product = $entry['product']; $offer = $entry['offer']; @endphp
                         <li class="w-[68%] shrink-0 snap-start sm:w-[42%] lg:w-auto" wire:key="loved-{{ $product->id }}">
                             <button type="button" wire:click="openProduct({{ $product->id }})"
-                                    class="group relative block aspect-[4/5] w-full overflow-hidden rounded-[calc(1.75rem*var(--radius-scale))] bg-ivory-100 text-start shadow-[0_24px_40px_-28px_color-mix(in_oklab,var(--color-ink-950)_60%,transparent)] ring-1 ring-ink-950/5 transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]">
+                                    class="group relative block aspect-[4/5] w-full overflow-hidden rounded-[calc(1.75rem*var(--radius-scale))] bg-ivory-100 text-start shadow-[0_24px_40px_-28px_color-mix(in_oklab,var(--color-scrim)_60%,transparent)] ring-1 ring-ink-950/5 transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]">
                                 <img src="{{ $product->imageUrl(800) }}" alt="" loading="lazy" decoding="async"
                                      class="absolute inset-0 size-full object-cover transition duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]">
-                                <span aria-hidden="true" class="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,color-mix(in_oklab,var(--color-ink-950)_80%,transparent)_100%)]"></span>
+                                <span aria-hidden="true" class="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,color-mix(in_oklab,var(--color-scrim)_80%,transparent)_100%)]"></span>
                                 <span class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-paper">
                                     <span class="min-w-0">
                                         <span class="block truncate text-base font-semibold">{{ $product->name }}</span>
@@ -226,7 +226,7 @@
         <x-slot:above>
             @if ($bag && ! $bag->isEmpty())
                 <a href="{{ route('customer.checkout', [$restaurant, $branch->code]) }}" wire:navigate
-                   class="mb-2 flex items-center justify-between gap-3 rounded-full bg-ink-950 py-2 pe-2 ps-5 text-white shadow-[0_18px_40px_-14px_color-mix(in_oklab,var(--color-ink-950)_60%,transparent)] transition active:scale-[0.99]">
+                   class="mb-2 flex items-center justify-between gap-3 rounded-full bg-ink-950 py-2 pe-2 ps-5 text-white shadow-[0_18px_40px_-14px_color-mix(in_oklab,var(--color-scrim)_60%,transparent)] transition active:scale-[0.99]">
                     <span class="flex items-center gap-3">
                         <span class="grid size-7 place-items-center rounded-full bg-white/15 text-sm font-semibold tabular-nums">{{ $bag->count() }}</span>
                         <span class="font-semibold">{{ __('guest.menu.view_bag') }}</span>

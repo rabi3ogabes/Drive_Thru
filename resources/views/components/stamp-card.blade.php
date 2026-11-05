@@ -39,7 +39,7 @@
                 @php($done = $i <= $filled)
                 <li @class([
                     'grid aspect-square place-items-center rounded-full transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
-                    'bg-white text-[color:var(--card)] shadow-[0_6px_14px_-6px_color-mix(in_oklab,var(--color-ink-950)_35%,transparent)]' => $done,
+                    'bg-white text-[color:var(--card)] shadow-[0_6px_14px_-6px_color-mix(in_oklab,var(--color-scrim)_35%,transparent)]' => $done,
                     'border-[1.5px] border-dashed border-white/45' => ! $done,
                     'motion-safe:animate-[stamp-in_520ms_cubic-bezier(0.32,0.72,0,1)_both]' => $done && $animate,
                 ]) @if ($done && $animate) style="animation-delay: {{ ($i - 1) * 60 }}ms" @endif>
@@ -51,7 +51,7 @@
             {{-- The free one: not a purchase, the reward that a full card earns. --}}
             <li @class([
                 'grid aspect-square place-items-center rounded-full transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
-                'bg-brass-200 text-ink-950 shadow-[0_0_0_4px_color-mix(in_oklab,white_22%,transparent),0_10px_24px_-8px_color-mix(in_oklab,var(--color-ink-950)_45%,transparent)]' => $earned,
+                'bg-brass-200 text-ink-950 shadow-[0_0_0_4px_color-mix(in_oklab,white_22%,transparent),0_10px_24px_-8px_color-mix(in_oklab,var(--color-scrim)_45%,transparent)]' => $earned,
                 'bg-white/14 ring-[1.5px] ring-white/60' => ! $earned,
                 'motion-safe:animate-[stamp-in_520ms_cubic-bezier(0.32,0.72,0,1)_both]' => $earned && $animate,
             ]) @if ($earned && $animate) style="animation-delay: {{ $needed * 60 }}ms" @endif>

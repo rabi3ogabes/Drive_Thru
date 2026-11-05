@@ -16,7 +16,7 @@
 <li x-show="matches($el)" data-search="{{ $search }}" wire:key="p-{{ $product->id }}" class="h-full">
     <button type="button" wire:click="openProduct({{ $product->id }})"
             @class([
-                'group relative flex h-full w-full overflow-hidden bg-white text-start ring-1 ring-ink-950/5 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_22px_40px_-30px_color-mix(in_oklab,var(--color-ink-950)_55%,transparent)] active:scale-[0.985]',
+                'group relative flex h-full w-full overflow-hidden bg-white text-start ring-1 ring-ink-950/5 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_22px_40px_-30px_color-mix(in_oklab,var(--color-scrim)_55%,transparent)] active:scale-[0.985]',
                 'flex-col rounded-[calc(1.5rem*var(--radius-scale))] shadow-[var(--shadow-hairline)]' => ! $compact,
                 'items-stretch rounded-[calc(1.5rem*var(--radius-scale))] shadow-[var(--shadow-hairline)]' => $compact,
                 'opacity-60' => ! $offer->isAvailable(),

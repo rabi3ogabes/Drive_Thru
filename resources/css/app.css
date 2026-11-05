@@ -13,6 +13,8 @@
     /* Guest themes scale every corner by this (1 = the classic look). */
     :root {
         --radius-scale: 1;
+        /* Shadows and photo scrims stay dark on every theme, light or dark. */
+        --color-scrim: #0a0f1c;
     }
 
     html {

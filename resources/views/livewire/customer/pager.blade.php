@@ -50,7 +50,7 @@
             ])>
                 <div @class([
                     'grid min-w-48 place-items-center rounded-[max(0px,calc(2.75rem*var(--radius-scale)-0.5rem))] px-10 py-8',
-                    'bg-white text-ink-950 shadow-[0_30px_60px_-30px_color-mix(in_oklab,var(--color-ink-950)_45%,transparent)]' => $state === 'waiting',
+                    'bg-white text-ink-950 shadow-[0_30px_60px_-30px_color-mix(in_oklab,var(--color-scrim)_45%,transparent)]' => $state === 'waiting',
                     'bg-white text-ink-950 shadow-[0_30px_70px_-25px_color-mix(in_oklab,var(--color-status-ready)_75%,transparent)]' => $state === 'ready',
                     'bg-ivory-100 text-ink-400' => in_array($state, ['collected', 'expired'], true),
                 ])>
@@ -92,7 +92,7 @@
         <footer class="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
             @if ($state === 'ready')
                 <button type="button" x-on:click="stop()" x-show="ringing" x-transition.opacity
-                        class="mx-auto flex min-h-14 w-full max-w-sm items-center justify-center rounded-full bg-ink-950 px-6 text-lg font-semibold text-white shadow-[0_20px_40px_-20px_color-mix(in_oklab,var(--color-ink-950)_60%,transparent)] transition active:scale-[0.98]">
+                        class="mx-auto flex min-h-14 w-full max-w-sm items-center justify-center rounded-full bg-ink-950 px-6 text-lg font-semibold text-white shadow-[0_20px_40px_-20px_color-mix(in_oklab,var(--color-scrim)_60%,transparent)] transition active:scale-[0.98]">
                     {{ __('pager.guest.stop') }}
                 </button>
             @endif
