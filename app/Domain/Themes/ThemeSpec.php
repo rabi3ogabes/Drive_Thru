@@ -73,6 +73,9 @@ final readonly class ThemeSpec
             if (! is_string($value) || preg_match(self::FONT_PATTERN, $value) !== 1) {
                 throw new ThemeRejected('unknown_font', ['role' => $role]);
             }
+            if (! str_starts_with($value, 'brand:')) {
+                FontCatalog::pair($value, $role);
+            }
             $fonts[$role] = $value;
         }
 

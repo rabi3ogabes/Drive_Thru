@@ -43,6 +43,10 @@ it('rejects unknown modes and corners', function (array $data) {
     expect(fn () => ThemeSpec::fromArray($data, baseSpec()))->toThrow(ThemeRejected::class);
 })->with([[['mode' => 'neon']], [['corners' => 'wavy']], [['fonts' => ['heading' => 42]]]]);
 
+it('refuses fonts outside the catalogue and display fonts for body text', function (array $fonts) {
+    expect(fn () => ThemeSpec::fromArray(['fonts' => $fonts], baseSpec()))->toThrow(ThemeRejected::class);
+})->with([[['heading' => 'comic+sans']], [['body' => 'fraunces+alexandria']], [['body' => 'geist+amiri']]]);
+
 it('merges a partial over a base, and diff returns only changed fields', function () {
     $base = baseSpec();
     $spec = ThemeSpec::fromArray(['colors' => ['brand' => '#7A1F1F'], 'corners' => 'sharp'], $base);
