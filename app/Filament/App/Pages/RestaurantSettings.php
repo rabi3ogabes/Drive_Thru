@@ -7,6 +7,7 @@ namespace App\Filament\App\Pages;
 use App\Domain\Access\Enums\RestaurantPermission;
 use App\Domain\Branches\Enums\MenuLinkMode;
 use App\Domain\Branches\Models\Branch;
+use App\Domain\Themes\ThemeResolver;
 use App\Filament\App\Workspace;
 use App\Filament\App\WorkspaceNavigationGroup;
 use App\Filament\Support\Bilingual;
@@ -14,7 +15,6 @@ use App\Support\Locales;
 use App\Support\Money;
 use BackedEnum;
 use Filament\Actions\Action;
-use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -29,6 +29,7 @@ use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
@@ -81,7 +82,6 @@ class RestaurantSettings extends Page
             'name' => $restaurant->getTranslations('name'),
             'logo_path' => $restaurant->logo_path,
             'cover_path' => $restaurant->cover_path,
-            'accent_color' => $restaurant->accent_color,
             'default_locale' => $restaurant->default_locale,
             'timezone' => $restaurant->timezone,
             'currency' => $restaurant->currency,
@@ -147,11 +147,8 @@ class RestaurantSettings extends Page
                                         ->directory($directory)
                                         ->visibility('public')
                                         ->maxSize(5120),
-                                    ColorPicker::make('accent_color')
-                                        ->label(__('settings.fields.accent_color'))
-                                        ->helperText(__('settings.fields.accent_color_hint'))
-                                        ->hex()
-                                        ->regex('/^#[0-9a-fA-F]{6}$/'),
+                                    View::make('filament.app.settings.brand-colour')
+                                        ->viewData(['colour' => ThemeResolver::for($restaurant)->colors['brand']]),
                                 ]),
                         ]),
                     Tab::make(__('settings.tabs.region'))
@@ -268,7 +265,6 @@ class RestaurantSettings extends Page
             'name' => array_filter((array) $state['name'], 'filled'),
             'logo_path' => $state['logo_path'] ?? null,
             'cover_path' => $state['cover_path'] ?? null,
-            'accent_color' => $state['accent_color'] ?? null,
             'default_locale' => $state['default_locale'],
             'timezone' => $state['timezone'],
             'currency' => $state['currency'],

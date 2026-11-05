@@ -4,6 +4,7 @@ use App\Domain\Menu\MenuLayout;
 use App\Domain\Themes\Contrast;
 use App\Domain\Themes\Exceptions\ThemeRejected;
 use App\Domain\Themes\ThemeSpec;
+use App\Domain\Themes\ThemeTokens;
 
 function baseSpec(array $colors = []): ThemeSpec
 {
@@ -15,6 +16,15 @@ function baseSpec(array $colors = []): ThemeSpec
         layout: new MenuLayout,
     );
 }
+
+it('measures muted text as guests see it', function () {
+    $classic = baseSpec();
+    $olive = baseSpec(['text' => '#1d2316', 'background' => '#f8f6ef']);
+
+    expect(ThemeTokens::muted($classic))->toBe('#636d82')
+        ->and(ThemeTokens::for($olive)['color-ink-500'])->toBe(ThemeTokens::muted($olive))
+        ->and(Contrast::ratio(ThemeTokens::muted($olive), '#f8f6ef'))->toBeGreaterThanOrEqual(4.5);
+});
 
 it('refuses unreadable text', function () {
     $check = Contrast::check(baseSpec(['text' => '#cccccc', 'background' => '#ffffff']));

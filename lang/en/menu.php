@@ -275,7 +275,7 @@ return [
     ],
     'design' => [
         'title' => 'Menu design',
-        'subheading' => 'How your menu looks to guests.',
+        'subheading' => 'How every guest page looks: your theme, and how the menu is laid out.',
         'preview' => 'Preview as guest',
         'save' => 'Save design',
         'saved' => 'Design saved',
