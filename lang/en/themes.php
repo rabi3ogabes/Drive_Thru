@@ -1,6 +1,42 @@
 <?php
 
 return [
+    'admin' => [
+        'label' => 'menu theme',
+        'plural' => 'Menu themes',
+        'subheading' => 'The templates restaurants choose from on Menu design. Templates in use can be hidden, never deleted.',
+        'empty' => 'No theme templates yet',
+        'sections' => [
+            'identity' => 'Template',
+            'look' => 'Look',
+        ],
+        'fields' => [
+            'key' => 'Key',
+            'key_hint' => 'Lower-case letters, numbers and dashes. Built-in keys can’t change.',
+            'name' => 'Name',
+            'description' => 'Description',
+            'active' => 'Offered to restaurants',
+            'active_hint' => 'Hidden templates stay on restaurants already using them.',
+            'mode' => 'Light or dark',
+            'used_by' => 'Restaurants',
+            'default' => 'Default',
+        ],
+        'actions' => [
+            'upload' => 'Upload theme file',
+            'duplicate' => 'Duplicate',
+            'set_default' => 'Make default',
+            'hide' => 'Hide',
+            'show' => 'Offer again',
+        ],
+        'upload_body' => 'The template is added hidden, so you can check it before restaurants see it.',
+        'uploaded' => 'Template added (hidden)',
+        'uploaded_body' => 'Review it, then choose “Offer again” to make it available.',
+        'duplicated' => 'Template duplicated',
+        'set_default_body' => 'New restaurants start on this template. Restaurants that already have a theme keep theirs.',
+        'default_set' => 'Default template changed',
+        'hide_body' => 'Restaurants using it keep it; others can no longer pick it.',
+    ],
+
     'tabs' => [
         'theme' => 'Theme',
         'layout' => 'Layout',

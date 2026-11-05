@@ -79,7 +79,7 @@ use Spatie\Translatable\HasTranslations;
  * @property ?CarbonImmutable $created_at
  * @property-read ?Subscription $subscription
  */
-#[Fillable(['slug', 'name', 'logo_path', 'cover_path', 'accent_color', 'tax_rate_bp', 'service_fee_bp', 'menu_link_mode', 'order_override_enabled', 'cancellation_window_minutes', 'menu_layout', 'currency', 'timezone', 'default_locale', 'status', 'settings', 'legal_name', 'contact_email', 'contact_phone', 'tax_number', 'billing_address', 'internal_notes', 'feature_overrides', 'suspended_at', 'suspension_reason', 'quiet_hours_start', 'quiet_hours_end'])]
+#[Fillable(['slug', 'name', 'logo_path', 'cover_path', 'accent_color', 'menu_theme', 'tax_rate_bp', 'service_fee_bp', 'menu_link_mode', 'order_override_enabled', 'cancellation_window_minutes', 'menu_layout', 'currency', 'timezone', 'default_locale', 'status', 'settings', 'legal_name', 'contact_email', 'contact_phone', 'tax_number', 'billing_address', 'internal_notes', 'feature_overrides', 'suspended_at', 'suspension_reason', 'quiet_hours_start', 'quiet_hours_end'])]
 #[UseFactory(RestaurantFactory::class)]
 class Restaurant extends Model implements HasAvatar, HasName
 {

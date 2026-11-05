@@ -64,7 +64,8 @@ final class ThemeResolver
     public function templateFor(Restaurant $restaurant): MenuTheme
     {
         $templates = $this->templates();
-        $key = $restaurant->menu_theme['template'] ?? null;
+        // Restaurants that never saved a theme keep the classic look, whatever the default is now.
+        $key = is_array($restaurant->menu_theme) ? ($restaurant->menu_theme['template'] ?? null) : MenuTheme::CLASSIC;
 
         return (is_string($key) ? $templates[$key] ?? null : null) ?? MenuTheme::default();
     }

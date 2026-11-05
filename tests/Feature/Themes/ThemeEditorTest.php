@@ -88,6 +88,7 @@ it('saves colours, fonts and corners, audits theme.saved and changes the guest p
 
 it('refuses to save unreadable colours with the ratio in the message', function () {
     [$restaurant] = themeWorkspace();
+    $before = $restaurant->fresh()->menu_theme;
 
     Livewire::test(ThemeEditor::class)
         ->set('draft.colors.text', '#eeeeee')
@@ -95,7 +96,7 @@ it('refuses to save unreadable colours with the ratio in the message', function 
         ->assertSee(':1)')
         ->assertSet('dirty', true);
 
-    expect($restaurant->fresh()->menu_theme)->toBeNull();
+    expect($restaurant->fresh()->menu_theme)->toBe($before);
 });
 
 it('refreshes the preview token on each change and the token shows the draft', function () {
@@ -122,6 +123,7 @@ it('resets to the template and audits theme.reset', function () {
 
 it('exports a theme file and imports it back after a preview', function () {
     [$restaurant] = themeWorkspace();
+    $before = $restaurant->fresh()->menu_theme;
 
     Livewire::test(ThemeEditor::class)->call('export')->assertFileDownloaded('masar-theme.dtheme.json');
 
@@ -138,7 +140,7 @@ it('exports a theme file and imports it back after a preview', function () {
         ->assertSet('pendingImport', null)
         ->assertSet('dirty', true);
 
-    expect($restaurant->fresh()->menu_theme)->toBeNull()
+    expect($restaurant->fresh()->menu_theme)->toBe($before)
         ->and(Activity::query()->where('event', 'theme.imported')->exists())->toBeTrue();
 });
 
