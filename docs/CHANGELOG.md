@@ -2,6 +2,18 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-05: Owner guide
+
+### Built
+- **Guide** (Restaurant → Guide, `/app/{restaurant}/guide`), in Arabic and English: a 7-step "Start here" path, then 42 articles in 8 sections (Operations, Menu, Growth, Branches, Team, Restaurant, Branch screens, What guests see). Each article says what the page is for, when to use it, what every button does (with the button's exact label), tips, and who can use it (the permission's own label). "Open this page" appears only when the reader can open it and the plan includes it; otherwise "Not on your plan" with a link to Billing.
+  - Instant search that ignores Arabic diacritics and letter forms (أ/إ/ا, ة/ه, ى/ي), a "/" shortcut, a result count, an empty state, and deep links (`#support`).
+- **"?" on every workspace page header:** opens that page's article in a side panel, rendered with the page so it opens without a round trip, and links to the full guide.
+- `App\Domain\Guide\GuideCatalog` maps every page and resource to its article; the text lives only in `lang/{ar,en}/guide.php`. `GuideCatalogTest` fails when a workspace page has no article, or when the two languages have different keys (including the number of buttons and tips per article).
+
+### Verified
+- 755 tests (full suite), Pint, Larastan 0, build.
+- Browser (local Rabii demo, headless Chromium): the guide and the Ratings "?" panel in Arabic and English, light and dark, at 375, 768 and 1280 px; Arabic search with and without hamza; deep link opening Support; the empty search state. No sideways scrolling, no console errors.
+
 ## 2026-11-04: Ratings, support, birthday gifts and badges (Phase 7C)
 
 ### Built

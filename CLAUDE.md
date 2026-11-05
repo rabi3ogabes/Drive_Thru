@@ -85,4 +85,5 @@ Always verify a vendor API in `vendor/` before using it (Filament 5 / Pest 5 are
 - Guest pages: overlays (bottom sheets, dialogs) inside the shell sit under the tab bar, because `<main>` is `relative z-10`. Wrap them in `@teleport('body') … @endteleport` (one root element).
 - Text typed by guests or staff (comments, ticket messages) can be in either language: give it `dir="auto"` so its punctuation lands on the right side.
 - `pastOrder()` stores the given time as-is: pass UTC (`->utc()`) when the test depends on the restaurant's local hour.
+- Every new workspace page or resource needs a `GuideCatalog` entry and its text in `lang/{ar,en}/guide.php` (same number of actions and tips in both), or `GuideCatalogTest` fails. Quote the page's real button labels.
 - Services gate features: `Restaurant::hasService(Service)`; a `PlanFeature` with `service()` comes with that service, not the plan. Test restaurants from `restaurant()` get Drive-Thru; pass `services: [...]` or use `withService()`.
