@@ -132,7 +132,7 @@ class MenuDesign extends Page
         abort_unless(self::canAccess(), 403);
 
         $restaurant = Workspace::restaurant();
-        ThemeResolver::save($restaurant, ThemeResolver::template($restaurant)->key, ThemeResolver::for($restaurant)->with(['layout' => MenuLayout::fromArray($this->form->getState())->toArray()]));
+        ThemeResolver::save($restaurant, ThemeResolver::template($restaurant)->key, ThemeResolver::for($restaurant)->with(['layout' => MenuLayout::fromArray($this->form->getState())->toArray()], $restaurant));
 
         Notification::make()->success()->title(__('menu.design.saved'))->send();
     }

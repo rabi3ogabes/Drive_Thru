@@ -32,13 +32,13 @@ final class ThemeCss
     public static function for(Restaurant $restaurant, ?ThemeSpec $draft = null): string
     {
         if ($draft !== null) {
-            return self::build($draft);
+            return self::build($draft, $restaurant);
         }
 
         return Cache::remember(
             "theme-css:{$restaurant->id}:".MenuCache::version($restaurant->id),
             now()->addDay(),
-            fn (): string => self::build(ThemeResolver::for($restaurant)),
+            fn (): string => self::build(ThemeResolver::for($restaurant), $restaurant),
         );
     }
 
@@ -47,14 +47,12 @@ final class ThemeCss
      *
      * @return list<string>
      */
-    public static function fontKeys(ThemeSpec $spec): array
+    public static function fontKeys(ThemeSpec $spec, Restaurant $restaurant): array
     {
         $keys = [];
 
-        foreach (self::changedFonts($spec) as $pair) {
-            if (! str_starts_with($pair, 'brand:')) {
-                $keys = [...$keys, ...array_values(FontCatalog::pair($pair))];
-            }
+        foreach (self::changedFonts($spec) as $role => $pair) {
+            $keys = [...$keys, ...array_values(FontCatalog::pair(self::catalogPair($spec, $restaurant, $role, $pair)))];
         }
 
         return array_values(array_unique($keys));
@@ -72,7 +70,7 @@ final class ThemeCss
         return FontCatalog::preloadUrl($locale === 'ar' ? $pair['arabic'] : $pair['latin']);
     }
 
-    private static function build(ThemeSpec $spec): string
+    private static function build(ThemeSpec $spec, Restaurant $restaurant): string
     {
         $tokens = ThemeTokens::for($spec);
         $dark = $spec->mode === 'dark';
@@ -94,14 +92,11 @@ final class ThemeCss
             }
         }
 
-        $fonts = self::changedFonts($spec);
-        if (isset($fonts['body'])) {
-            $vars['font-sans'] = FontCatalog::stack($fonts['body']);
-            $vars['font-sans-ar'] = FontCatalog::stack($fonts['body'], arabicFirst: true);
-        }
-        if (isset($fonts['heading'])) {
-            $vars['font-display'] = FontCatalog::stack($fonts['heading']);
-            $vars['font-display-ar'] = FontCatalog::stack($fonts['heading'], arabicFirst: true);
+        $faces = '';
+        foreach (self::changedFonts($spec) as $role => $pair) {
+            [$latin, $arabic] = self::stacks($spec, $restaurant, $role, $pair, $faces);
+            $vars[$role === 'body' ? 'font-sans' : 'font-display'] = $latin;
+            $vars[$role === 'body' ? 'font-sans-ar' : 'font-display-ar'] = $arabic;
         }
 
         $scale = self::RADIUS_SCALE[$spec->corners];
@@ -114,7 +109,40 @@ final class ThemeCss
 
         $declarations = implode(' ', array_map(fn (string $name, string $value): string => "--{$name}: {$value};", array_keys($vars), $vars));
 
-        return FontCatalog::fontFaceCss(self::fontKeys($spec)).":root { {$declarations} }";
+        return $faces.FontCatalog::fontFaceCss(self::fontKeys($spec, $restaurant)).":root { {$declarations} }";
+    }
+
+    /**
+     * The Latin-first and Arabic-first stacks for a role. An uploaded font
+     * leads, and the template's pair fills the script it doesn't cover.
+     *
+     * @return array{0: string, 1: string}
+     */
+    private static function stacks(ThemeSpec $spec, Restaurant $restaurant, string $role, string $pair, string &$faces): array
+    {
+        $font = str_starts_with($pair, 'brand:') ? BrandFonts::find($restaurant, $pair) : null;
+        $fallback = self::catalogPair($spec, $restaurant, $role, $pair);
+
+        if ($font === null) {
+            return [FontCatalog::stack($fallback), FontCatalog::stack($fallback, arabicFirst: true)];
+        }
+
+        $faces .= BrandFonts::fontFace($font);
+        $lead = "'{$font->family()}', ";
+
+        return [$lead.FontCatalog::stack($fallback), $lead.FontCatalog::stack($fallback, arabicFirst: true)];
+    }
+
+    /** The catalogue pair for a role: the theme's own, or the template's when the theme uses an uploaded font. */
+    private static function catalogPair(ThemeSpec $spec, Restaurant $restaurant, string $role, string $pair): string
+    {
+        if (! str_starts_with($pair, 'brand:')) {
+            return $pair;
+        }
+
+        $template = ThemeResolver::template($restaurant)->spec()->fonts[$role];
+
+        return str_starts_with($template, 'brand:') ? self::CLASSIC['fonts'][$role] : $template;
     }
 
     /**

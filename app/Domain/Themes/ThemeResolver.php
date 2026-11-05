@@ -88,12 +88,12 @@ final class ThemeResolver
             ]);
 
         try {
-            $spec = $base->with($overrides);
+            $spec = $base->with($overrides, $restaurant);
         } catch (ThemeRejected) {
             $spec = $base;
         }
 
-        return filled($restaurant->cover_path) ? $spec->with(['cover' => $restaurant->cover_path]) : $spec;
+        return filled($restaurant->cover_path) ? $spec->with(['cover' => $restaurant->cover_path], $restaurant) : $spec;
     }
 
     /**

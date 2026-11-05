@@ -41,7 +41,7 @@ final class ThemePreview
         }
 
         try {
-            return ThemeSpec::fromArray($draft['spec']);
+            return ThemeSpec::fromArray($draft['spec'], null, $restaurant);
         } catch (ThemeRejected) {
             return null;
         }

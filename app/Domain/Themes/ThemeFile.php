@@ -80,7 +80,7 @@ final class ThemeFile
             }
         }
 
-        $theme = ThemeSpec::fromArray($spec, $base);
+        $theme = ThemeSpec::fromArray($spec, $base, $for);
         $check = Contrast::check($theme);
 
         if (! $check['ok']) {

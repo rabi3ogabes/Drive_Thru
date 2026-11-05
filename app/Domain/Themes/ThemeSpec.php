@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Themes;
 
 use App\Domain\Menu\MenuLayout;
+use App\Domain\Tenancy\Models\Restaurant;
 use App\Domain\Themes\Exceptions\ThemeRejected;
 
 /**
@@ -40,11 +41,12 @@ final readonly class ThemeSpec
 
     /**
      * A full spec, or a partial one laid over $base. Every value is checked;
-     * anything that doesn't fit is refused rather than guessed.
+     * anything that doesn't fit is refused rather than guessed. Uploaded
+     * brand fonts are accepted only for the restaurant that owns them.
      *
      * @param  array<string, mixed>  $data
      */
-    public static function fromArray(array $data, ?self $base = null): self
+    public static function fromArray(array $data, ?self $base = null, ?Restaurant $restaurant = null): self
     {
         $mode = $data['mode'] ?? $base?->mode;
         if (! in_array($mode, self::MODES, true)) {
@@ -75,6 +77,8 @@ final readonly class ThemeSpec
             }
             if (! str_starts_with($value, 'brand:')) {
                 FontCatalog::pair($value, $role);
+            } elseif (! BrandFonts::owns($restaurant, $value)) {
+                throw new ThemeRejected('unknown_font', ['role' => $role]);
             }
             $fonts[$role] = $value;
         }
@@ -114,9 +118,9 @@ final readonly class ThemeSpec
     /**
      * @param  array<string, mixed>  $overrides
      */
-    public function with(array $overrides): self
+    public function with(array $overrides, ?Restaurant $restaurant = null): self
     {
-        return self::fromArray($overrides, $this);
+        return self::fromArray($overrides, $this, $restaurant);
     }
 
     /**
