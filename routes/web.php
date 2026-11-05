@@ -25,6 +25,7 @@ use App\Http\Controllers\SubmitLeadController;
 use App\Http\Controllers\SwitchLocaleController;
 use App\Http\Middleware\AuthenticateDevice;
 use App\Http\Middleware\ResolveGuestRestaurant;
+use App\Http\Middleware\ThemePreviewHeaders;
 use App\Livewire\Customer;
 use Illuminate\Support\Facades\Route;
 
@@ -136,7 +137,7 @@ Route::get('/o/{code}/view', [ShortLinkController::class, 'staff'])->where('code
 $slug = CreateRestaurant::publicSlugPattern();
 $missing = fn () => response()->view('public.restaurant-missing', [], 404);
 
-Route::middleware(ResolveGuestRestaurant::class)->group(function () use ($slug, $missing): void {
+Route::middleware([ResolveGuestRestaurant::class, ThemePreviewHeaders::class])->group(function () use ($slug, $missing): void {
     Route::livewire('/{restaurant:slug}', Customer\Home::class)->where('restaurant', $slug)->missing($missing)->name('public.restaurant');
     Route::get('/{restaurant:slug}/manifest.webmanifest', ManifestController::class)->where('restaurant', $slug)->missing($missing)->name('customer.manifest');
     Route::livewire('/{restaurant:slug}/sign-in', Customer\SignInPage::class)->where('restaurant', $slug)->missing($missing)->name('customer.sign-in');

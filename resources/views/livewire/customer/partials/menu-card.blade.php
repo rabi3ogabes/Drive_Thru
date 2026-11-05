@@ -9,7 +9,7 @@
     $badges = $layout->showHighlights ? array_filter([
         $product->is_popular ? ['text' => __('public.menu.popular'), 'class' => 'bg-white/95 text-ink-900'] : null,
         $product->is_new ? ['text' => __('public.menu.new'), 'class' => 'bg-sage-100 text-teal-900'] : null,
-        $entry['savings'] > 0 ? ['text' => __('public.menu.save', ['amount' => Money::format($entry['savings'], $currency)]), 'class' => 'bg-[var(--brand)] text-white'] : null,
+        $entry['savings'] > 0 ? ['text' => __('public.menu.save', ['amount' => Money::format($entry['savings'], $currency)]), 'class' => 'bg-[var(--brand)] text-on-brand'] : null,
     ]) : [];
 @endphp
 {{-- One dish: photo first, then name, a line about it and the price. --}}
@@ -17,15 +17,15 @@
     <button type="button" wire:click="openProduct({{ $product->id }})"
             @class([
                 'group relative flex h-full w-full overflow-hidden bg-white text-start ring-1 ring-ink-950/5 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_22px_40px_-30px_color-mix(in_oklab,var(--color-ink-950)_55%,transparent)] active:scale-[0.985]',
-                'flex-col rounded-[1.5rem] shadow-[var(--shadow-hairline)]' => ! $compact,
-                'items-stretch rounded-[1.5rem] shadow-[var(--shadow-hairline)]' => $compact,
+                'flex-col rounded-[calc(1.5rem*var(--radius-scale))] shadow-[var(--shadow-hairline)]' => ! $compact,
+                'items-stretch rounded-[calc(1.5rem*var(--radius-scale))] shadow-[var(--shadow-hairline)]' => $compact,
                 'opacity-60' => ! $offer->isAvailable(),
             ])>
         @if ($layout->imageStyle !== 'none')
             <span @class([
                 'relative block shrink-0 overflow-hidden bg-[color-mix(in_oklab,var(--brand)_8%,var(--color-ivory-100))]',
-                'm-1.5 aspect-[4/3] rounded-[1.15rem]' => ! $compact,
-                'm-2 size-28 rounded-[1.15rem] sm:size-32' => $compact,
+                'm-1.5 aspect-[4/3] rounded-[calc(1.15rem*var(--radius-scale))]' => ! $compact,
+                'm-2 size-28 rounded-[calc(1.15rem*var(--radius-scale))] sm:size-32' => $compact,
             ])>
                 @if ($image)
                     <img src="{{ $image }}" alt="" loading="lazy" decoding="async"
@@ -64,7 +64,7 @@
                     <span class="text-[0.9375rem] font-semibold text-ink-950">{{ Money::format($offer->priceMinor, $currency) }}</span>
                 </span>
                 @if ($offer->isAvailable() && $ordering)
-                    <span class="grid size-9 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-white shadow-[0_8px_16px_-8px_var(--brand)] transition duration-300 group-hover:scale-105" aria-hidden="true">
+                    <span class="grid size-9 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-on-brand shadow-[0_8px_16px_-8px_var(--brand)] transition duration-300 group-hover:scale-105" aria-hidden="true">
                         <svg wire:loading.remove wire:target="openProduct({{ $product->id }})" class="size-4" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                         <svg wire:loading wire:target="openProduct({{ $product->id }})" class="size-4 animate-spin" viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 1 0 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                     </span>

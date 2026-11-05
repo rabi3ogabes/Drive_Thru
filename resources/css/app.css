@@ -10,6 +10,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+    /* Guest themes scale every corner by this (1 = the classic look). */
+    :root {
+        --radius-scale: 1;
+    }
+
     html {
         font-family: var(--font-sans);
         font-feature-settings: 'ss01', 'cv11';
@@ -19,7 +24,7 @@
     }
 
     html[dir='rtl'] {
-        font-family: 'IBM Plex Sans Arabic', 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+        font-family: var(--font-sans-ar);
         line-height: 1.7;
     }
 

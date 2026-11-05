@@ -6,6 +6,10 @@ return [
         'body' => 'Body text',
     ],
 
+    'preview' => [
+        'ribbon' => 'Theme preview · not saved',
+    ],
+
     'import' => [
         'font_dropped' => 'The :role font in this file was uploaded by another restaurant, so the template’s font is used instead.',
     ],

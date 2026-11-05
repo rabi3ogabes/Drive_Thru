@@ -61,11 +61,12 @@ final class FontCatalog
     }
 
     /** The CSS font-family stack for a pair: Latin face, Arabic face, then a system fallback. */
-    public static function stack(string $pair): string
+    public static function stack(string $pair, bool $arabicFirst = false): string
     {
         ['latin' => $latin, 'arabic' => $arabic] = self::pair($pair);
+        $faces = $arabicFirst ? "'dt-{$arabic}', 'dt-{$latin}'" : "'dt-{$latin}', 'dt-{$arabic}'";
 
-        return "'dt-{$latin}', 'dt-{$arabic}', ".self::FALLBACK[self::all()[$latin]['kind']];
+        return $faces.', '.self::FALLBACK[self::all()[$latin]['kind']];
     }
 
     /**

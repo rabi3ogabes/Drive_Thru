@@ -42,12 +42,12 @@
         <nav aria-label="{{ __('guest.nav.label') }}"
              class="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-2xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             {{ $above ?? '' }}
-            <ul class="grid grid-cols-4 rounded-[1.75rem] bg-white/90 p-1.5 shadow-[0_18px_40px_-18px_rgb(10_15_28/0.35)] ring-1 ring-ink-950/8 backdrop-blur-xl">
+            <ul class="grid grid-cols-4 rounded-[calc(1.75rem*var(--radius-scale))] bg-white/90 p-1.5 shadow-[0_18px_40px_-18px_rgb(10_15_28/0.35)] ring-1 ring-ink-950/8 backdrop-blur-xl">
                 @foreach ($tabs as [$key, $url, $label, $icon])
                     <li>
                         <a href="{{ $url }}" wire:navigate @if ($active === $key) aria-current="page" @endif
-                           @class(['flex flex-col items-center gap-0.5 rounded-[1.35rem] py-2 text-[0.6875rem] font-medium transition',
-                                   'bg-[var(--brand)] text-white' => $active === $key,
+                           @class(['flex flex-col items-center gap-0.5 rounded-[calc(1.35rem*var(--radius-scale))] py-2 text-[0.6875rem] font-medium transition',
+                                   'bg-[var(--brand)] text-on-brand' => $active === $key,
                                    'text-ink-500 hover:text-ink-900' => $active !== $key])>
                             <svg class="size-[1.35rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="{{ $icon }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ $label }}

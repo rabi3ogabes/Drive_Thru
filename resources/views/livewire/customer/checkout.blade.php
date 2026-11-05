@@ -3,10 +3,10 @@
     use App\Support\Money;
     $currency = $restaurant->currency;
     $open = $state->acceptsOrders();
-    $card = 'rounded-[1.75rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
-    $core = 'rounded-[calc(1.75rem-0.375rem)] p-4';
+    $card = 'rounded-[calc(1.75rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
+    $core = 'rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] p-4';
     $chip = 'rounded-full px-4 py-2 text-sm font-medium ring-1 transition active:scale-95';
-    $chipOn = 'bg-[var(--brand)] text-white ring-[var(--brand)]';
+    $chipOn = 'bg-[var(--brand)] text-on-brand ring-[var(--brand)]';
     $chipOff = 'bg-white text-ink-700 ring-ink-950/10';
     $field = 'w-full rounded-2xl border-0 bg-ivory-50 px-4 py-3 text-[0.9375rem] text-ink-950 ring-1 ring-ink-950/8 placeholder:text-ink-400 focus:ring-2 focus:ring-[var(--brand)]';
     $menuUrl = route('public.branch', [$restaurant, $branch->code]);
@@ -24,11 +24,11 @@
 
         @if ($bag === null || $bag->isEmpty())
             {{-- Empty bag --}}
-            <div class="mt-10 rounded-[2rem] bg-white px-6 py-12 text-center shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
+            <div class="mt-10 rounded-[calc(2rem*var(--radius-scale))] bg-white px-6 py-12 text-center shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
                 <div class="mx-auto grid size-16 place-items-center rounded-full bg-ivory-100 text-3xl" aria-hidden="true">🛍️</div>
                 <h2 class="mt-4 text-lg font-semibold text-ink-950">{{ __('guest.checkout.empty_title') }}</h2>
                 <p class="mt-1 text-ink-500">{{ __('guest.checkout.empty_body') }}</p>
-                <a href="{{ $menuUrl }}" wire:navigate class="mt-6 inline-flex rounded-full bg-[var(--brand)] px-6 py-3 font-semibold text-white">{{ __('guest.checkout.browse') }}</a>
+                <a href="{{ $menuUrl }}" wire:navigate class="mt-6 inline-flex rounded-full bg-[var(--brand)] px-6 py-3 font-semibold text-on-brand">{{ __('guest.checkout.browse') }}</a>
             </div>
         @else
             @unless ($open)
@@ -98,7 +98,7 @@
                     <ul class="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6">
                         @foreach ($suggestions as $suggestion)
                             <li class="w-36 shrink-0" wire:key="sg-{{ $suggestion['id'] }}">
-                                <button type="button" wire:click="addSuggestion({{ $suggestion['id'] }})" class="block w-full overflow-hidden rounded-[1.35rem] bg-white text-start shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5 transition active:scale-[0.98]">
+                                <button type="button" wire:click="addSuggestion({{ $suggestion['id'] }})" class="block w-full overflow-hidden rounded-[calc(1.35rem*var(--radius-scale))] bg-white text-start shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5 transition active:scale-[0.98]">
                                     <span class="grid aspect-[4/3] place-items-center bg-ivory-100 text-3xl">
                                         @if ($suggestion['image'])<img src="{{ $suggestion['image'] }}" alt="" loading="lazy" class="size-full object-cover">@else<span aria-hidden="true">🍽️</span>@endif
                                     </span>
@@ -106,7 +106,7 @@
                                         <span class="line-clamp-1 text-sm font-medium text-ink-950">{{ $suggestion['name'] }}</span>
                                         <span class="mt-0.5 flex items-center justify-between">
                                             <span class="text-sm font-semibold tabular-nums text-[var(--brand)]" dir="ltr">{{ $suggestion['price'] }}</span>
-                                            <span class="grid size-6 place-items-center rounded-full bg-[var(--brand)] text-white" aria-hidden="true"><svg class="size-3" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                                            <span class="grid size-6 place-items-center rounded-full bg-[var(--brand)] text-on-brand" aria-hidden="true"><svg class="size-3" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
                                         </span>
                                     </span>
                                 </button>
@@ -307,11 +307,11 @@
                                     @foreach ($savings['wallet'] as $item)
                                         <button type="button" wire:click="chooseReward({{ $walletRewardId === $item->id ? 'null' : $item->id }})" aria-pressed="{{ $walletRewardId === $item->id ? 'true' : 'false' }}"
                                                 @class(['shrink-0 rounded-2xl px-4 py-2.5 text-start ring-1 transition active:scale-95',
-                                                        'bg-[var(--brand)] text-white ring-[var(--brand)]' => $walletRewardId === $item->id,
+                                                        'bg-[var(--brand)] text-on-brand ring-[var(--brand)]' => $walletRewardId === $item->id,
                                                         'bg-white text-ink-800 ring-ink-950/10' => $walletRewardId !== $item->id])>
                                             <span class="block text-sm font-semibold">{{ $item->reward->name }}</span>
                                             @if ($item->expires_at)
-                                                <span @class(['block text-xs', 'text-white/75' => $walletRewardId === $item->id, 'text-ink-500' => $walletRewardId !== $item->id])>{{ __('guest.savings.until', ['date' => $item->expires_at->setTimezone($restaurant->timezone)->format('d/m')]) }}</span>
+                                                <span @class(['block text-xs', 'text-on-brand/75' => $walletRewardId === $item->id, 'text-ink-500' => $walletRewardId !== $item->id])>{{ __('guest.savings.until', ['date' => $item->expires_at->setTimezone($restaurant->timezone)->format('d/m')]) }}</span>
                                             @endif
                                         </button>
                                     @endforeach
@@ -384,7 +384,7 @@
             <div class="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-2xl bg-gradient-to-t from-ivory-50 via-ivory-50/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-6 sm:px-6">
                 <button type="button" wire:click="place" wire:loading.attr="disabled" wire:target="place"
                         @disabled(! $customer || $bag->hasProblems())
-                        class="group flex w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] py-2 pe-2 ps-6 text-white shadow-[0_18px_40px_-14px_color-mix(in_oklab,var(--brand)_70%,transparent)] transition active:scale-[0.985] disabled:bg-ink-300 disabled:shadow-none">
+                        class="group flex w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] py-2 pe-2 ps-6 text-on-brand shadow-[0_18px_40px_-14px_color-mix(in_oklab,var(--brand)_70%,transparent)] transition active:scale-[0.985] disabled:bg-ink-300 disabled:shadow-none">
                     <span class="font-semibold">
                         <span wire:loading.remove wire:target="place">{{ $customer ? __('guest.checkout.place') : __('guest.checkout.sign_in_to_place') }}</span>
                         <span wire:loading wire:target="place">{{ __('guest.checkout.placing') }}</span>

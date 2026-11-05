@@ -2,8 +2,8 @@
     use App\Domain\Loyalty\Enums\LedgerType;
     use App\Domain\Loyalty\Enums\RewardType;
     use App\Support\Money;
-    $card = 'rounded-[1.75rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
-    $core = 'rounded-[calc(1.75rem-0.375rem)] p-4';
+    $card = 'rounded-[calc(1.75rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
+    $core = 'rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] p-4';
     $tz = $restaurant->timezone;
     $currency = $restaurant->currency;
     $describe = fn ($reward): string => match ($reward->type) {
@@ -37,8 +37,8 @@
         @else
             {{-- Balance and tier --}}
             @if ($program)
-            <section class="mt-6 rounded-[2rem] bg-[color-mix(in_oklab,var(--brand)_12%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="balance-title">
-                <div class="relative overflow-hidden rounded-[calc(2rem-0.375rem)] bg-[var(--brand)] p-5 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18)]">
+            <section class="mt-6 rounded-[calc(2rem*var(--radius-scale))] bg-[color-mix(in_oklab,var(--brand)_12%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="balance-title">
+                <div class="relative overflow-hidden rounded-[max(0px,calc(2rem*var(--radius-scale)-0.375rem))] bg-[var(--brand)] p-5 text-on-brand shadow-[inset_0_1px_0_rgb(255_255_255/0.18)]">
                     <div aria-hidden="true" class="pointer-events-none absolute -end-16 -top-20 size-56 rounded-full bg-white/10 blur-2xl"></div>
                     <p id="balance-title" class="text-xs font-medium uppercase tracking-[0.18em] text-white/70 rtl:tracking-normal">{{ __('guest.rewards.balance') }}</p>
                     <p class="mt-1 text-5xl font-semibold tabular-nums tracking-tight" dir="ltr">{{ number_format($customer->points_balance) }}</p>
@@ -94,7 +94,7 @@
 
         {{-- Happy birthday: the gift that arrived this week --}}
         @if ($birthdayGift && $birthdayGift->walletReward)
-            <section class="mt-6 overflow-hidden rounded-[1.75rem] bg-brass-50 p-1.5 ring-1 ring-brass-500/20" aria-labelledby="birthday-title" wire:key="birthday-{{ $birthdayGift->id }}">
+            <section class="mt-6 overflow-hidden rounded-[calc(1.75rem*var(--radius-scale))] bg-brass-50 p-1.5 ring-1 ring-brass-500/20" aria-labelledby="birthday-title" wire:key="birthday-{{ $birthdayGift->id }}">
                 <div class="{{ $core }} relative bg-white">
                     <div aria-hidden="true" class="pointer-events-none absolute -end-10 -top-12 size-40 rounded-full bg-brass-100/70 blur-2xl"></div>
                     <div class="relative flex items-start gap-3.5">
@@ -123,7 +123,7 @@
                                    class="min-h-12 w-full rounded-2xl border-0 bg-ivory-100 px-4 text-[1rem] text-ink-950 ring-1 ring-ink-950/5 focus:ring-2 focus:ring-[var(--brand)]">
                         </label>
                         <button type="submit" wire:loading.attr="disabled" wire:target="saveBirthday"
-                                class="min-h-12 shrink-0 rounded-full bg-[var(--brand)] px-5 font-semibold text-white transition active:scale-95 disabled:opacity-60">{{ __('loyalty.birthday.ask_save') }}</button>
+                                class="min-h-12 shrink-0 rounded-full bg-[var(--brand)] px-5 font-semibold text-on-brand transition active:scale-95 disabled:opacity-60">{{ __('loyalty.birthday.ask_save') }}</button>
                     </div>
                     @error('birthday')<p class="mt-1.5 text-sm text-status-delayed" role="alert">{{ $message }}</p>@enderror
                 </form>
@@ -174,7 +174,7 @@
                 @teleport('body')
                 <div x-data="{ open: true }" x-show="open" x-cloak class="fixed inset-0 z-50 grid place-items-center bg-ink-950/40 px-6 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-labelledby="unlocked-title"
                      x-on:keydown.escape.window="open = false" wire:key="unlocked-{{ $newest->id }}">
-                    <div class="w-full max-w-sm rounded-[2rem] bg-white p-6 text-center shadow-2xl" x-on:click.outside="open = false"
+                    <div class="w-full max-w-sm rounded-[calc(2rem*var(--radius-scale))] bg-white p-6 text-center shadow-2xl" x-on:click.outside="open = false"
                          x-init="matchMedia('(prefers-reduced-motion: reduce)').matches || $el.animate([{ transform: 'scale(.9)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.32,.72,0,1)' })">
                         <span class="mx-auto grid size-20 place-items-center rounded-full bg-brass-500 text-white shadow-[0_18px_40px_-18px_var(--color-brass-700,currentColor)]" aria-hidden="true">
                             <svg class="size-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="{{ $newest->badge->icon() }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -193,7 +193,7 @@
 
         {{-- Invite friends --}}
         @if ($invite)
-            <section class="mt-8 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="invite-title"
+            <section class="mt-8 rounded-[calc(1.75rem*var(--radius-scale))] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="invite-title"
                      x-data="{
                         copied: false,
                         url: @js($invite['url']),
@@ -205,7 +205,7 @@
                      }">
                 <div class="{{ $core }} bg-white">
                     <div class="flex items-start gap-3.5">
-                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--brand)] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.2)]" aria-hidden="true">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--brand)] text-on-brand shadow-[inset_0_1px_0_rgb(255_255_255/0.2)]" aria-hidden="true">
                             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 8v6M22 11h-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <div class="min-w-0 flex-1">
@@ -223,7 +223,7 @@
                             </button>
                         </div>
                         <button type="button" x-on:click="share()"
-                                class="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-6 text-[0.9375rem] font-semibold text-white transition active:scale-[0.98]">
+                                class="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-6 text-[0.9375rem] font-semibold text-on-brand transition active:scale-[0.98]">
                             <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ __('referrals.card.share') }}
                         </button>
@@ -244,13 +244,13 @@
 
                 {{-- At the counter: ask the waiter for today's stamp --}}
                 @if ($counterBranch && $customer)
-                    <div class="mt-3 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_10%,white)] p-1.5 ring-1 ring-[var(--brand)]/15"
+                    <div class="mt-3 rounded-[calc(1.75rem*var(--radius-scale))] bg-[color-mix(in_oklab,var(--brand)_10%,white)] p-1.5 ring-1 ring-[var(--brand)]/15"
                          x-data x-on:stamp-added.window="navigator.vibrate?.([60, 40, 120])">
                         @if ($stampRequest?->isWaiting())
-                            <div wire:poll.3s="checkStamp" class="flex items-start gap-4 rounded-[calc(1.75rem-0.375rem)] bg-white p-4" role="status" aria-live="polite">
+                            <div wire:poll.3s="checkStamp" class="flex items-start gap-4 rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] bg-white p-4" role="status" aria-live="polite">
                                 <span class="relative grid size-12 shrink-0 place-items-center" aria-hidden="true">
                                     <span class="absolute inset-0 rounded-full bg-[var(--brand)]/20 motion-safe:animate-ping"></span>
-                                    <span class="relative grid size-12 place-items-center rounded-full bg-[var(--brand)] text-white">
+                                    <span class="relative grid size-12 place-items-center rounded-full bg-[var(--brand)] text-on-brand">
                                         <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 8v4l2.5 2.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </span>
                                 </span>
@@ -261,9 +261,9 @@
                                 </div>
                             </div>
                         @else
-                            <div class="rounded-[calc(1.75rem-0.375rem)] bg-white p-4">
+                            <div class="rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] bg-white p-4">
                                 <button type="button" wire:click="askStamp" wire:loading.attr="disabled" wire:target="askStamp"
-                                        class="group flex min-h-14 w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] ps-6 pe-2 text-base font-semibold text-white transition active:scale-[0.98] disabled:opacity-70">
+                                        class="group flex min-h-14 w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] ps-6 pe-2 text-base font-semibold text-on-brand transition active:scale-[0.98] disabled:opacity-70">
                                     <span>{{ __('guest.rewards.counter.ask') }}</span>
                                     <span class="grid size-10 place-items-center rounded-full bg-white/15 transition group-hover:scale-105" aria-hidden="true">
                                         <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
@@ -316,7 +316,7 @@
                                         <span class="text-sm text-ink-400">{{ __('guest.rewards.sold_out') }}</span>
                                     @else
                                         <button type="button" wire:click="claim({{ $reward->id }})" wire:loading.attr="disabled" wire:target="claim({{ $reward->id }})" @disabled(! $affordable)
-                                                class="min-h-11 rounded-full bg-[var(--brand)] px-4 text-sm font-semibold text-white transition active:scale-95 disabled:bg-ink-200 disabled:text-ink-500">
+                                                class="min-h-11 rounded-full bg-[var(--brand)] px-4 text-sm font-semibold text-on-brand transition active:scale-95 disabled:bg-ink-200 disabled:text-ink-500">
                                             {{ __('guest.rewards.claim') }}
                                         </button>
                                     @endif

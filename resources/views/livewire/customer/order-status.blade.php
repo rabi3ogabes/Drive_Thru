@@ -6,8 +6,8 @@
     $reached = $order->history->mapWithKeys(fn ($h) => [$h->to->value => $h->created_at->setTimezone($tz)]);
     $currency = $order->currency;
     $ready = $order->ready_estimate_at?->setTimezone($tz);
-    $card = 'rounded-[1.75rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
-    $core = 'rounded-[calc(1.75rem-0.375rem)] p-4';
+    $card = 'rounded-[calc(1.75rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
+    $core = 'rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] p-4';
 @endphp
 <div @if ($live && ! $status->isFinal()) data-live-channel="order.{{ $order->short_code }}" data-live-auth="{{ route('realtime.auth') }}" x-on:live-update.debounce.100ms="$wire.$refresh()" wire:poll.30s.visible @elseif (! $status->isFinal()) wire:poll.5s.visible @endif
      x-data="{
@@ -78,18 +78,18 @@
 
         {{-- Ready: full-screen, hard to miss, easy to dismiss --}}
         @if ($owner && $status === Status::Ready)
-            <div x-show="readyOpen" x-cloak x-transition.opacity class="fixed inset-0 z-50 grid place-items-center bg-[var(--brand)] px-6 text-center text-white" role="alertdialog" aria-modal="true" aria-labelledby="ready-title">
+            <div x-show="readyOpen" x-cloak x-transition.opacity class="fixed inset-0 z-50 grid place-items-center bg-[var(--brand)] px-6 text-center text-on-brand" role="alertdialog" aria-modal="true" aria-labelledby="ready-title">
                 <div class="max-w-sm">
                     <div class="mx-auto grid size-28 place-items-center rounded-full bg-white/15 ring-8 ring-white/10 motion-safe:animate-pulse">
                         <svg class="size-14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     <h2 id="ready-title" class="display mt-8 text-4xl">{{ __('guest.order.ready_title') }}</h2>
-                    <p class="mt-3 text-lg text-white/85">{{ __('guest.order.ready_body', ['number' => $order->displayNumber()]) }}</p>
-                    <p class="mt-6 text-sm uppercase tracking-[0.16em] text-white/70 rtl:tracking-normal">{{ __('guest.order.pickup_code') }}</p>
+                    <p class="mt-3 text-lg text-on-brand/85">{{ __('guest.order.ready_body', ['number' => $order->displayNumber()]) }}</p>
+                    <p class="mt-6 text-sm uppercase tracking-[0.16em] text-on-brand/70 rtl:tracking-normal">{{ __('guest.order.pickup_code') }}</p>
                     <p class="mt-1 font-mono text-5xl font-semibold tracking-[0.2em]" dir="ltr">{{ $order->pickup_code }}</p>
                     <div class="mt-10 grid gap-3">
                         <button type="button" x-on:click="dismiss()" class="min-h-14 rounded-full bg-white text-lg font-semibold text-ink-950">{{ __('guest.order.ready_ok') }}</button>
-                        <button type="button" x-on:click="chime(); navigator.vibrate?.([200, 100, 200])" class="min-h-12 rounded-full text-base font-medium text-white/85">{{ __('guest.order.replay') }}</button>
+                        <button type="button" x-on:click="chime(); navigator.vibrate?.([200, 100, 200])" class="min-h-12 rounded-full text-base font-medium text-on-brand/85">{{ __('guest.order.replay') }}</button>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                         @foreach ($onlineMethods as $method)
                             <button type="button" wire:click="pay('{{ $method->value }}')" wire:loading.attr="disabled"
                                     @class(['flex items-center justify-between rounded-full px-5 py-3 font-semibold transition active:scale-[0.98] disabled:opacity-60',
-                                            'bg-[var(--brand)] text-white' => $method === $order->payment_method,
+                                            'bg-[var(--brand)] text-on-brand' => $method === $order->payment_method,
                                             'bg-white text-ink-900 ring-1 ring-ink-950/10' => $method !== $order->payment_method])>
                                 <span class="flex items-center gap-2"><x-filament::icon :icon="$method->getIcon()" class="size-5" /> {{ __('guest.order.pay_with', ['method' => $method->getLabel()]) }}</span>
                                 <span class="tabular-nums" dir="ltr">{{ Money::format($order->total_minor, $currency) }}</span>
@@ -145,7 +145,7 @@
         @if ($owner && $waiting && $status !== Status::PendingPayment)
             <section class="mt-5">
                 <button type="button" wire:click="onTheWay" wire:loading.attr="disabled"
-                        class="flex w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] py-2 pe-2 ps-6 text-white shadow-lg transition active:scale-[0.985]">
+                        class="flex w-full items-center justify-between gap-3 rounded-full bg-[var(--brand)] py-2 pe-2 ps-6 text-on-brand shadow-lg transition active:scale-[0.985]">
                     <span class="font-semibold">{{ __('guest.order.on_the_way') }}</span>
                     <span class="grid size-11 place-items-center rounded-full bg-white/15" aria-hidden="true">
                         <svg class="flip-rtl size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 13h2l2-5h10l2 5h2M5 13v4h2m10 0h2v-4M7 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0Zm6 0a2 2 0 1 0 4 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -167,7 +167,7 @@
                         @if ($lanes->count() > 1)
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($lanes as $lane)
-                                    <button type="button" wire:click="imHere({{ $lane->id }})" @class(['min-h-11 rounded-full px-4 text-sm font-medium ring-1', 'bg-[var(--brand)] text-white ring-[var(--brand)]' => $order->lane_id === $lane->id, 'bg-white text-ink-700 ring-ink-950/10' => $order->lane_id !== $lane->id])>{{ $lane->name }}</button>
+                                    <button type="button" wire:click="imHere({{ $lane->id }})" @class(['min-h-11 rounded-full px-4 text-sm font-medium ring-1', 'bg-[var(--brand)] text-on-brand ring-[var(--brand)]' => $order->lane_id === $lane->id, 'bg-white text-ink-700 ring-ink-950/10' => $order->lane_id !== $lane->id])>{{ $lane->name }}</button>
                                 @endforeach
                             </div>
                         @endif
@@ -270,7 +270,7 @@
         @if ($rating)
             <section id="rate" class="mt-6 {{ $card }}" aria-labelledby="rated-title" wire:key="rated-{{ $rating->id }}">
                 <div class="{{ $core }} flex items-start gap-3.5">
-                    <span class="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-white" aria-hidden="true">
+                    <span class="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-on-brand" aria-hidden="true">
                         <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
                     <div class="min-w-0">
@@ -292,7 +292,7 @@
                 </div>
             </section>
         @elseif ($canRate)
-            <section id="rate" class="mt-6 rounded-[1.75rem] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="rate-title"
+            <section id="rate" class="mt-6 rounded-[calc(1.75rem*var(--radius-scale))] bg-[color-mix(in_oklab,var(--brand)_8%,white)] p-1.5 ring-1 ring-[var(--brand)]/15" aria-labelledby="rate-title"
                      x-data="{
                         stars: 0,
                         hover: 0,
@@ -341,7 +341,7 @@
                         </label>
 
                         <button type="button" x-on:click="$wire.rate(stars, tags, comment)" wire:loading.attr="disabled" wire:target="rate"
-                                class="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-6 font-semibold text-white transition active:scale-[0.98] disabled:opacity-60">
+                                class="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-6 font-semibold text-on-brand transition active:scale-[0.98] disabled:opacity-60">
                             <svg wire:loading wire:target="rate" class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
                             {{ __('feedback.card.send') }}
                         </button>
@@ -401,7 +401,7 @@
                                       class="max-h-32 min-h-12 flex-1 resize-none rounded-2xl border-0 bg-ivory-100 px-4 py-3 text-[1rem] text-ink-950 ring-1 ring-ink-950/5 placeholder:text-ink-400 focus:ring-2 focus:ring-[var(--brand)]"
                                       x-on:input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"></textarea>
                             <button type="submit" x-bind:disabled="! body.trim()" wire:loading.attr="disabled" wire:target="replyToTicket"
-                                    class="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-white transition active:scale-90 disabled:opacity-40" aria-label="{{ __('support.guest.reply') }}">
+                                    class="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-on-brand transition active:scale-90 disabled:opacity-40" aria-label="{{ __('support.guest.reply') }}">
                                 <svg class="flip-rtl size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </form>
@@ -426,7 +426,7 @@
                 <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="report-title">
                     <button type="button" class="absolute inset-0 bg-ink-950/40 backdrop-blur-[2px]" x-on:click="open = false" aria-label="{{ __('support.guest.cancel') }}"
                             x-show="open" x-transition.opacity.duration.300ms></button>
-                    <div x-ref="panel" tabindex="-1" class="relative max-h-[92dvh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl outline-none"
+                    <div x-ref="panel" tabindex="-1" class="relative max-h-[92dvh] w-full max-w-2xl overflow-y-auto rounded-t-[calc(2rem*var(--radius-scale))] bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl outline-none"
                          x-show="open" x-transition:enter="transition duration-[320ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none" x-transition:enter-start="translate-y-full" x-transition:leave="transition duration-200 ease-in" x-transition:leave-end="translate-y-full">
                         <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-ink-200"></div>
                         <h2 id="report-title" class="display text-2xl text-ink-950">{{ __('support.guest.sheet_title') }}</h2>
@@ -462,7 +462,7 @@
                             <button type="button" x-on:click="open = false" class="flex-1 rounded-full bg-ivory-100 py-3.5 font-semibold text-ink-800 transition active:scale-[0.98]">{{ __('support.guest.cancel') }}</button>
                             <button type="button" x-on:click="$wire.reportProblem(category ?? '', items, body)" x-bind:disabled="! category || ! body.trim()"
                                     wire:loading.attr="disabled" wire:target="reportProblem"
-                                    class="flex flex-[1.4] items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-3.5 font-semibold text-white transition active:scale-[0.98] disabled:opacity-40">
+                                    class="flex flex-[1.4] items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-3.5 font-semibold text-on-brand transition active:scale-[0.98] disabled:opacity-40">
                                 <svg wire:loading wire:target="reportProblem" class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
                                 {{ __('support.guest.send') }}
                             </button>
@@ -560,7 +560,7 @@
 
             <div class="mt-6 grid gap-2">
                 @if ($status->isFinal())
-                    <button type="button" wire:click="orderAgain" class="rounded-full bg-[var(--brand)] py-3.5 font-semibold text-white transition active:scale-[0.98]">{{ __('guest.order.again') }}</button>
+                    <button type="button" wire:click="orderAgain" class="rounded-full bg-[var(--brand)] py-3.5 font-semibold text-on-brand transition active:scale-[0.98]">{{ __('guest.order.again') }}</button>
                 @endif
                 @if ($canReport)
                     <button type="button" x-on:click="$dispatch('open-report')"

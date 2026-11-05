@@ -2,10 +2,10 @@
     <style>@keyframes unsubscribe-pop { from { transform: scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }</style>
     <x-customer.shell :restaurant="$restaurant" :customer="null" bare>
         <section class="mx-auto max-w-md pt-10">
-            <div class="rounded-[2rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
-                <div class="rounded-[calc(2rem-0.375rem)] bg-gradient-to-br from-ivory-100 to-white px-5 pb-6 pt-7" wire:key="unsubscribe-{{ $state }}">
+            <div class="rounded-[calc(2rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
+                <div class="rounded-[max(0px,calc(2rem*var(--radius-scale)-0.375rem))] bg-gradient-to-br from-ivory-100 to-white px-5 pb-6 pt-7" wire:key="unsubscribe-{{ $state }}">
                     @if ($state === 'done' || $state === 'already')
-                        <span class="grid size-14 place-items-center rounded-full bg-[var(--brand)] text-white motion-safe:animate-[unsubscribe-pop_480ms_cubic-bezier(0.32,0.72,0,1)_both]">
+                        <span class="grid size-14 place-items-center rounded-full bg-[var(--brand)] text-on-brand motion-safe:animate-[unsubscribe-pop_480ms_cubic-bezier(0.32,0.72,0,1)_both]">
                             <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     @else

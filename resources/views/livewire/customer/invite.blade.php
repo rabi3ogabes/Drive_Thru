@@ -2,13 +2,13 @@
     <style>@keyframes invite-rise { from { transform: translateY(12px) scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }</style>
     <x-customer.shell :restaurant="$restaurant" :customer="$customer" bare>
         <section class="mx-auto max-w-md pt-8" wire:key="invite-{{ $state }}">
-            <div class="rounded-[2rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
-                <div class="relative overflow-hidden rounded-[calc(2rem-0.375rem)] bg-gradient-to-br from-ivory-100 to-white px-5 pb-6 pt-7">
+            <div class="rounded-[calc(2rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
+                <div class="relative overflow-hidden rounded-[max(0px,calc(2rem*var(--radius-scale)-0.375rem))] bg-gradient-to-br from-ivory-100 to-white px-5 pb-6 pt-7">
                     <div aria-hidden="true" class="pointer-events-none absolute -end-20 -top-24 size-64 rounded-full bg-[color-mix(in_oklab,var(--brand)_14%,transparent)] blur-3xl"></div>
 
                     <div class="relative">
                         @if ($state === 'joined')
-                            <span class="grid size-14 place-items-center rounded-full bg-[var(--brand)] text-white motion-safe:animate-[invite-rise_520ms_cubic-bezier(0.32,0.72,0,1)_both]">
+                            <span class="grid size-14 place-items-center rounded-full bg-[var(--brand)] text-on-brand motion-safe:animate-[invite-rise_520ms_cubic-bezier(0.32,0.72,0,1)_both]">
                                 <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
                         @else
@@ -56,7 +56,7 @@
 
                         @if ($state === 'joined')
                             <a href="{{ route('public.restaurant', $restaurant) }}#branches" wire:navigate
-                               class="group mt-6 flex w-full items-center justify-center gap-3 rounded-full bg-[var(--brand)] py-2 pe-2 ps-6 text-[0.9375rem] font-semibold text-white transition active:scale-[0.98]">
+                               class="group mt-6 flex w-full items-center justify-center gap-3 rounded-full bg-[var(--brand)] py-2 pe-2 ps-6 text-[0.9375rem] font-semibold text-on-brand transition active:scale-[0.98]">
                                 <span class="flex-1 text-center">{{ __('referrals.invite.order_now') }}</span>
                                 <span class="grid size-10 place-items-center rounded-full bg-white/15 transition group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" aria-hidden="true">
                                     <svg class="flip-rtl size-4" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
