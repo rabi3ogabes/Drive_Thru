@@ -33,6 +33,7 @@ enum RestaurantPermission: string implements Permission
     case RefundPayments = 'payments.refund';
     case ViewCustomers = 'customers.view';
     case ViewCustomerContacts = 'customers.contacts';
+    case HandleSupport = 'support.handle';
     case ManageLoyalty = 'loyalty.manage';
     case ManagePromotions = 'promotions.manage';
     case ManageCampaigns = 'campaigns.manage';
@@ -56,7 +57,7 @@ enum RestaurantPermission: string implements Permission
             self::ViewOrders, self::OperateOrders, self::OverrideOrders,
             self::OperateKitchen, self::OperatePickup, self::OperatePager => 'operations',
             self::CollectPayments, self::RefundPayments => 'payments',
-            self::ViewCustomers, self::ViewCustomerContacts => 'customers',
+            self::ViewCustomers, self::ViewCustomerContacts, self::HandleSupport => 'customers',
             self::ManageLoyalty, self::ManagePromotions, self::ManageCampaigns => 'growth',
             self::ViewReports, self::ViewFinance, self::ExportReports, self::ViewAuditLog => 'reports',
         };

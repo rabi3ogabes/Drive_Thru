@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Restaurants\Schemas;
 
 use App\Domain\Billing\Models\Plan;
+use App\Domain\Billing\PlanCatalog;
 use App\Domain\Tenancy\Actions\CreateRestaurant;
 use App\Domain\Tenancy\Data\OnboardClientData;
+use App\Filament\Admin\Resources\Plans\PlanResource;
 use App\Models\User;
 use App\Support\Digits;
 use App\Support\Locales;
@@ -24,6 +26,8 @@ use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard\Step;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 /**
@@ -153,12 +157,15 @@ final class OnboardingSteps
     public static function planFields(): array
     {
         return [
+            Text::make(fn (): HtmlString => new HtmlString(e(__('clients.wizard.no_plans')).' <a class="fi-link font-medium underline" href="'.e(PlanResource::getUrl()).'">'.e(__('clients.wizard.no_plans_link')).'</a>'))
+                ->color('warning')
+                ->visible(fn (): bool => self::availablePlans()->isEmpty()),
             Radio::make('plan_id')
                 ->label(__('clients.fields.plan'))
-                ->options(fn (): array => Plan::query()->available()->get()->mapWithKeys(fn (Plan $plan): array => [
+                ->options(fn (): array => self::availablePlans()->mapWithKeys(fn (Plan $plan): array => [
                     $plan->id => $plan->name.' · '.$plan->formattedPrice().($plan->isCustomPriced() ? '' : ' '.__('plans.per_branch_per', ['interval' => $plan->interval->getLabel()])),
                 ])->all())
-                ->descriptions(fn (): array => Plan::query()->available()->get()->mapWithKeys(fn (Plan $plan): array => [$plan->id => (string) $plan->description])->all())
+                ->descriptions(fn (): array => self::availablePlans()->mapWithKeys(fn (Plan $plan): array => [$plan->id => (string) $plan->description])->all())
                 ->required()
                 ->live()
                 ->afterStateUpdated(function (?string $state, Set $set): void {
@@ -229,6 +236,24 @@ final class OnboardingSteps
                 : __('clients.wizard.review_no_invite'))
                 ->color('gray'),
         ]);
+    }
+
+    /**
+     * The plans a new client can start on. A new platform has none until
+     * the standard tiers are installed, so the first look installs them
+     * (as adding a service does); plans an admin switched off stay off.
+     *
+     * @return Collection<int, Plan>
+     */
+    public static function availablePlans(): Collection
+    {
+        return once(function (): Collection {
+            if (Plan::query()->doesntExist()) {
+                app(PlanCatalog::class)->install();
+            }
+
+            return Plan::query()->available()->get();
+        });
     }
 
     public static function plan(mixed $id): ?Plan

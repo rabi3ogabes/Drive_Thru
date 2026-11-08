@@ -50,6 +50,7 @@ return [
         'payments.refund' => ['label' => 'Refund payments', 'description' => 'Refund all or part of a payment.'],
         'customers.view' => ['label' => 'View customers', 'description' => 'Customer profiles, order history and loyalty.'],
         'customers.contacts' => ['label' => 'See contact details', 'description' => 'Full phone numbers instead of masked ones.'],
+        'support.handle' => ['label' => 'Handle support', 'description' => 'See guest problem reports, reply, refund or give a reward.'],
         'loyalty.manage' => ['label' => 'Loyalty program', 'description' => 'Points, tiers and rewards.'],
         'promotions.manage' => ['label' => 'Promotions', 'description' => 'Discounts, coupons and offers.'],
         'campaigns.manage' => ['label' => 'Campaigns', 'description' => 'Send WhatsApp, SMS and push campaigns to customer segments.'],

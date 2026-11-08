@@ -83,49 +83,7 @@
         </section>
 
         {{-- The three services --}}
-        <section id="services" class="scroll-mt-28 px-4 py-20 sm:px-6 lg:py-28">
-            <div class="mx-auto max-w-6xl">
-                <div class="max-w-2xl" data-reveal>
-                    <p class="eyebrow"><span class="size-1.5 rounded-full bg-brass-500"></span>{{ __('site.services.eyebrow') }}</p>
-                    <h2 class="display mt-6 text-4xl leading-[1.08] text-ink-950 sm:text-5xl rtl:leading-[1.4]">{{ __('site.services.title') }}</h2>
-                    <p class="mt-5 text-lg leading-relaxed text-ink-600">{{ __('site.services.lead') }}</p>
-                </div>
-
-                <div class="mt-16 space-y-24 lg:mt-20 lg:space-y-32">
-                    @foreach (['drive_thru', 'ready_call', 'rewards'] as $index => $key)
-                        @php $service = $services[$key]; $flip = $index % 2 === 1; @endphp
-                        <article class="grid items-center gap-10 lg:grid-cols-12 lg:gap-16" aria-labelledby="service-{{ $key }}">
-                            {{-- Living illustration --}}
-                            <div @class(['lg:col-span-6', 'lg:order-2' => $flip]) data-reveal aria-hidden="true">
-                                @include('site.partials.service-visual', ['key' => $key])
-                            </div>
-
-                            {{-- Copy --}}
-                            <div @class(['lg:col-span-6', 'lg:order-1' => $flip]) data-reveal style="--i:1">
-                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brass-700 rtl:tracking-normal">{{ __("site.services.{$key}.kicker") }}</p>
-                                <h3 id="service-{{ $key }}" class="display mt-3 text-3xl leading-[1.12] text-ink-950 sm:text-[2.6rem] rtl:leading-[1.4]">{{ __("site.services.{$key}.title") }}</h3>
-                                <p class="mt-5 max-w-lg text-lg leading-relaxed text-ink-600">{{ __("site.services.{$key}.lead") }}</p>
-                                <ul class="mt-7 grid gap-3 sm:grid-cols-2">
-                                    @foreach (__("site.services.{$key}.points") as $point)
-                                        <li class="flex gap-3 text-[0.9375rem] text-ink-700">
-                                            <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-teal-900 text-brass-200">{!! $check !!}</span>
-                                            {{ $point }}
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                @if ($service['for_sale'])
-                                    <div class="mt-8 inline-flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-2xl bg-white/70 px-5 py-3.5 ring-1 ring-ink-950/5">
-                                        <span class="text-xl font-semibold tabular-nums text-ink-950" dir="ltr">{{ $service['price_label'] }}</span>
-                                        <span class="text-sm text-ink-500">{{ __('site.services.per') }}</span>
-                                        <span class="text-sm font-medium text-teal-800">· {{ __('site.services.free', ['days' => $service['demo_days']]) }}</span>
-                                    </div>
-                                @endif
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            </div>
-        </section>
+        @include('site.partials.showcase')
 
         {{-- How it works --}}
         <section id="how" class="scroll-mt-28 px-4 py-20 sm:px-6 lg:py-28">

@@ -50,6 +50,7 @@ return [
         'payments.refund' => ['label' => 'استرجاع المبالغ', 'description' => 'استرجاع كامل المبلغ أو جزء منه.'],
         'customers.view' => ['label' => 'عرض الزبائن', 'description' => 'ملفات الزبائن وسجل طلباتهم ونقاط الولاء.'],
         'customers.contacts' => ['label' => 'عرض بيانات التواصل', 'description' => 'أرقام الهواتف كاملة بدلًا من إخفاء جزء منها.'],
+        'support.handle' => ['label' => 'معالجة الشكاوى', 'description' => 'الاطلاع على بلاغات الضيوف والرد عليها واسترداد المبلغ أو منح مكافأة.'],
         'loyalty.manage' => ['label' => 'برنامج الولاء', 'description' => 'النقاط والمستويات والمكافآت.'],
         'promotions.manage' => ['label' => 'العروض', 'description' => 'الخصومات والقسائم والعروض.'],
         'campaigns.manage' => ['label' => 'الحملات', 'description' => 'إرسال حملات واتساب والرسائل والإشعارات لشرائح الزبائن.'],

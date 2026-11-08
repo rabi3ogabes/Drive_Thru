@@ -328,14 +328,15 @@ Plan → approve → TDD with Http::fake for every provider. Verify end to end i
 - [x] **Tiers** (Bronze/Silver/Gold/Platinum, configurable thresholds and benefits), progress bar in the customer app. *(7A)*
 - [x] **Rewards catalog + wallet** (free item, % off, fixed off, bonus points), expiry, redemption history. *(7A)*
 - [x] **Promotions engine** (% / fixed / BOGO / free item / combo price / first order / birthday / happy hour / branch-category-product scope / stacking rules) + **coupon codes** (limits, per-customer limits, validity). *(7A)*
-- [ ] **Referral** program with fraud checks. **Favorites**, birthday reward automation.
-- [ ] Optional gamification: streaks, milestones, badges (admin-configurable, off by default).
+- [x] **Referral** program with fraud checks. Done 2026-11-01: invite link per guest (`/{restaurant}/invite/{code}`), both rewarded after the friend's first picked-up order; same phone, same car, existing guest, own link and the monthly cap are rejected with the reason.
+- [x] **Favorites**, birthday reward automation (7C). Favorites were already built (menu heart, home page). Done 2026-11-04: birthday gift from the catalog N days before the birthday (0-7), once per guest per 365 days, `loyalty:birthdays` daily at 06:00 Doha.
+- [x] Optional gamification: streaks, milestones, badges (admin-configurable, off by default). Done 2026-11-04: weekly streak and six badges (first order, 10, 25, explorer, early bird, streak), each optionally unlocking a reward; Achievements on the Rewards page.
 - [x] **CRM**: customer list + profile (orders, revenue, AOV, favorites, last order, points, tier, segment, campaigns), **auto segments** nightly (New, Regular, VIP, High spender, At risk, Inactive).
 - [x] **Campaigns** to segments (WhatsApp/SMS/push), scheduling, consent, quiet hours, attribution (orders + revenue). Done 2026-10-27: owner composer with a live bilingual preview, audience count, test send, send/schedule/cancel, results; per-guest frequency cap; unsubscribe link and STOP replies.
-- [ ] **QR campaigns**: create QR per branch/lane/campaign/channel/promo, branded poster PDF, analytics (scans → visits → orders → revenue → conversion).
-- [ ] **Post-pickup rating** + **support tickets** (customer report → manager resolves → WhatsApp reply).
+- [x] **QR campaigns**: create QR per branch/lane/campaign/channel/promo, branded poster PDF, analytics (scans → visits → orders → revenue → conversion). Done 2026-11-01: `/q/{code}` tracked codes, 30-min device dedupe and bot filtering, a funnel with a 30-day chart, A4/A5/sticker posters.
+- [x] **Post-pickup rating** + **support tickets** (customer report → manager resolves → WhatsApp reply). Done 2026-11-04: stars and tags on the order page (1-2 stars alert the managers), Ratings page and dashboard tile; Report a problem with a conversation, Support inbox, reply by WhatsApp (`dtp_ticket_reply`), refund or reward, resolve.
 
-**Milestones:** 7A loyalty, tiers, rewards, promotions and coupons (done 2026-10-12, plan in `docs/superpowers/plans/2026-10-12-phase-7a-loyalty-promotions.md`). 7B CRM, campaigns, QR campaigns and referral. 7C ratings, support tickets, birthday automation and gamification (off by default).
+**Milestones:** 7A loyalty, tiers, rewards, promotions and coupons (done 2026-10-12, plan in `docs/superpowers/plans/2026-10-12-phase-7a-loyalty-promotions.md`). 7B CRM, campaigns, QR campaigns and referral (done 2026-11-01, plan in `docs/superpowers/plans/2026-10-12-phase-7b-crm-campaigns.md`). 7C ratings, support tickets, birthday automation and gamification, off by default (done 2026-11-04, plan in `docs/superpowers/plans/2026-11-04-phase-7c-ratings-support-birthdays-badges.md`).
 
 **Kickoff prompt**
 ```

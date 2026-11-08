@@ -35,6 +35,16 @@
                 </a>
             @endif
 
+            @if ($inviteOn)
+                <a href="{{ route('customer.rewards', $restaurant) }}#invite-title" wire:navigate class="group mt-3 flex min-h-14 items-center gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-ink-950/5 transition active:scale-[0.99]">
+                    <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-brass-50 text-brass-800 ring-1 ring-brass-500/15" aria-hidden="true">
+                        <svg class="size-[1.125rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 8v6M22 11h-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="min-w-0 flex-1 text-sm font-semibold text-ink-900">{{ __('referrals.card.invite_friends') }}</span>
+                    <svg class="flip-rtl size-4 shrink-0 text-ink-400 transition group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            @endif
+
             {{-- Profile --}}
             <form wire:submit="saveProfile" class="mt-6 {{ $card }}" aria-labelledby="profile-title">
                 <div class="{{ $core }} space-y-4">

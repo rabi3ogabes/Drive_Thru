@@ -7,6 +7,7 @@ namespace App\Providers\Filament;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Filament\App\OperationsNavigation;
 use App\Filament\App\Pages\Dashboard;
+use App\Filament\App\Pages\Guide;
 use App\Filament\App\WorkspaceNavigationGroup;
 use App\Filament\Concerns\ConfiguresPanel;
 use App\Filament\Pages\AlertPreferences;
@@ -36,6 +37,7 @@ class AppPanelProvider extends PanelProvider
                 ->renderHook(PanelsRenderHook::BODY_START, fn (): string => view('filament.components.impersonation-banner')->render())
                 ->renderHook(PanelsRenderHook::CONTENT_START, fn (): string => Blade::render('<livewire:workspace-notices />'))
                 ->renderHook(PanelsRenderHook::BODY_END, fn (): string => view('filament.components.live-alerts')->render())
+                ->renderHook(PanelsRenderHook::PAGE_HEADER_ACTIONS_AFTER, fn (array $scopes): string => Guide::helpButton($scopes))
                 ->pages([AlertPreferences::class])
                 ->userMenuItems([
                     Action::make('alerts')

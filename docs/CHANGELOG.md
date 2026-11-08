@@ -2,6 +2,106 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-05: Owner guide
+
+### Built
+- **Guide** (Restaurant → Guide, `/app/{restaurant}/guide`), in Arabic and English: a 7-step "Start here" path, then 42 articles in 8 sections (Operations, Menu, Growth, Branches, Team, Restaurant, Branch screens, What guests see). Each article says what the page is for, when to use it, what every button does (with the button's exact label), tips, and who can use it (the permission's own label). "Open this page" appears only when the reader can open it and the plan includes it; otherwise "Not on your plan" with a link to Billing.
+  - Instant search that ignores Arabic diacritics and letter forms (أ/إ/ا, ة/ه, ى/ي), a "/" shortcut, a result count, an empty state, and deep links (`#support`).
+- **"?" on every workspace page header:** opens that page's article in a side panel, rendered with the page so it opens without a round trip, and links to the full guide.
+- `App\Domain\Guide\GuideCatalog` maps every page and resource to its article; the text lives only in `lang/{ar,en}/guide.php`. `GuideCatalogTest` fails when a workspace page has no article, or when the two languages have different keys (including the number of buttons and tips per article).
+
+### Verified
+- 755 tests (full suite), Pint, Larastan 0, build.
+- Browser (local Rabii demo, headless Chromium): the guide and the Ratings "?" panel in Arabic and English, light and dark, at 375, 768 and 1280 px; Arabic search with and without hamza; deep link opening Support; the empty search state. No sideways scrolling, no console errors.
+
+## 2026-11-04: Ratings, support, birthday gifts and badges (Phase 7C)
+
+### Built
+- **Ratings after pickup:** on the order page, 1-5 stars with tags that fit the score (praise for 4-5, problems for 1-3) and an optional comment, for 48 hours, once. One push reminder 30 minutes after pickup to guests who allowed notifications (no paid messages). 1-2 stars alert the branch managers.
+  - **Ratings page** (Operations): the last 30 days' average, share of 4-5 and 1-2, scores, most-mentioned tags and a daily chart, then every rating with branch, stars, tag and comment filters. Needs "View reports".
+  - A "Rating, 30 days" tile on the dashboard, and ratings on the guest profile.
+- **Support tickets:** "Report a problem" on the order page up to 7 days after pickup (missing item, wrong item, quality, charged incorrectly, other; the lines that were wrong), as a conversation the guest can reply in. After a low rating naming a missing or wrong item, the report is offered straight away, pre-filled.
+  - **Support inbox** (Operations, with an open-ticket badge and an "over 24 hours" marker): the order, the guest and the conversation; reply (WhatsApp utility template `dtp_ticket_reply`, then SMS, and on the order page); **refund** all or part of an online payment; **give a reward** (works for cash orders too); **resolve** with an optional note, telling the guest how it was put right. Audited.
+  - New permission **Handle support**, given to managers (existing restaurants too).
+- **Birthday gifts** (Loyalty → Birthday gift): a reward from the catalog N days before the birthday (0-7, default 3) in the restaurant's time zone, once per guest per 365 days even if the birthday changes, 29 February on 28 February in other years. A message only to guests who accepted offers (the approved offer template), a push to guests who allowed notifications. The Rewards page asks for the birthday and shows a "Happy birthday" card that week.
+- **Streaks and badges** (Loyalty → Badges, **off by default**): a weekly streak (Sunday to Saturday) and six badges, each counting unless switched off and optionally unlocking a reward. Achievements on the Rewards page with progress and "order by Saturday to keep it going"; a new badge is celebrated once. Guests who qualified before badges were switched on get them when they open the page. Badges on the guest profile and holders per badge in settings.
+- Demo data (`DemoFeedbackSeeder`): ratings, three tickets, the birthday gift with two birthdays this week, badges on with earned ones.
+
+### Fixed
+- The workspace sidebar showed the Operations group twice and hid the live-screen links once a page joined it (enum vs string group names).
+- Guest text in another language (an English comment in Arabic) now lays out in its own direction.
+
+### Verified
+- 740 tests (full suite), Pint, Larastan 0, build.
+- Browser (local Masar): Ratings, Support inbox and a ticket, the Loyalty Birthday and Badges tabs and the dashboard tile in Arabic and English, light and dark, at 375, 768 and 1280 px; the guest rating card, report sheet and conversation, Rewards birthday prompt, Achievements and the badge celebration at 375 and 768 px in both languages. No sideways scrolling, no console errors.
+
+## 2026-11-01: Phase 7B final pass (task 8)
+
+### Built
+- **Growth demo data** (`DemoCrmSeeder`, run by `db:seed` for Masar, safe to run twice): 14 guests with months of picked-up orders, points and tiers, segments computed, consent for most, a sent WhatsApp campaign with delivery receipts and 3 attributed orders, a car-window QR sticker with a month of scans and 7 orders, invites switched on with one rewarded and one waiting referral.
+
+### Fixed
+- The 5 × 5 cm sticker spilled its English line and link onto a second page; it now fits one sticker (and every poster size is tested to stay on one page).
+- A guest's recent orders were listed by record number, not by order time.
+- A sent campaign said its guests "will receive it"; it now says "Sent to 9 guests".
+- The invite settings button said "Submit"; it says "Save".
+
+### Verified
+- Full suite, Pint, Larastan 0, `npm run build`, `composer warm`.
+- Browser (local Masar, owner signed in): guests list and profile, campaign composer and results, the QR funnel, referrals with settings, in Arabic and English, light and dark, at 375, 768 and 1280 px: no sideways scrolling, no console errors except the realtime socket when Reverb isn't running. Guest pages (Rewards invite card, invite page, unsubscribe page; light only by design) in both languages at all three widths. The A5 poster and the sticker checked as rendered PDFs.
+
+## 2026-11-01: Invite friends (Phase 7B, task 7)
+
+### Built
+- **An invite link for every guest** on their Rewards page: copy it, or share it with the phone's share sheet. The card says what each side gets and how many friends joined. The Account page links to it.
+- **The invite page** `/{restaurant}/invite/{code}`: who invited the friend, their welcome gift, three steps, and sign-in right there. The invite is remembered for 30 days, so signing in later (at checkout, say) still counts. Own link, existing guest and inactive invites each get their own calm message.
+- **Rewards after the first picked-up order**, through `GrantReward` (source `referral`), once. A cancelled order rewards nobody; the referral waits for the next pickup.
+- **Fraud checks**, each recorded with its reason: the friend signs up on the inviter's phone (a first-party device cookie, stored only as a hash), picks up in the inviter's car (plates compared however they are typed, Arabic digits and spaces included), was already a guest, opens their own link, or the inviter passed the monthly cap.
+- **Owner screen** (Growth → Referrals): totals, every referral with its status and reason, and the settings (on or off, the two rewards from the catalog, the monthly cap, 10 by default). Staff need "Manage campaigns".
+
+### Verified
+- 11 new tests: the happy path rewards both once, a cancelled first order, signing in later, each fraud rule, the cap, restaurant isolation and invites switched off, the guest card, the owner list and settings, access.
+- Browser (local Masar): the invite page in Arabic and English on a phone, a real sign-in through it (referral pending, device recorded), the Rewards card; own-link and invalid-link states.
+
+## 2026-11-01: Tracked QR codes and WhatsApp offer guide (Phase 7B, tasks 5–6)
+
+### Built
+- **Tracked QR codes** (Growth → Tracked QR codes): one code per placement (a car-window sticker, a flyer, a table).
+  - Each opens a branch menu (with an optional lane and promo code) or the restaurant page.
+  - The short link `/q/{code}` counts the scan, then opens the menu carrying `source=qr` and the code, so the order remembers where it came from.
+  - **Counting honestly:** one scan per device per 30 minutes (the device is a salted hash of IP and browser, never the raw values); link previews and crawlers are kept but never counted; a visit is counted only when the scan reached the menu.
+  - **The funnel:** scans → visits → orders → revenue → conversion, with a 30-day chart of scans and orders.
+  - **Downloads:** PNG, SVG, an A5 or A4 poster and a 5 × 5 cm sticker (PDF, bilingual).
+  - A code can be switched off, or given dates; outside them it opens the restaurant page without counting.
+  - The Links & QR page points to tracked codes.
+- **WhatsApp offer template guide** in `docs/WHATSAPP_TEMPLATES.md`:
+  - `dtp_offer` (Marketing) wording in both languages, its opt-out button and sample values for Meta's review.
+  - The sending rules, and why quality and pricing matter.
+- A tap on Meta's marketing opt-out button ("Stop promotions") now stops offers too.
+
+### Verified
+- 15 new tests: scan and redirect, dedupe, bots, scan → visit → order in the funnel, switched off and out of dates, downloads and posters in every size, access and restaurant isolation.
+- Browser: a code's page in Arabic at 1280 px and on a phone.
+
+## 2026-11-01: Service showcase on the home page
+
+### Built
+- **The three services as a showcase:** one tab per service, each with a progress line, and one slide each, with its copy, price, free-demo line and a link to the service page.
+- **A scene in motion for each service** (9 seconds):
+  - **Drive-Thru:** tap and pay on the phone, the kitchen ticket goes from New to Preparing to Ready, and the car rolls to the window and away.
+  - **Order-Ready Call:** the guest's pager rings and buzzes, the WhatsApp backup arrives, and 27 moves to Ready on the TV board.
+  - **Rewards:** stamps land one by one, the Free circle lights up and the gift arrives in the wallet.
+- **Usability:**
+  - Plays only on screen, pauses on hover, focus or a hidden tab, and has a pause/play button.
+  - Swipe on phones; arrow, Home and End keys, mirrored in Arabic.
+  - Built as accessible tabs (only the visible slide can be reached).
+  - With reduced motion nothing plays by itself and each scene shows its finished state.
+  - Animates only transform and opacity.
+
+### Verified
+- Home page tests in English and Arabic; the full suite passes.
+- Browser: each scene checked at set moments, at 1280 px and on a 375 px phone, in Arabic and English, light and dark. No sideways scroll, no console errors, and keyboard, pause and tabs work.
+
 ## 2026-10-28: Browser installer and MySQL/MariaDB readiness
 
 ### Built

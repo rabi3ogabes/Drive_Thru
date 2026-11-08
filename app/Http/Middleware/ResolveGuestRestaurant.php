@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Domain\Referrals\GuestDevice;
 use App\Domain\Tenancy\Models\Restaurant;
 use Closure;
 use Illuminate\Http\Request;
@@ -12,7 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Guest pages of a restaurant: a paused or cancelled restaurant shows a
  * polite "temporarily unavailable" page, except for pages about orders the
- * guest already placed (status and receipt stay reachable).
+ * guest already placed (status and receipt stay reachable). Every guest
+ * page also gives the browser its device cookie (see GuestDevice).
  */
 final class ResolveGuestRestaurant
 {
@@ -27,6 +29,8 @@ final class ResolveGuestRestaurant
             && ! in_array($request->route()?->getName(), self::ALWAYS_OPEN, true)) {
             return response()->view('public.unavailable', ['restaurant' => $restaurant], 503);
         }
+
+        app(GuestDevice::class)->remember();
 
         return $next($request);
     }

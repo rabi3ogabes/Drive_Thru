@@ -37,3 +37,19 @@ it('is the only way to become a super admin', function () {
 
     expect($user->fresh()->isSuperAdmin())->toBeFalse();
 })->throws(MassAssignmentException::class);
+
+it('asks for the password twice and changes nothing when they differ', function () {
+    $this->artisan('platform:install', ['--name' => 'Noor', '--email' => 'noor@example.com'])
+        ->expectsQuestion('Password', 'Str0ngPassw0rd!x')
+        ->expectsQuestion('Password again', 'Str0ngPassw0rd!y')
+        ->assertFailed();
+
+    expect(User::count())->toBe(0);
+
+    $this->artisan('platform:install', ['--name' => 'Noor', '--email' => 'noor@example.com'])
+        ->expectsQuestion('Password', 'Str0ngPassw0rd!x')
+        ->expectsQuestion('Password again', 'Str0ngPassw0rd!x')
+        ->assertSuccessful();
+
+    expect(Hash::check('Str0ngPassw0rd!x', User::sole()->password))->toBeTrue();
+});

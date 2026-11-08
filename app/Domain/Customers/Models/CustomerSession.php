@@ -20,12 +20,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $token_hash
  * @property ?string $ip
  * @property ?string $user_agent
+ * @property ?string $device_hash see Referrals\GuestDevice
  * @property ?CarbonImmutable $last_active_at
  * @property ?CarbonImmutable $revoked_at
  * @property ?CarbonImmutable $created_at
  * @property-read Customer $customer
  */
-#[Fillable(['restaurant_id', 'customer_id', 'token_hash', 'ip', 'user_agent', 'last_active_at', 'revoked_at'])]
+#[Fillable(['restaurant_id', 'customer_id', 'token_hash', 'ip', 'user_agent', 'device_hash', 'last_active_at', 'revoked_at'])]
 class CustomerSession extends Model
 {
     use BelongsToRestaurant;
@@ -34,6 +35,7 @@ class CustomerSession extends Model
     protected $attributes = [
         'ip' => null,
         'user_agent' => null,
+        'device_hash' => null,
         'last_active_at' => null,
         'revoked_at' => null,
     ];

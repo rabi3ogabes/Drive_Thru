@@ -56,3 +56,22 @@ it('keeps the services a prospect picked on the lead, and ignores made-up ones',
         'services' => ['teleport'],
     ])->assertSessionHasErrors('services.0');
 });
+
+it('shows the services as an accessible showcase: one tab and one slide per service, each with its scene and page', function (string $locale) {
+    $html = $this->get('/?lang='.$locale)->assertOk()->getContent();
+
+    expect(substr_count($html, 'role="tab"'))->toBe(3)
+        ->and(substr_count($html, 'role="tabpanel"'))->toBe(3)
+        ->and($html)->toContain('aria-roledescription="carousel"')
+        ->toContain('x-data="serviceShowcase(3)"')
+        ->toContain('aria-controls="showcase-panel-ready_call"')
+        ->toContain(route('site.service', 'drive-thru'))
+        ->toContain(route('site.service', 'ready-call'))
+        ->toContain(route('site.service', 'rewards'))
+        ->toContain(e(__('site.showcase.drive_thru.paid', [], $locale)))
+        ->toContain(e(__('site.showcase.ready_call.whatsapp', [], $locale)))
+        ->toContain(e(__('site.showcase.rewards.wallet', [], $locale)));
+
+    // Only the first slide can be reached before the visitor moves on.
+    expect(substr_count($html, ' inert'))->toBeGreaterThanOrEqual(2);
+})->with(['en', 'ar']);

@@ -1,4 +1,5 @@
 import './push';
+import './showcase';
 import Alpine from 'alpinejs';
 
 // Public pages (website, invitations) use Alpine directly. Livewire pages bring

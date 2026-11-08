@@ -3,6 +3,20 @@
     $items = $this->links();
 @endphp
 <x-filament-panels::page>
+    @if (\App\Filament\App\Resources\QrCampaigns\QrCampaignResource::canAccess())
+        <a href="{{ \App\Filament\App\Resources\QrCampaigns\QrCampaignResource::getUrl() }}"
+           class="group flex items-center gap-4 rounded-xl bg-primary-50 px-4 py-3.5 ring-1 ring-primary-600/10 transition hover:bg-primary-100 dark:bg-primary-500/10 dark:ring-primary-400/20 dark:hover:bg-primary-500/15">
+            <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-primary-600 ring-1 ring-primary-600/10 dark:bg-white/5 dark:text-primary-400">
+                <x-filament::icon icon="heroicon-o-chart-bar" class="size-5" />
+            </span>
+            <span class="min-w-0 flex-1 text-sm text-gray-700 dark:text-gray-200">{{ __('qr.links_callout') }}</span>
+            <span class="flex shrink-0 items-center gap-1 text-sm font-semibold text-primary-700 dark:text-primary-400">
+                {{ __('qr.links_callout_cta') }}
+                <x-filament::icon icon="heroicon-m-arrow-right" class="size-4 transition group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+            </span>
+        </a>
+    @endif
+
     @if (count($items) === 0)
         <x-filament::section>
             <div class="py-10 text-center">

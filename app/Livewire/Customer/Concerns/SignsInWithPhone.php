@@ -9,6 +9,7 @@ use App\Domain\Customers\Actions\VerifyOtp;
 use App\Domain\Customers\CustomerAuth;
 use App\Domain\Customers\Exceptions\OtpProblem;
 use App\Domain\Customers\Models\Customer;
+use App\Domain\Referrals\Referrals;
 use App\Support\Phone;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -82,6 +83,7 @@ trait SignsInWithPhone
         }
 
         app(CustomerAuth::class)->login($this->restaurant, $customer);
+        app(Referrals::class)->joined($this->restaurant, $customer);
         $this->reset('code', 'codeSent', 'resendIn', 'demoCode', 'channel');
         $this->signedIn($customer);
     }

@@ -362,3 +362,14 @@ it('keeps campaigns to their restaurant, their permission and the Rewards servic
     RestaurantService::withoutTenancy()->where('restaurant_id', $restaurant->id)->where('service', Service::Rewards->value)->delete();
     $this->get(ListCampaigns::getUrl(tenant: $restaurant))->assertForbidden();
 });
+
+it('treats a tap on the template’s opt-out button as unsubscribing', function () {
+    [$restaurant, $owner] = campaignWorkspace();
+    $guest = fan($restaurant, '+97455551234');
+    sendNow(offer($restaurant), $owner);
+
+    $tap = json_encode(['entry' => [['changes' => [['value' => ['messages' => [['from' => '97455551234', 'type' => 'button', 'button' => ['text' => 'Stop promotions', 'payload' => 'stop']]]]]]]]]);
+    $this->call('POST', '/webhooks/whatsapp', [], [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_X_HUB_SIGNATURE_256' => 'sha256='.hash_hmac('sha256', $tap, 'wa-app-secret')], $tap)->assertOk();
+
+    expect($guest->fresh()->acceptsOffers())->toBeFalse();
+});
