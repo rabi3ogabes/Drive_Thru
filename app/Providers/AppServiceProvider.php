@@ -66,11 +66,15 @@ use App\Domain\Staff\Models\Employee;
 use App\Domain\Support\Models\SupportTicket;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Domain\Tenancy\TenantContext;
+use App\Domain\Themes\Models\BrandFont;
+use App\Domain\Themes\Models\MenuTheme;
+use App\Domain\Themes\ThemeResolver;
 use App\Livewire\WorkspaceNotices;
 use App\Models\User;
 use App\Policies\ActivityPolicy;
 use App\Policies\AnnouncementPolicy;
 use App\Policies\BranchPolicy;
+use App\Policies\BrandFontPolicy;
 use App\Policies\CampaignPolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\DevicePolicy;
@@ -79,6 +83,7 @@ use App\Policies\IntegrationPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\MenuPolicy;
+use App\Policies\MenuThemePolicy;
 use App\Policies\PlanPolicy;
 use App\Policies\PlatformRolePolicy;
 use App\Policies\PositionPolicy;
@@ -115,6 +120,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped(TenantContext::class);
+        $this->app->scoped(ThemeResolver::class);
         $this->app->scoped(CustomerAuth::class);
         $this->app->scoped(Messenger::class);
         $this->app->scoped(KitchenLoad::class);
@@ -209,6 +215,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Campaign::class, CampaignPolicy::class);
         Gate::policy(QrCampaign::class, QrCampaignPolicy::class);
         Gate::policy(Referral::class, ReferralPolicy::class);
+        Gate::policy(BrandFont::class, BrandFontPolicy::class);
         Gate::policy(OrderRating::class, RatingPolicy::class);
         Gate::policy(SupportTicket::class, SupportTicketPolicy::class);
         Gate::policy(Reward::class, RewardPolicy::class);
@@ -216,6 +223,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Promotion::class, PromotionPolicy::class);
         Gate::policy(Coupon::class, PromotionPolicy::class);
         Gate::policy(Plan::class, PlanPolicy::class);
+        Gate::policy(MenuTheme::class, MenuThemePolicy::class);
         Gate::policy(Invoice::class, InvoicePolicy::class);
         Gate::policy(PlatformRole::class, PlatformRolePolicy::class);
         Gate::policy(User::class, UserPolicy::class);

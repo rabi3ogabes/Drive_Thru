@@ -10,6 +10,7 @@ use App\Domain\Staff\Enums\EmployeeStatus;
 use App\Domain\Staff\Models\Employee;
 use App\Domain\Tenancy\Enums\RestaurantStatus;
 use App\Domain\Tenancy\Models\Restaurant;
+use App\Domain\Themes\Models\MenuTheme;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -40,6 +41,8 @@ final class CreateRestaurant
                 'currency' => $currency,
                 'timezone' => $timezone,
                 'default_locale' => $defaultLocale,
+                // New restaurants start on the platform's default theme template.
+                'menu_theme' => ($default = MenuTheme::query()->where('is_default', true)->value('key')) !== null ? ['template' => $default, 'overrides' => []] : null,
             ]);
 
             $sort = 0;

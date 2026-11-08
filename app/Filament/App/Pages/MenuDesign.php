@@ -7,10 +7,11 @@ namespace App\Filament\App\Pages;
 use App\Domain\Access\Enums\RestaurantPermission;
 use App\Domain\Branches\Links;
 use App\Domain\Branches\Models\Branch;
-use App\Domain\Menu\MenuCache;
 use App\Domain\Menu\MenuLayout;
+use App\Domain\Themes\ThemeResolver;
 use App\Filament\App\Workspace;
 use App\Filament\App\WorkspaceNavigationGroup;
+use App\Livewire\Workspace\ThemeEditor;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Toggle;
@@ -20,10 +21,13 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\EmbeddedSchema;
 use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use Livewire\Attributes\Url;
 use UnitEnum;
 
 /**
@@ -44,6 +48,10 @@ class MenuDesign extends Page
 
     /** @var array<string, mixed> */
     public ?array $data = [];
+
+    /** Theme (colours, fonts, template) or Layout (cards and what they show). */
+    #[Url]
+    public string $tab = 'theme';
 
     public static function canAccess(): bool
     {
@@ -102,7 +110,10 @@ class MenuDesign extends Page
     public function content(Schema $schema): Schema
     {
         return $schema->components([
+            View::make('filament.app.menu-design.tabs')->viewData(['tab' => $this->tab === 'layout' ? 'layout' : 'theme']),
+            Livewire::make(ThemeEditor::class)->key('theme-editor')->visible(fn (): bool => $this->tab !== 'layout'),
             Form::make([EmbeddedSchema::make('form')])
+                ->visible(fn (): bool => $this->tab === 'layout')
                 ->id('menu-design')
                 ->livewireSubmitHandler('save')
                 ->footer([
@@ -132,8 +143,7 @@ class MenuDesign extends Page
         abort_unless(self::canAccess(), 403);
 
         $restaurant = Workspace::restaurant();
-        $restaurant->forceFill(['menu_layout' => MenuLayout::fromArray($this->form->getState())->toArray()])->save();
-        MenuCache::bump($restaurant->id);
+        ThemeResolver::save($restaurant, ThemeResolver::template($restaurant)->key, ThemeResolver::for($restaurant)->with(['layout' => MenuLayout::fromArray($this->form->getState())->toArray()], $restaurant));
 
         Notification::make()->success()->title(__('menu.design.saved'))->send();
     }

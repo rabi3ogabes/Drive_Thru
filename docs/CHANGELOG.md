@@ -2,6 +2,19 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-05: Menu themes
+
+### Built
+- **Theme templates for every guest page:** six to start (Ivory & Teal, the classic look; Midnight Brass, dark; Desert Sand; Olive Grove; Rose Café; Mono Bold). A theme sets the colours, fonts, corners, cover and menu layout of the home page, menu, checkout, order page, rewards and every other guest page.
+- **Owner editor** (Menu design → Theme): pick a template, change the four colours (brand, accent, background, text) with live readability checks, choose English and Arabic fonts for headings and body text from 16 self-hosted fonts or upload a brand font (WOFF2), replace the logo and cover, choose sharp, soft or rounded corners. A phone preview shows the real menu with the unsaved changes, to the owner only. Save, reset to the template, export or import a theme file. The brand colour moved here from Restaurant settings.
+- **Admin library** (/admin → Menu themes, new permission "Menu themes"): create, edit, duplicate, upload a theme file (added hidden for review), set the default for new restaurants, hide or offer again, see how many restaurants use each template. Templates in use and built-ins are never deleted.
+- Unreadable colours can't be saved (text needs 4.5:1, secondary text 3:1). Theme files carry only checked values: no images, fonts or code.
+- Existing restaurants look exactly as before until their owner changes the theme.
+
+### Verified
+- 840 tests (full suite), Pint, Larastan 0, build.
+- Browser (local, headless Chromium): the Theme editor in Arabic and English, light and dark, at 375, 768 and 1280 px; guest home and menu on Midnight Brass, Mono Bold and Ivory & Teal in both languages at 375, 768 and 1280 px. No sideways scrolling, no console errors, no requests to other hosts.
+
 ## 2026-11-05: Owner guide
 
 ### Built

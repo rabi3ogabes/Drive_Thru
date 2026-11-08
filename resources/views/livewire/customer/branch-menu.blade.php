@@ -35,8 +35,8 @@
     <x-customer.shell :restaurant="$restaurant" :customer="$customer" active="menu" :menu-url="url()->current()" wide>
         {{-- Hero: the place, its state, and the three things guests need --}}
         <section class="pt-2" aria-labelledby="branch-title">
-            <div class="rounded-[2.25rem] bg-white/60 p-1.5 shadow-[0_30px_60px_-40px_color-mix(in_oklab,var(--color-ink-950)_55%,transparent)] ring-1 ring-ink-950/5">
-                <div class="relative isolate overflow-hidden rounded-[calc(2.25rem-0.375rem)] bg-[var(--brand)]">
+            <div class="rounded-[calc(2.25rem*var(--radius-scale))] bg-white/60 p-1.5 shadow-[0_30px_60px_-40px_color-mix(in_oklab,var(--color-scrim)_55%,transparent)] ring-1 ring-ink-950/5">
+                <div class="relative isolate overflow-hidden rounded-[max(0px,calc(2.25rem*var(--radius-scale)-0.375rem))] bg-[var(--brand)]">
                     {{-- Photography: the restaurant's cover, or its dishes --}}
                     @if ($cover)
                         <img src="{{ $cover }}" alt="" class="absolute inset-0 -z-10 size-full object-cover" fetchpriority="high">
@@ -47,18 +47,18 @@
                             @endforeach
                         </div>
                     @endif
-                    <div aria-hidden="true" class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-ink-950)_15%,transparent)_0%,color-mix(in_oklab,var(--color-ink-950)_35%,transparent)_45%,color-mix(in_oklab,var(--color-ink-950)_82%,transparent)_100%)]"></div>
+                    <div aria-hidden="true" class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-scrim)_15%,transparent)_0%,color-mix(in_oklab,var(--color-scrim)_35%,transparent)_45%,color-mix(in_oklab,var(--color-scrim)_82%,transparent)_100%)]"></div>
 
-                    <div class="flex min-h-[19rem] flex-col justify-between p-5 text-white sm:min-h-[22rem] sm:p-7 lg:min-h-[24rem] lg:p-9">
+                    <div class="flex min-h-[19rem] flex-col justify-between p-5 text-paper sm:min-h-[22rem] sm:p-7 lg:min-h-[24rem] lg:p-9">
                         <a href="{{ route('public.restaurant', $restaurant) }}#branches" wire:navigate
-                           class="inline-flex w-max items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-medium text-white ring-1 ring-white/25 backdrop-blur-md transition hover:bg-white/25">
+                           class="inline-flex w-max items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-medium text-paper ring-1 ring-white/25 backdrop-blur-md transition hover:bg-white/25">
                             <svg class="flip-rtl size-3.5 rotate-180" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ __('guest.menu.change_branch') }}
                         </a>
 
                         <div class="mt-10">
-                            <p class="text-[0.6875rem] font-medium uppercase tracking-[0.24em] text-white/70 rtl:tracking-normal">{{ $restaurant->name }}@if ($branch->city) · {{ $branch->city }}@endif</p>
-                            <h1 id="branch-title" class="display mt-1.5 text-[2.5rem] leading-[1.05] text-white sm:text-5xl lg:text-6xl rtl:leading-[1.3]">{{ $branch->name }}</h1>
+                            <p class="text-[0.6875rem] font-medium uppercase tracking-[0.24em] text-paper/70 rtl:tracking-normal">{{ $restaurant->name }}@if ($branch->city) · {{ $branch->city }}@endif</p>
+                            <h1 id="branch-title" class="display mt-1.5 text-[2.5rem] leading-[1.05] text-paper sm:text-5xl lg:text-6xl rtl:leading-[1.3]">{{ $branch->name }}</h1>
                             <div class="mt-4 inline-flex rounded-full bg-white/92 px-1.5 py-1 shadow-sm ring-1 ring-white/40">
                                 <x-public.branch-status :branch="$branch" :schedule="$schedule" class="pe-2" />
                             </div>
@@ -90,7 +90,7 @@
             </div>
 
             {{-- Opening hours, folded away until asked for --}}
-            <details x-ref="hours" class="group mt-3 scroll-mt-24 rounded-[1.5rem] bg-white/80 ring-1 ring-ink-950/5 [&_summary::-webkit-details-marker]:hidden">
+            <details x-ref="hours" class="group mt-3 scroll-mt-24 rounded-[calc(1.5rem*var(--radius-scale))] bg-white/80 ring-1 ring-ink-950/5 [&_summary::-webkit-details-marker]:hidden">
                 <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-5 text-sm">
                     <span class="truncate text-ink-600">{{ $branch->address ?: $branch->city ?: __('public.branch.hours') }}</span>
                     <span class="flex shrink-0 items-center gap-1 font-medium text-ink-800">
@@ -114,9 +114,9 @@
             </details>
 
             @unless ($ordering)
-                <p class="mt-3 rounded-[1.5rem] bg-ivory-100 px-5 py-3.5 text-sm text-ink-700 ring-1 ring-ink-950/5">{{ __('guest.menu.menu_only') }}</p>
+                <p class="mt-3 rounded-[calc(1.5rem*var(--radius-scale))] bg-ivory-100 px-5 py-3.5 text-sm text-ink-700 ring-1 ring-ink-950/5">{{ __('guest.menu.menu_only') }}</p>
             @elseunless ($state->acceptsOrders())
-                <p class="mt-3 rounded-[1.5rem] bg-brass-50 px-5 py-3.5 text-sm text-brass-900 ring-1 ring-brass-500/15">{{ __('guest.menu.order_ahead_hint') }}</p>
+                <p class="mt-3 rounded-[calc(1.5rem*var(--radius-scale))] bg-brass-50 px-5 py-3.5 text-sm text-brass-900 ring-1 ring-brass-500/15">{{ __('guest.menu.order_ahead_hint') }}</p>
             @endunless
         </section>
 
@@ -134,14 +134,14 @@
                         @php $product = $entry['product']; $offer = $entry['offer']; @endphp
                         <li class="w-[68%] shrink-0 snap-start sm:w-[42%] lg:w-auto" wire:key="loved-{{ $product->id }}">
                             <button type="button" wire:click="openProduct({{ $product->id }})"
-                                    class="group relative block aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] bg-ivory-100 text-start shadow-[0_24px_40px_-28px_color-mix(in_oklab,var(--color-ink-950)_60%,transparent)] ring-1 ring-ink-950/5 transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]">
+                                    class="group relative block aspect-[4/5] w-full overflow-hidden rounded-[calc(1.75rem*var(--radius-scale))] bg-ivory-100 text-start shadow-[0_24px_40px_-28px_color-mix(in_oklab,var(--color-scrim)_60%,transparent)] ring-1 ring-ink-950/5 transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]">
                                 <img src="{{ $product->imageUrl(800) }}" alt="" loading="lazy" decoding="async"
                                      class="absolute inset-0 size-full object-cover transition duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]">
-                                <span aria-hidden="true" class="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,color-mix(in_oklab,var(--color-ink-950)_80%,transparent)_100%)]"></span>
-                                <span class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white">
+                                <span aria-hidden="true" class="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,color-mix(in_oklab,var(--color-scrim)_80%,transparent)_100%)]"></span>
+                                <span class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-paper">
                                     <span class="min-w-0">
                                         <span class="block truncate text-base font-semibold">{{ $product->name }}</span>
-                                        <span class="mt-0.5 block text-sm tabular-nums text-white/80" dir="ltr">{{ Money::format($offer->priceMinor, $currency) }}</span>
+                                        <span class="mt-0.5 block text-sm tabular-nums text-paper/80" dir="ltr">{{ Money::format($offer->priceMinor, $currency) }}</span>
                                     </span>
                                     @if ($ordering)
                                         <span class="grid size-10 shrink-0 place-items-center rounded-full bg-white text-ink-950 shadow-lg transition duration-500 group-hover:scale-105" aria-hidden="true">
@@ -210,7 +210,7 @@
                     @endif
                 </section>
             @empty
-                <div class="rounded-[2rem] bg-white p-10 text-center ring-1 ring-ink-950/5">
+                <div class="rounded-[calc(2rem*var(--radius-scale))] bg-white p-10 text-center ring-1 ring-ink-950/5">
                     <span class="mx-auto grid size-14 place-items-center rounded-full bg-ivory-100 text-2xl" aria-hidden="true">🍽️</span>
                     <p class="mt-4 text-ink-600">{{ __('guest.menu.empty') }}</p>
                 </div>
@@ -218,7 +218,7 @@
 
             @if ($count > 0)
                 <p x-show="q !== '' && ! [...document.querySelectorAll('[data-search]')].some((el) => matches(el))" x-cloak
-                   class="rounded-[2rem] bg-white p-8 text-center text-ink-500 ring-1 ring-ink-950/5">{{ __('guest.menu.no_results') }}</p>
+                   class="rounded-[calc(2rem*var(--radius-scale))] bg-white p-8 text-center text-ink-500 ring-1 ring-ink-950/5">{{ __('guest.menu.no_results') }}</p>
             @endif
         </div>
 
@@ -226,7 +226,7 @@
         <x-slot:above>
             @if ($bag && ! $bag->isEmpty())
                 <a href="{{ route('customer.checkout', [$restaurant, $branch->code]) }}" wire:navigate
-                   class="mb-2 flex items-center justify-between gap-3 rounded-full bg-ink-950 py-2 pe-2 ps-5 text-white shadow-[0_18px_40px_-14px_color-mix(in_oklab,var(--color-ink-950)_60%,transparent)] transition active:scale-[0.99]">
+                   class="mb-2 flex items-center justify-between gap-3 rounded-full bg-ink-950 py-2 pe-2 ps-5 text-white shadow-[0_18px_40px_-14px_color-mix(in_oklab,var(--color-scrim)_60%,transparent)] transition active:scale-[0.99]">
                     <span class="flex items-center gap-3">
                         <span class="grid size-7 place-items-center rounded-full bg-white/15 text-sm font-semibold tabular-nums">{{ $bag->count() }}</span>
                         <span class="font-semibold">{{ __('guest.menu.view_bag') }}</span>
@@ -246,7 +246,7 @@
     @if ($upsell)
         <div class="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" wire:key="upsell">
             <button type="button" class="absolute inset-0 bg-ink-950/40 backdrop-blur-[2px]" wire:click="dismissUpsell" aria-label="{{ __('guest.close') }}"></button>
-            <div class="relative w-full max-w-2xl rounded-t-[2rem] bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl"
+            <div class="relative w-full max-w-2xl rounded-t-[calc(2rem*var(--radius-scale))] bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl"
                  x-data x-init="matchMedia('(prefers-reduced-motion: reduce)').matches || $el.animate([{ transform: 'translateY(100%)' }, { transform: 'translateY(0)' }], { duration: 320, easing: 'cubic-bezier(.32,.72,0,1)' })">
                 <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-ink-200"></div>
                 @if ($upsell['type'] === 'meal')
@@ -258,7 +258,7 @@
                     <div class="mt-5 flex gap-3">
                         <button type="button" wire:click="dismissUpsell" class="flex-1 rounded-full bg-ivory-100 py-3.5 font-semibold text-ink-800">{{ __('guest.upsell.no_thanks') }}</button>
                         <button type="button" wire:click="makeItAMeal({{ $upsell['item_id'] }}, {{ $upsell['meal_id'] }})" wire:loading.attr="disabled"
-                                class="flex-[1.4] rounded-full bg-[var(--brand)] py-3.5 font-semibold text-white shadow-lg">{{ __('guest.upsell.make_meal', ['price' => $upsell['price']]) }}</button>
+                                class="flex-[1.4] rounded-full bg-[var(--brand)] py-3.5 font-semibold text-on-brand shadow-lg">{{ __('guest.upsell.make_meal', ['price' => $upsell['price']]) }}</button>
                     </div>
                 @else
                     <h2 class="display text-2xl text-ink-950">{{ __('guest.upsell.complete_title') }}</h2>
@@ -271,7 +271,7 @@
                                     </span>
                                     <span class="flex-1 font-medium text-ink-900">{{ $suggestion['name'] }}</span>
                                     <span class="text-sm font-semibold tabular-nums text-ink-700" dir="ltr">{{ $suggestion['price'] }}</span>
-                                    <span class="grid size-8 place-items-center rounded-full bg-[var(--brand)] text-white" aria-hidden="true"><svg class="size-4" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                                    <span class="grid size-8 place-items-center rounded-full bg-[var(--brand)] text-on-brand" aria-hidden="true"><svg class="size-4" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
                                 </button>
                             </li>
                         @endforeach

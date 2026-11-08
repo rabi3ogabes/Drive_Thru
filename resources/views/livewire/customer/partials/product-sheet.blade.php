@@ -59,7 +59,7 @@
      x-on:keydown.escape.window="$wire.closeSheet()">
     <button type="button" class="absolute inset-0 bg-ink-950/45 backdrop-blur-[2px]" wire:click="closeSheet" aria-label="{{ __('guest.close') }}"></button>
 
-    <div x-ref="panel" class="relative flex max-h-[92dvh] w-full max-w-xl flex-col overflow-hidden rounded-t-[2rem] bg-white shadow-2xl sm:rounded-[2rem]">
+    <div x-ref="panel" class="relative flex max-h-[92dvh] w-full max-w-xl flex-col overflow-hidden rounded-t-[calc(2rem*var(--radius-scale))] bg-white shadow-2xl sm:rounded-[calc(2rem*var(--radius-scale))]">
         {{-- Media --}}
         <div class="relative shrink-0">
             <div class="grid aspect-[16/9] place-items-center overflow-hidden bg-gradient-to-br from-ivory-100 to-ivory-200 text-6xl">
@@ -128,7 +128,7 @@
                                     class="flex items-center gap-3 rounded-2xl px-4 py-3 text-start ring-1 transition active:scale-[0.99] disabled:opacity-45"
                                     :class="has(g.id, o.id) ? 'bg-[color-mix(in_oklab,var(--brand)_7%,white)] ring-2 ring-[var(--brand)]' : 'ring-ink-950/8'">
                                 <span class="grid size-5 shrink-0 place-items-center ring-1 ring-ink-950/20 transition"
-                                      :class="[g.max === 1 ? 'rounded-full' : 'rounded-md', has(g.id, o.id) && (g.max === 1 ? '!ring-[var(--brand)] ring-[6px]' : '!ring-[var(--brand)] bg-[var(--brand)] text-white')]">
+                                      :class="[g.max === 1 ? 'rounded-full' : 'rounded-md', has(g.id, o.id) && (g.max === 1 ? '!ring-[var(--brand)] ring-[6px]' : '!ring-[var(--brand)] bg-[var(--brand)] text-on-brand')]">
                                     <svg x-show="g.max !== 1 && has(g.id, o.id)" class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m2.5 6.2 2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </span>
                                 <span class="flex-1 font-medium text-ink-900" x-text="o.name"></span>
@@ -162,8 +162,8 @@
                 </button>
             </div>
             <button type="button" x-on:click="submit()" :disabled="! p.available || busy"
-                    class="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-full py-3.5 pe-5 ps-5 font-semibold text-white shadow-lg transition active:scale-[0.98] disabled:opacity-60"
-                    :class="valid() ? 'bg-[var(--brand)]' : 'bg-ink-700'">
+                    class="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-full py-3.5 pe-5 ps-5 font-semibold shadow-lg transition active:scale-[0.98] disabled:opacity-60"
+                    :class="valid() ? 'bg-[var(--brand)] text-on-brand' : 'bg-ink-700 text-white'">
                 <span x-show="! busy" class="truncate whitespace-nowrap" x-text="p.available ? (valid() ? t.add : t.choose_options) : t.unavailable"></span>
                 <span x-show="busy" x-cloak>{{ __('guest.loading') }}</span>
                 <span class="shrink-0 tabular-nums" dir="ltr" x-show="p.available" x-text="money(unit() * qty)"></span>

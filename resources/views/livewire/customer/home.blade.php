@@ -16,7 +16,7 @@
         {{-- An order in progress always comes first --}}
         @if ($active)
             <a href="{{ route('customer.order', [$restaurant, $active]) }}" wire:navigate
-               class="mt-6 flex items-center gap-4 rounded-[1.5rem] bg-ink-950 p-4 text-white shadow-[0_20px_40px_-20px_rgb(10_15_28/0.6)]">
+               class="mt-6 flex items-center gap-4 rounded-[calc(1.5rem*var(--radius-scale))] bg-ink-950 p-4 text-white shadow-[0_20px_40px_-20px_rgb(10_15_28/0.6)]">
                 <span class="relative grid size-12 shrink-0 place-items-center rounded-2xl bg-white/10">
                     <span class="absolute inset-0 animate-ping rounded-2xl bg-[var(--brand)] opacity-20"></span>
                     <x-filament::icon :icon="$active->status->getIcon()" class="relative size-6 text-brass-200" />
@@ -31,15 +31,15 @@
 
         {{-- Your usual? --}}
         @if ($last && ! $active)
-            <section class="mt-6 overflow-hidden rounded-[1.75rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
-                <div class="rounded-[1.4rem] bg-gradient-to-br from-ivory-100 to-white p-4">
+            <section class="mt-6 overflow-hidden rounded-[calc(1.75rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5">
+                <div class="rounded-[calc(1.4rem*var(--radius-scale))] bg-gradient-to-br from-ivory-100 to-white p-4">
                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-brass-700 rtl:tracking-normal">{{ __('guest.home.usual') }}</p>
                     <p class="mt-1.5 line-clamp-2 font-semibold text-ink-950">
                         {{ $last->items->map(fn ($i) => $i->quantity.'× '.$i->localName())->join('، ') }}
                     </p>
                     <p class="mt-1 text-sm text-ink-500">{{ $last->branch->name }} · <span dir="ltr" class="tabular-nums">{{ Money::format($last->total_minor, $last->currency) }}</span></p>
                     <button type="button" wire:click="orderUsual" wire:loading.attr="disabled"
-                            class="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-3.5 text-[0.9375rem] font-semibold text-white shadow-lg transition active:scale-[0.98] disabled:opacity-70">
+                            class="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-3.5 text-[0.9375rem] font-semibold text-on-brand shadow-lg transition active:scale-[0.98] disabled:opacity-70">
                         <span wire:loading.remove wire:target="orderUsual">{{ __('guest.home.order_usual') }}</span>
                         <span wire:loading wire:target="orderUsual">{{ __('guest.loading') }}</span>
                     </button>
@@ -58,7 +58,7 @@
                     <ul class="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:-mx-6 sm:px-6">
                         @foreach ($highlights[$key] as ['product' => $product, 'offer' => $offer])
                             <li class="w-40 shrink-0 snap-start">
-                                <a href="{{ $menuUrl }}?item={{ $product->id }}" wire:navigate class="block overflow-hidden rounded-[1.35rem] bg-white shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5 transition active:scale-[0.98]">
+                                <a href="{{ $menuUrl }}?item={{ $product->id }}" wire:navigate class="block overflow-hidden rounded-[calc(1.35rem*var(--radius-scale))] bg-white shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5 transition active:scale-[0.98]">
                                     <div class="grid aspect-[4/3] place-items-center bg-ivory-100 text-4xl">
                                         @if ($image = $product->imageUrl(400))
                                             <img src="{{ $image }}" alt="" loading="lazy" class="size-full object-cover">
@@ -112,13 +112,13 @@
                 @foreach ($branches as $branch)
                     @php($state = $schedule->state($branch))
                     <li wire:key="branch-{{ $branch->id }}">
-                        <div class="rounded-[1.5rem] bg-white p-4 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5 {{ $customer?->last_branch_id === $branch->id ? 'ring-2 !ring-[var(--brand)]' : '' }}">
+                        <div class="rounded-[calc(1.5rem*var(--radius-scale))] bg-white p-4 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5 {{ $customer?->last_branch_id === $branch->id ? 'ring-2 !ring-[var(--brand)]' : '' }}">
                             <a href="{{ $links->branch($restaurant, $branch) }}" wire:navigate class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <p class="flex items-center gap-2 font-semibold text-ink-950">
                                         {{ $branch->name }}
                                         @if ($customer?->last_branch_id === $branch->id)
-                                            <span class="rounded-full bg-[var(--brand)] px-2 py-0.5 text-[0.625rem] font-semibold text-white">{{ __('guest.home.your_branch') }}</span>
+                                            <span class="rounded-full bg-[var(--brand)] px-2 py-0.5 text-[0.625rem] font-semibold text-on-brand">{{ __('guest.home.your_branch') }}</span>
                                         @endif
                                     </p>
                                     <p class="mt-0.5 truncate text-sm text-ink-500">{{ $branch->city ?: $branch->address }}</p>
@@ -133,7 +133,7 @@
                                 @endif
                             </div>
                             <div class="mt-3 flex gap-2">
-                                <a href="{{ $links->branch($restaurant, $branch) }}" wire:navigate class="flex-1 rounded-full bg-[var(--brand)] py-2.5 text-center text-sm font-semibold text-white transition active:scale-[0.98]">
+                                <a href="{{ $links->branch($restaurant, $branch) }}" wire:navigate class="flex-1 rounded-full bg-[var(--brand)] py-2.5 text-center text-sm font-semibold text-on-brand transition active:scale-[0.98]">
                                     {{ $state->acceptsOrders() ? __('guest.home.order_here') : __('guest.home.order_ahead') }}
                                 </a>
                                 @if ($phone = collect($branch->phones ?? [])->first())

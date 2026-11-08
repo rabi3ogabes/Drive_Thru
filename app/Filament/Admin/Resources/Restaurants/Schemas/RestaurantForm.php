@@ -8,7 +8,6 @@ use App\Domain\Billing\Enums\PlanFeature;
 use App\Filament\Support\Bilingual;
 use App\Support\Locales;
 use DateTimeZone;
-use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -32,9 +31,6 @@ class RestaurantForm
                                 ->prefix(url('/').'/')
                                 ->disabled()
                                 ->dehydrated(false),
-                            ColorPicker::make('accent_color')
-                                ->label(__('clients.fields.accent_color'))
-                                ->helperText(__('clients.fields.accent_color_hint')),
                             Select::make('default_locale')
                                 ->label(__('clients.fields.default_locale'))
                                 ->options(collect(Locales::codes())->mapWithKeys(fn (string $c): array => [$c => Locales::native($c)])->all())

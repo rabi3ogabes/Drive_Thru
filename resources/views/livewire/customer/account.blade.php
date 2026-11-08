@@ -1,8 +1,8 @@
 @php
     use App\Domain\Customers\Enums\VehicleType;
     use App\Support\Locales;
-    $card = 'rounded-[1.75rem] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
-    $core = 'rounded-[calc(1.75rem-0.375rem)] p-4';
+    $card = 'rounded-[calc(1.75rem*var(--radius-scale))] bg-white p-1.5 shadow-[var(--shadow-hairline)] ring-1 ring-ink-950/5';
+    $core = 'rounded-[max(0px,calc(1.75rem*var(--radius-scale)-0.375rem))] p-4';
     $field = 'w-full rounded-2xl border-0 bg-ivory-50 px-4 py-3 text-[0.9375rem] text-ink-950 ring-1 ring-ink-950/8 placeholder:text-ink-400 focus:ring-2 focus:ring-[var(--brand)]';
     $chip = 'rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition active:scale-95';
 @endphp
@@ -24,9 +24,9 @@
             </section>
 
             @if ($rewardsOn)
-                <a href="{{ route('customer.rewards', $restaurant) }}" wire:navigate class="group mt-5 flex items-center gap-3 rounded-[1.75rem] bg-[var(--brand)] p-4 text-white shadow-[0_18px_40px_-18px_color-mix(in_oklab,var(--brand)_70%,transparent)] transition active:scale-[0.99]">
+                <a href="{{ route('customer.rewards', $restaurant) }}" wire:navigate class="group mt-5 flex items-center gap-3 rounded-[calc(1.75rem*var(--radius-scale))] bg-[var(--brand)] p-4 text-on-brand shadow-[0_18px_40px_-18px_color-mix(in_oklab,var(--brand)_70%,transparent)] transition active:scale-[0.99]">
                     <span class="min-w-0 flex-1">
-                        <span class="block text-xs font-medium uppercase tracking-[0.16em] text-white/70 rtl:tracking-normal">{{ __('guest.rewards.title') }}</span>
+                        <span class="block text-xs font-medium uppercase tracking-[0.16em] text-on-brand/70 rtl:tracking-normal">{{ __('guest.rewards.title') }}</span>
                         <span class="mt-0.5 block text-lg font-semibold">{{ trans_choice('guest.savings.balance', $customer->points_balance, ['points' => number_format($customer->points_balance)]) }}@if ($customer->tier) · {{ $customer->tier->name }}@endif</span>
                     </span>
                     <span class="grid size-10 shrink-0 place-items-center rounded-full bg-white/15 transition group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" aria-hidden="true">
@@ -122,7 +122,7 @@
                         <form wire:submit="addVehicle" class="mt-2 space-y-3 rounded-2xl bg-ivory-50 p-3 ring-1 ring-ink-950/5">
                             <div class="flex flex-wrap gap-1.5">
                                 @foreach (VehicleType::cases() as $type)
-                                    <button type="button" wire:click="$set('vehicleType', '{{ $type->value }}')" @class([$chip, 'bg-[var(--brand)] text-white ring-[var(--brand)]' => $vehicleType === $type->value, 'bg-white text-ink-700 ring-ink-950/10' => $vehicleType !== $type->value])>
+                                    <button type="button" wire:click="$set('vehicleType', '{{ $type->value }}')" @class([$chip, 'bg-[var(--brand)] text-on-brand ring-[var(--brand)]' => $vehicleType === $type->value, 'bg-white text-ink-700 ring-ink-950/10' => $vehicleType !== $type->value])>
                                         <span aria-hidden="true">{{ $type->symbol() }}</span> {{ $type->getLabel() }}
                                     </button>
                                 @endforeach

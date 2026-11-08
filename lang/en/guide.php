@@ -176,14 +176,24 @@ return [
 
         'menu_design' => [
             'title' => 'Menu design',
-            'summary' => 'How the guest menu looks: layout, cover, colours and how items are shown.',
+            'summary' => 'The look of every guest page: a theme (template, colours, fonts, corners, logo and cover) and the menu layout.',
             'when' => 'After adding your menu, and whenever you refresh your brand.',
             'actions' => [
+                ['Use this theme', 'Starts from one of the ready-made templates.'],
+                ['Colours', 'Brand, accent, background and text. Every shade is built from these four.'],
+                ['Fonts', 'A heading pair and a body pair, each with an English and an Arabic font.'],
+                ['Upload a font', 'Adds your own brand font (WOFF2, up to 1 MB, up to 4 fonts).'],
+                ['Logo, cover and corners', 'Your logo, a wide cover image and how round the corners are.'],
+                ['Preview', 'Your real menu with the unsaved changes, visible only to you.'],
+                ['Save theme', 'Publishes the new look to every branch straight away.'],
+                ['Reset to template', 'Removes your changes and goes back to the template as it is.'],
+                ['Export / Import theme file', 'Downloads your theme as a small file, or loads one you received.'],
+                ['Layout', 'Card style, photo shape and what each item shows.'],
                 ['Preview as guest', 'Opens the menu exactly as guests see it on a phone.'],
-                ['Save design', 'Publishes the new look to every branch.'],
             ],
             'tips' => [
-                'Your logo comes from Restaurant settings.',
+                'Save is refused when the text would be hard to read on the background; the badges show why.',
+                'The brand colour used in posters and the browser bar comes from your theme.',
             ],
         ],
 

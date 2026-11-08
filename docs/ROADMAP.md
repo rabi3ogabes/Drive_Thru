@@ -336,6 +336,8 @@ Plan → approve → TDD with Http::fake for every provider. Verify end to end i
 - [x] **QR campaigns**: create QR per branch/lane/campaign/channel/promo, branded poster PDF, analytics (scans → visits → orders → revenue → conversion). Done 2026-11-01: `/q/{code}` tracked codes, 30-min device dedupe and bot filtering, a funnel with a 30-day chart, A4/A5/sticker posters.
 - [x] **Post-pickup rating** + **support tickets** (customer report → manager resolves → WhatsApp reply). Done 2026-11-04: stars and tags on the order page (1-2 stars alert the managers), Ratings page and dashboard tile; Report a problem with a conversation, Support inbox, reply by WhatsApp (`dtp_ticket_reply`), refund or reward, resolve.
 
+- [x] **Menu themes** (2026-11-05): template library (admin), owner theme editor with live preview, brand fonts, theme files. Plan in `docs/superpowers/plans/2026-11-05-menu-themes.md`.
+
 **Milestones:** 7A loyalty, tiers, rewards, promotions and coupons (done 2026-10-12, plan in `docs/superpowers/plans/2026-10-12-phase-7a-loyalty-promotions.md`). 7B CRM, campaigns, QR campaigns and referral (done 2026-11-01, plan in `docs/superpowers/plans/2026-10-12-phase-7b-crm-campaigns.md`). 7C ratings, support tickets, birthday automation and gamification, off by default (done 2026-11-04, plan in `docs/superpowers/plans/2026-11-04-phase-7c-ratings-support-birthdays-badges.md`).
 
 **Kickoff prompt**
