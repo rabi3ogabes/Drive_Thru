@@ -6,7 +6,7 @@
         default => 'bg-ink-950/6 text-ink-800 ring-ink-950/12',
     };
 @endphp
-<x-layouts.site :title="__('developers.title').' · '.config('app.name')" :description="__('developers.description')" body-class="bg-ivory-50 text-ink-950">
+<x-layouts.site :title="__('developers.title').' · '.\App\Support\Brand::name()" :description="__('developers.description')" body-class="bg-ivory-50 text-ink-950">
     <header class="border-b border-ink-950/6">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5 sm:px-6">
             <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2 font-semibold">

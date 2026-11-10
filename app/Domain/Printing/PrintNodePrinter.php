@@ -8,6 +8,7 @@ use App\Domain\Integrations\Exceptions\ProviderUnavailable;
 use App\Domain\Integrations\Models\Integration;
 use App\Domain\Integrations\ProviderClient;
 use App\Domain\Printing\Contracts\Printer;
+use App\Support\Brand;
 
 /**
  * PrintNode: a small client on the branch computer prints to the kitchen and
@@ -40,7 +41,7 @@ final class PrintNodePrinter implements Printer
                     'title' => $title,
                     'contentType' => 'pdf_base64',
                     'content' => base64_encode($pdf),
-                    'source' => (string) config('app.name'),
+                    'source' => Brand::latin(),
                 ]));
         } catch (ProviderUnavailable) {
             return false;

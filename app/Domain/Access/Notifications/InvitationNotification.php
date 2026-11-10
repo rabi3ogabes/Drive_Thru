@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Access\Notifications;
 
+use App\Support\Brand;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -33,7 +34,7 @@ final class InvitationNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $where = $this->context === 'platform' || $this->context === null
-            ? config('app.name')
+            ? Brand::name()
             : $this->context;
 
         return (new MailMessage)

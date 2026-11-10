@@ -16,6 +16,6 @@
     <div class="qr"><img src="{{ $qr }}" width="31mm" height="31mm"></div>
     <div class="cta-ar" dir="rtl">{{ __('links.poster.cta', [], 'ar') }}</div>
     <div class="cta-en">{{ __('links.poster.cta', [], 'en') }}</div>
-    <div class="url">{{ $url }}</div>
+    <div class="url">{{ $url }} · {{ \App\Support\Brand::full() }}</div>
 </body>
 </html>

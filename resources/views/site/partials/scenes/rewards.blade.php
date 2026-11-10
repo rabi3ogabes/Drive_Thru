@@ -6,7 +6,7 @@
 @endphp
 {{-- Rewards, told in motion: the waiter adds a stamp, then the last one, the Free circle lights up, and the gift lands in the wallet. --}}
 <div class="bezel">
-    <div class="bezel-core theme-fixed relative h-[25rem] overflow-hidden sm:h-[29rem]">
+    <div class="bezel-core theme-fixed relative h-[25rem] overflow-hidden sm:h-[29rem] lg:h-[32rem]">
         <img src="{{ asset('images/site/saffron-karak.webp') }}" alt="" loading="lazy" width="900" height="675" class="absolute inset-0 size-full object-cover">
         <div class="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-ink-950)_25%,transparent),color-mix(in_oklab,var(--color-ink-950)_72%,transparent))]"></div>
 

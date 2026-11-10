@@ -1,6 +1,4 @@
 @php
-    $check = '<svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m2.5 6.2 2.2 2.2 4.8-4.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    $arrow = '<svg class="flip-rtl size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     $forSale = $services->where('for_sale', true);
 @endphp
 <x-site.page :title="__('site.meta.title')" :description="__('site.meta.description')" active="home">
@@ -8,7 +6,7 @@
         <script type="application/ld+json">{!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'SoftwareApplication',
-            'name' => config('app.name'),
+            'name' => \App\Support\Brand::name(),
             'applicationCategory' => 'BusinessApplication',
             'operatingSystem' => 'Web',
             'description' => __('site.meta.description'),
@@ -16,74 +14,8 @@
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
     </x-slot:head>
 
-        {{-- Hero --}}
-        <section class="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:px-6 lg:min-h-[calc(100dvh-6rem)] lg:grid-cols-12 lg:gap-8 lg:pb-28 lg:pt-10">
-            <div class="lg:col-span-6">
-                <p class="eyebrow reveal" style="--i:0"><span class="size-1.5 rounded-full bg-brass-500"></span>{{ __('site.hero.eyebrow') }}</p>
-                <h1 class="display reveal mt-7 text-[2.75rem] leading-[1.02] text-ink-950 sm:text-6xl lg:text-[4.5rem] rtl:text-[2.4rem] rtl:leading-[1.35] rtl:sm:text-[3.25rem] rtl:lg:text-[3.75rem]" style="--i:1">{{ __('site.hero.title') }}</h1>
-                <p class="reveal mt-7 max-w-xl text-lg leading-relaxed text-ink-600" style="--i:2">{{ __('site.hero.lead') }}</p>
-                <div class="reveal mt-10 flex flex-wrap items-center gap-3" style="--i:3">
-                    <a href="#request" class="btn btn-primary group"><span>{{ __('site.hero.cta') }}</span><span class="btn-icon">{!! $arrow !!}</span></a>
-                    <a href="#pricing" class="btn btn-ghost group"><span>{{ __('site.hero.secondary') }}</span><span class="btn-icon"><svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></a>
-                </div>
-                <ul class="reveal mt-11 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-600" style="--i:4">
-                    @foreach (['free', 'bilingual', 'nothing'] as $point)
-                        <li class="flex items-center gap-2.5">
-                            <span class="grid size-5 place-items-center rounded-full bg-teal-900/8 text-teal-800 ring-1 ring-teal-900/10">{!! $check !!}</span>
-                            {{ __("site.hero.trust.{$point}", ['days' => $demoDays]) }}
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            {{-- The product, in one composed moment --}}
-            <div class="reveal relative mx-auto w-full max-w-md lg:col-span-6 lg:max-w-none" style="--i:2" aria-hidden="true">
-                <div class="theme-fixed relative mx-auto h-[34rem] w-full max-w-[30rem] sm:h-[36rem]">
-                    {{-- Phone: the guest's pager, ringing --}}
-                    <div class="absolute start-1/2 top-0 w-[15.5rem] -translate-x-1/2 rtl:translate-x-1/2 sm:start-[38%] sm:w-[17rem]">
-                        <div class="rounded-[2.9rem] bg-ink-950 p-2 shadow-[var(--shadow-float)] ring-1 ring-ink-950/40 outline outline-1 outline-offset-0 outline-white/10">
-                            <div class="relative overflow-hidden rounded-[2.4rem] bg-ivory-50">
-                                <div class="flex items-center justify-between px-5 pt-4 text-[0.625rem] font-semibold text-ink-500"><span dir="ltr">9:41</span><span class="h-4 w-16 rounded-full bg-ink-950"></span><span class="flex gap-0.5"><span class="h-2 w-3 rounded-sm bg-ink-400"></span></span></div>
-                                <div class="px-4 pb-6 pt-4 text-center">
-                                    <p class="text-[0.6875rem] font-semibold text-ink-500">{{ __('services.names.ready_call') }}</p>
-                                    <div class="relative mx-auto mt-8 grid size-44 place-items-center">
-                                        <span class="absolute size-40 rounded-full bg-status-ready/25 motion-safe:animate-[site-ring_1.6s_cubic-bezier(0.32,0.72,0,1)_infinite]"></span>
-                                        <span class="absolute size-40 rounded-full bg-status-ready/20 motion-safe:animate-[site-ring_1.6s_cubic-bezier(0.32,0.72,0,1)_0.5s_infinite]"></span>
-                                        <div class="relative rounded-[2rem] bg-status-ready/15 p-1.5 ring-1 ring-status-ready/30">
-                                            <div class="grid min-w-32 place-items-center rounded-[1.6rem] bg-white px-7 py-5 shadow-[var(--shadow-lift)]">
-                                                <span class="text-[0.5625rem] font-medium uppercase tracking-[0.2em] text-ink-400 rtl:tracking-normal">{{ __('site.stage.number') }}</span>
-                                                <span class="text-6xl font-semibold leading-none tabular-nums tracking-tight text-ink-950" dir="ltr">27</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p class="display mt-7 text-2xl text-ink-950">{{ __('site.stage.ready') }}</p>
-                                    <div class="mx-auto mt-5 h-11 w-full rounded-full bg-ink-950"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Drive-thru ticket, arriving --}}
-                    <div class="absolute end-0 top-36 hidden w-56 rotate-[3deg] sm:block rounded-[1.6rem] bg-white/70 p-1.5 shadow-[var(--shadow-float)] ring-1 ring-ink-950/5 backdrop-blur-md motion-safe:animate-[site-float_7s_ease-in-out_infinite] rtl:rotate-[-3deg] sm:-end-4">
-                        <div class="flex items-center gap-3 rounded-[1.25rem] bg-white p-3">
-                            <img src="{{ asset('images/site/spanish-latte.webp') }}" alt="" class="size-12 rounded-xl object-cover" width="48" height="48">
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-ink-950" dir="auto">{{ __('site.stage.order') }}</p>
-                                <p class="mt-0.5 flex items-center gap-1.5 text-xs text-ink-500"><span class="size-1.5 rounded-full bg-status-ready"></span>{{ __('site.stage.arriving') }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Stamp card, nearly full --}}
-                    <div class="absolute bottom-0 start-0 w-72 rotate-[-4deg] motion-safe:animate-[site-float_8s_ease-in-out_1.5s_infinite] rtl:rotate-[4deg] sm:-start-6 sm:w-80">
-                        <x-stamp-card :name="__('site.stage.stamps')" :needed="5" :filled="4" accent="#0f3b3a" class="shadow-[var(--shadow-float)]" />
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- The three services --}}
-        @include('site.partials.showcase')
+        {{-- Hero: the three services, one slide each --}}
+        @include('site.partials.hero')
 
         {{-- How it works --}}
         <section id="how" class="scroll-mt-28 px-4 py-20 sm:px-6 lg:py-28">
@@ -158,5 +90,5 @@
             </div>
         </section>
 
-        @include('partials.request-access', ['services' => $forSale])
+        @include('partials.request-access', ['services' => $forSale, 'preselect' => $preselect ?? []])
 </x-site.page>

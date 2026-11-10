@@ -2,6 +2,18 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-10: ذوق / Dhawq
+
+### Built
+- **New name everywhere:** the platform is now **ذوق** in Arabic and **Dhawq** in English, across the website, admin and workspace panels, emails, WhatsApp texts, invitations, the installer, invoices, QR posters, browser notifications and the API docs. The stored invoice legal name moves to Dhawq unless it had been changed. "Drive-Thru" stays as the name of the first service.
+- **New logo:** the letter ذ in brass on the deep-teal tile; its dot is the "order ready" light and glows gently on the website for visitors who allow motion. A bilingual wordmark (ذوق · DHAWQ) leads with the page's language. New favicon, phone app icons and a share image for social links.
+- **Home page hero:** three slides, one per service (Drive-Thru, Order-Ready Call, Rewards), each with its headline, pitch, three points, a "start free" button that picks that service on the request form, and its scene in motion. Autoplay with a progress line, pause, swipe and arrow keys (mirrored in Arabic); still for reduced-motion visitors; works without JavaScript. The separate services carousel is gone.
+- The site header no longer wraps its links at tablet width.
+
+### Verified
+- Full test suite, Pint, Larastan 0, build.
+- Browser (local, headless Chromium): the hero in Arabic and English, light and dark, at 375, 768 and 1280 px (autoplay, pause, mirrored arrow keys, reduced motion); the admin and workspace sign-in pages and workspace header in both languages, light and dark; the invoice and QR poster as images. No sideways scrolling, no console errors, no requests to other hosts.
+
 ## 2026-11-05: Menu themes
 
 ### Built

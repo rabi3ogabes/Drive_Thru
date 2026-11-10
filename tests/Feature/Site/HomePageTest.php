@@ -10,10 +10,10 @@ beforeEach(fn () => Notification::fake());
 it('presents the three services with their real prices, in both languages', function (string $locale) {
     $response = $this->withHeader('Accept-Language', $locale)->get('/?lang='.$locale)->assertOk();
 
-    $response->assertSee(__('site.hero.title', [], $locale))
-        ->assertSee(__('site.services.drive_thru.title', [], $locale))
-        ->assertSee(__('site.services.ready_call.title', [], $locale))
-        ->assertSee(__('site.services.rewards.title', [], $locale))
+    $response->assertSee(__('site.hero.eyebrow', [], $locale))
+        ->assertSee(__('site.hero.slides.drive_thru.title', [], $locale))
+        ->assertSee(__('site.hero.slides.ready_call.title', [], $locale))
+        ->assertSee(__('site.hero.slides.rewards.title', [], $locale))
         ->assertSee(__('site.pricing.title', [], $locale))
         ->assertSee('349.00', false)
         ->assertSee('"@type":"SoftwareApplication"', false);
@@ -57,14 +57,14 @@ it('keeps the services a prospect picked on the lead, and ignores made-up ones',
     ])->assertSessionHasErrors('services.0');
 });
 
-it('shows the services as an accessible showcase: one tab and one slide per service, each with its scene and page', function (string $locale) {
+it('opens on the services as an accessible hero carousel: one tab and one slide per service, each with its scene and page', function (string $locale) {
     $html = $this->get('/?lang='.$locale)->assertOk()->getContent();
 
     expect(substr_count($html, 'role="tab"'))->toBe(3)
         ->and(substr_count($html, 'role="tabpanel"'))->toBe(3)
         ->and($html)->toContain('aria-roledescription="carousel"')
         ->toContain('x-data="serviceShowcase(3)"')
-        ->toContain('aria-controls="showcase-panel-ready_call"')
+        ->toContain('aria-controls="hero-ready_call"')
         ->toContain(route('site.service', 'drive-thru'))
         ->toContain(route('site.service', 'ready-call'))
         ->toContain(route('site.service', 'rewards'))
@@ -72,6 +72,6 @@ it('shows the services as an accessible showcase: one tab and one slide per serv
         ->toContain(e(__('site.showcase.ready_call.whatsapp', [], $locale)))
         ->toContain(e(__('site.showcase.rewards.wallet', [], $locale)));
 
-    // Only the first slide can be reached before the visitor moves on.
-    expect(substr_count($html, ' inert'))->toBeGreaterThanOrEqual(2);
+    // Alpine makes the hidden slides inert; the server leaves them usable for visitors without JavaScript.
+    expect(substr_count($html, ':inert="active !== '))->toBe(3);
 })->with(['en', 'ar']);

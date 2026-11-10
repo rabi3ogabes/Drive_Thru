@@ -2,7 +2,7 @@
 
 return [
     'meta' => [
-        'title' => 'Drive-Thru Plus · Drive-thru ordering, ready calls and rewards for restaurants',
+        'title' => 'Dhawq · Drive-thru ordering, ready calls and rewards for restaurants',
         'description' => 'Three services for restaurants in Qatar and the Gulf: online drive-thru ordering, a pager on the guest’s own phone, and stamp-card rewards. Arabic and English, free for 14 days.',
     ],
     'nav' => [
@@ -18,11 +18,25 @@ return [
     ],
     'hero' => [
         'eyebrow' => 'One platform · three services',
-        'title' => 'Faster pickups. Calmer counters. More regulars.',
-        'lead' => 'Take orders before guests arrive, call them the moment it’s ready, and reward them for coming back. In Arabic and English, on the phone they already have.',
-        'cta' => 'Book a free demo',
-        'secondary' => 'See pricing',
+        'label' => 'Our three services',
+        'start' => 'Start free for :days days',
+        'contact' => 'Talk to us',
+        'learn' => 'See how it works',
         'trust' => ['free' => 'Free for :days days', 'bilingual' => 'Arabic & English', 'nothing' => 'No app, no hardware'],
+        'slides' => [
+            'drive_thru' => [
+                'title' => 'Orders that meet the car',
+                'lead' => 'Guests order and pay from their phone, and your window knows the moment they arrive.',
+            ],
+            'ready_call' => [
+                'title' => 'A pager in every pocket',
+                'lead' => 'Hand out a QR, not a buzzer. Their phone rings the second the order is ready.',
+            ],
+            'rewards' => [
+                'title' => 'Regulars, rewarded',
+                'lead' => 'Stamp cards and points that live on the guest’s phone, never lost and never faked.',
+            ],
+        ],
     ],
     'stage' => [
         'ready' => 'Your order is ready',

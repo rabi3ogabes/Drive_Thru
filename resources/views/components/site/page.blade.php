@@ -5,7 +5,7 @@
     $next = Locales::other();
     $onHome = $active === 'home';
     $anchor = fn (string $id): string => $onHome ? "#{$id}" : route('home')."#{$id}";
-    $link = 'rounded-full px-3.5 py-2 transition hover:bg-white hover:text-ink-950';
+    $link = 'rounded-full px-3.5 py-2 transition hover:bg-white hover:text-ink-950 whitespace-nowrap';
 @endphp
 <x-layouts.site :title="$title" :description="$description" body-class="grain overflow-x-hidden bg-ivory-50 text-ink-900" themeable>
     <x-slot:head>{{ $head ?? '' }}</x-slot:head>
@@ -35,7 +35,7 @@
             }"
             x-on:keydown.escape.window="menu = false; services = false">
         <nav class="mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full bg-white/70 py-1.5 pe-1.5 ps-3 shadow-[var(--shadow-soft)] ring-1 ring-ink-950/5 backdrop-blur-xl sm:gap-3 sm:py-2 sm:pe-2" aria-label="{{ __('site.nav.label') }}">
-            <a href="{{ route('home') }}" class="shrink-0 rounded-full text-ink-950" aria-label="{{ config('app.name') }}"><x-brand.logo /></a>
+            <a href="{{ route('home') }}" class="shrink-0 rounded-full text-ink-950" aria-label="{{ \App\Support\Brand::name() }}"><x-brand.logo :animated="true" /></a>
 
             <ul class="hidden items-center gap-1 text-sm font-medium text-ink-600 md:flex">
                 <li class="relative" x-on:click.outside="services = false">
@@ -72,7 +72,7 @@
                 </button>
                 <a href="{{ route('locale.switch', $next) }}" lang="{{ $next }}" hreflang="{{ $next }}" class="hidden rounded-full px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-white hover:text-ink-950 sm:inline-flex">{{ Locales::native($next) }}</a>
                 <a href="{{ url('/app') }}" class="hidden rounded-full px-3.5 py-2 text-sm font-medium text-ink-700 transition hover:bg-white hover:text-ink-950 lg:inline-flex">{{ __('site.nav.sign_in') }}</a>
-                <a href="#request" class="site-cta inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold shadow-[var(--shadow-lift)] transition active:scale-[0.98]">{{ __('site.nav.demo') }}</a>
+                <a href="#request" class="site-cta inline-flex min-h-10 items-center whitespace-nowrap rounded-full px-4 text-sm font-semibold shadow-[var(--shadow-lift)] transition active:scale-[0.98]">{{ __('site.nav.demo') }}</a>
                 <button type="button" x-on:click="menu = ! menu" :aria-expanded="menu" aria-controls="site-menu" class="grid size-10 place-items-center rounded-full text-ink-800 transition hover:bg-white md:hidden">
                     <span class="sr-only">{{ __('site.nav.menu') }}</span>
                     <span class="relative block h-3 w-4" aria-hidden="true">
@@ -133,7 +133,7 @@
                     </ul>
                 </div>
             </div>
-            <p class="mt-12 text-sm text-ink-500">© <span dir="ltr">{{ now()->year }}</span> {{ config('app.name') }}. {{ __('app.home.rights') }}</p>
+            <p class="mt-12 text-sm text-ink-500">© <span dir="ltr">{{ now()->year }}</span> {{ \App\Support\Brand::name() }}. {{ __('app.home.rights') }}</p>
         </div>
     </footer>
 

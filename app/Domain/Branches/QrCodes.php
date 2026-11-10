@@ -6,6 +6,7 @@ namespace App\Domain\Branches;
 
 use App\Domain\Branches\Models\Branch;
 use App\Domain\Tenancy\Models\Restaurant;
+use App\Support\Brand;
 use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\Output\QROutputInterface;
 use chillerlan\QRCode\QRCode;
@@ -70,7 +71,7 @@ final class QrCodes
         ]);
 
         $pdf->SetTitle($restaurant->getTranslation('name', 'en').($branch !== null ? ' · '.$branch->getTranslation('name', 'en') : ''));
-        $pdf->SetCreator(config('app.name'));
+        $pdf->SetCreator(Brand::latin());
 
         $pdf->WriteHTML(view($sticker ? 'pdf.qr-sticker' : 'pdf.qr-poster', [
             'restaurant' => $restaurant,

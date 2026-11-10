@@ -1,5 +1,5 @@
 /*
- * Drive-Thru Plus guest service worker.
+ * Dhawq guest service worker.
  * - Built assets and fonts: cache first (their file names are content-hashed).
  * - Pages: always from the network (menus, prices and orders must be live);
  *   when offline, a calm bilingual offline page instead of a browser error.
@@ -54,7 +54,7 @@ self.addEventListener('push', (event) => {
     let data = {};
     try { data = event.data ? event.data.json() : {}; } catch (e) { data = { title: event.data?.text() ?? '' }; }
 
-    event.waitUntil(self.registration.showNotification(data.title || 'Drive-Thru Plus', {
+    event.waitUntil(self.registration.showNotification(data.title || 'Dhawq', {
         body: data.body || '',
         tag: data.tag || undefined,
         renotify: Boolean(data.tag),

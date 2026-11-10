@@ -3,7 +3,7 @@
     $title = __("errors.{$code}.title");
     $message = __("errors.{$code}.message");
 @endphp
-<x-layouts.site :title="$title.' · '.config('app.name')" body-class="grain">
+<x-layouts.site :title="$title.' · '.\App\Support\Brand::name()" body-class="grain">
     <div aria-hidden="true" class="pointer-events-none fixed inset-0">
         <div class="absolute -top-40 end-[-10rem] size-[38rem] rounded-full bg-teal-900/12 blur-3xl"></div>
         <div class="absolute -bottom-48 start-[-12rem] size-[34rem] rounded-full bg-brass-400/18 blur-3xl"></div>
@@ -12,7 +12,7 @@
     <main id="main" class="relative z-10 grid min-h-dvh place-items-center px-4 py-16">
         <div class="bezel reveal w-full max-w-lg">
             <div class="bezel-core px-8 py-12 text-center sm:px-12">
-                <a href="{{ url('/') }}" class="inline-flex text-ink-950" aria-label="{{ config('app.name') }}">
+                <a href="{{ url('/') }}" class="inline-flex text-ink-950" aria-label="{{ \App\Support\Brand::name() }}">
                     <x-brand.logo />
                 </a>
                 <p class="mt-10 font-display text-7xl tracking-tight text-teal-900" dir="ltr" style="font-variation-settings: 'opsz' 144">{{ $code }}</p>

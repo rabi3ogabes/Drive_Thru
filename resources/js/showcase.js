@@ -1,6 +1,6 @@
 /*
- * The website's service showcase: one slide per service, each a short scene
- * told in motion. A slide plays once through (its tab's progress line fills
+ * The home page hero: one slide per service, each a headline beside a short
+ * scene told in motion. A slide plays once through (its tab's progress line fills
  * as it goes), then the next one starts. Nothing moves while the section is
  * off screen, the tab is hidden, the pointer rests on it, it holds keyboard
  * focus, or the visitor pressed pause. With reduced motion nothing plays by
@@ -17,6 +17,7 @@ document.addEventListener('alpine:init', () => {
         hidden: document.hidden,
         still: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
         started: false,
+        moved: false, // a slide other than the first has been shown (entrance animations play from then on)
         touch: null,
 
         init() {
@@ -44,8 +45,16 @@ document.addEventListener('alpine:init', () => {
 
         show(index, { user = false } = {}) {
             this.active = (index + this.count) % this.count;
+            this.moved = true;
             if (user && !this.still) this.started = true;
             this.$nextTick(() => this.restart());
+        },
+
+        /** A slide's "start free" button: pick that service on the request form, then go there. */
+        pick(service) {
+            window.dispatchEvent(new CustomEvent('pick-service', { detail: service }));
+            document.getElementById('request')?.scrollIntoView({ behavior: this.still ? 'auto' : 'smooth', block: 'start' });
+            history.replaceState(null, '', '#request');
         },
 
         next() { this.show(this.active + 1); },

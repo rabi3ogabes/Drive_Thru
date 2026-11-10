@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Actions;
 use App\Domain\Access\Actions\InviteUser;
 use App\Domain\Security\LoginThrottle;
 use App\Models\User;
+use App\Support\Brand;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
@@ -31,7 +32,7 @@ final class StaffActions
                 $admin = auth()->user();
                 $url = app(InviteUser::class)->handle($record, $admin, context: 'platform');
 
-                ClientActions::notifyInvitationLink($url, $record->phone, config('app.name'));
+                ClientActions::notifyInvitationLink($url, $record->phone, Brand::name());
             });
     }
 

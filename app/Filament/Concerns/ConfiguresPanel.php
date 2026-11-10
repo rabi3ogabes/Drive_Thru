@@ -9,6 +9,7 @@ use App\Filament\AvatarProviders\InitialsAvatarProvider;
 use App\Filament\Pages\DeviceSessions;
 use App\Http\Middleware\GuardImpersonation;
 use App\Http\Middleware\SetLocale;
+use App\Support\Brand;
 use App\Support\Palette;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
@@ -43,7 +44,7 @@ trait ConfiguresPanel
                 [AppAuthentication::make()->recoverable()],
                 isRequired: $requireMfa,
             )
-            ->brandName(config('app.name'))
+            ->brandName(fn (): string => Brand::name())
             ->brandLogo(fn () => view('components.brand.logo', ['subtitle' => __($subtitleKey)]))
             ->brandLogoHeight('2.5rem')
             ->favicon(asset('favicon.svg'))

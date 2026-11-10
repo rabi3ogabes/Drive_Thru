@@ -13,7 +13,7 @@ it('defaults to Arabic, right to left', function () {
         ->assertOk()
         ->assertSee('lang="ar"', false)
         ->assertSee('dir="rtl"', false)
-        ->assertSee(__('site.hero.title', [], 'ar'));
+        ->assertSee(__('site.hero.slides.drive_thru.title', [], 'ar'));
 });
 
 it('follows the browser language when it is supported', function () {
@@ -21,7 +21,7 @@ it('follows the browser language when it is supported', function () {
         ->get('/')
         ->assertSee('lang="en"', false)
         ->assertSee('dir="ltr"', false)
-        ->assertSee('Faster pickups. Calmer counters. More regulars.');
+        ->assertSee('Orders that meet the car');
 });
 
 it('falls back to Arabic for unsupported browser languages', function () {

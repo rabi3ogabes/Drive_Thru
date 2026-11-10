@@ -40,6 +40,7 @@
                     @else
                         <form method="POST" action="{{ route('leads.store') }}" class="grid gap-5 sm:grid-cols-2" novalidate
                               x-data="{ busy: false, services: {{ \Illuminate\Support\Js::from(array_values($picked)) }}, branches: {{ (int) old('branches_count', 1) }} }"
+                              @pick-service.window="if (! services.includes($event.detail)) services.push($event.detail)"
                               x-on:submit="busy = true"
                               x-on:pick-services.window="services = $event.detail.services; branches = $event.detail.branches">
                             @csrf

@@ -90,7 +90,7 @@ final class DispatchWebhook
                 'type' => self::PING,
                 'created_at' => now()->toIso8601ZuluString(),
                 'restaurant_id' => $endpoint->restaurant_id,
-                'data' => ['message' => 'Drive-Thru Plus is connected.'],
+                'data' => ['message' => 'Dhawq is connected.'],
             ],
             'next_attempt_at' => now(),
         ]);

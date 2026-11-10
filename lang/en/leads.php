@@ -5,7 +5,7 @@ return [
     'plural' => 'Leads',
     'unassigned' => 'Unassigned',
     'no_notes' => 'No notes yet. Every status change is noted here automatically.',
-    'whatsapp_greeting' => 'Hello :name, thank you for your interest in Drive-Thru Plus! When is a good time for a quick call?',
+    'whatsapp_greeting' => 'Hello :name, thank you for your interest in Dhawq! When is a good time for a quick call?',
 
     'status' => [
         'new' => 'New',
@@ -104,7 +104,7 @@ return [
         'ack' => [
             'subject' => 'We received your request',
             'greeting' => 'Hello :name,',
-            'body' => 'Thank you for your interest in bringing :restaurant online with Drive-Thru Plus.',
+            'body' => 'Thank you for your interest in bringing :restaurant online with Dhawq.',
             'next' => 'A member of our team will contact you within one business day to arrange a short demo.',
         ],
     ],
@@ -116,7 +116,7 @@ return [
         'optional' => 'optional',
         'plan_help' => 'Not sure yet',
         'message_placeholder' => 'Anything we should know? Opening hours, number of lanes, current POS…',
-        'privacy' => 'We only use these details to contact you about Drive-Thru Plus.',
+        'privacy' => 'We only use these details to contact you about Dhawq.',
         'submit' => 'Send request',
         'success_title' => 'Thank you!',
         'success_text' => 'Your request is in. We’ll contact you within one business day.',
