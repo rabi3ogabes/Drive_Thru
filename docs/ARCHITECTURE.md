@@ -207,6 +207,9 @@ Two permission catalogues, both PHP enums:
 - Fonts (self-hosted via fontsource): Geist (Latin UI), IBM Plex Sans Arabic (Arabic UI), Fraunces (Latin display), Alexandria (Arabic display).
 - Motion: spring/expo easings, transform + opacity only, `prefers-reduced-motion` respected.
 - Filament palettes are mirrored in `App\Support\Palette` (teal = primary, ink = gray, brass = warning).
+- **Brand:** the platform is **ذوق / Dhawq**. `App\Support\Brand` gives the name (`name()` per locale, `full()` = `ذوق · Dhawq`, `latin()`, `markDataUri()` for PDFs); views and code never use `config('app.name')` or a literal, and `BrandNameTest` fails on the old name. The service "Drive-Thru" keeps its name. Language files spell the brand directly (Dhawq / ذوق).
+- **Logo:** `x-brand.mark` (the letter ذ in brass on the deep-teal tile; `animated` makes its dot glow, `monochrome` draws it in `currentColor`; unique gradient id per render) and `x-brand.logo` (mark + ذوق + DHAWQ, page language first; the second name shows from `lg`). Master drawing `resources/brand/dhawq-mark.svg`; `python -I scripts/brand-assets.py` renders the favicon, app icons and the 1200×630 share image into `public/` (committed). PDFs embed `Brand::markDataUri()` (flat tile, explicit `fill="none"`: mPDF doesn't inherit fills and prints gradients near-black).
+- **Home hero:** `site.partials.hero`, one slide per service (headline, pitch, three points, "start free" that picks the service on the request form via `?service=` or the `pick-service` event, and the scene). `serviceShowcase` in `resources/js/showcase.js` plays each scene once per 9 s loop, pauses on hover, focus, a hidden tab or the pause button, follows reading direction for arrow keys and swipes, and does nothing by itself under reduced motion. Slide 1 is server-rendered; without JavaScript the tabs are `#hero-…` links shown with `:target`.
 
 ## 8. Quality gate (CI)
 
