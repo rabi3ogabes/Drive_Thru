@@ -21,8 +21,8 @@ return [
         'mail' => [
             'subject' => 'Your invitation to :place',
             'greeting' => 'Welcome!',
-            'body' => 'You’ve been invited to :place on Drive-Thru Plus.',
-            'body_with_inviter' => ':inviter invited you to :place on Drive-Thru Plus.',
+            'body' => 'You’ve been invited to :place on Dhawq.',
+            'body_with_inviter' => ':inviter invited you to :place on Dhawq.',
             'action' => 'Choose your password',
             'expiry' => 'This link works once and expires in :days days.',
         ],

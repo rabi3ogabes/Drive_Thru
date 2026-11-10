@@ -21,14 +21,14 @@
     @endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>{{ $title ?? config('app.name') }}</title>
+    <title>{{ $title ?? \App\Support\Brand::name() }}</title>
     @isset($description)
         <meta name="description" content="{{ $description }}">
         <meta property="og:description" content="{{ $description }}">
     @endisset
-    <meta property="og:title" content="{{ $title ?? config('app.name') }}">
+    <meta property="og:title" content="{{ $title ?? \App\Support\Brand::name() }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:site_name" content="{{ \App\Support\Brand::name() }}">
     <meta property="og:locale" content="{{ $locale === 'ar' ? 'ar_QA' : 'en_US' }}">
     @foreach (Locales::codes() as $code)
         <link rel="alternate" hreflang="{{ $code }}" href="{{ url()->current() }}?lang={{ $code }}">

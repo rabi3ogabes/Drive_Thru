@@ -28,7 +28,7 @@
             <span>{{ __('public.powered_by') }}</span>
             <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 font-medium text-ink-600 transition hover:text-ink-900">
                 <x-brand.mark class="size-4" />
-                {{ config('app.name') }}
+                {{ \App\Support\Brand::name() }}
             </a>
         </footer>
     </div>

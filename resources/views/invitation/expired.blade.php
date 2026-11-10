@@ -1,4 +1,4 @@
-<x-layouts.site :title="__('access.invitation.expired.title').' · '.config('app.name')" body-class="grain">
+<x-layouts.site :title="__('access.invitation.expired.title').' · '.\App\Support\Brand::name()" body-class="grain">
     <div aria-hidden="true" class="pointer-events-none fixed inset-0">
         <div class="absolute -top-40 end-[-10rem] size-[38rem] rounded-full bg-teal-900/12 blur-3xl"></div>
         <div class="absolute -bottom-48 start-[-12rem] size-[34rem] rounded-full bg-brass-400/18 blur-3xl"></div>

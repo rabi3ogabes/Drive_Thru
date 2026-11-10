@@ -18,7 +18,7 @@
                     '@type' => 'Service',
                     'name' => $service->getLabel(),
                     'description' => __('site.services.'.$key.'.lead'),
-                    'provider' => ['@type' => 'Organization', 'name' => config('app.name')],
+                    'provider' => ['@type' => 'Organization', 'name' => \App\Support\Brand::name()],
                     'offers' => $info['for_sale'] ? ['@type' => 'Offer', 'price' => number_format($info['price'] / 10 ** $pricing['decimals'], $pricing['decimals'], '.', ''), 'priceCurrency' => $pricing['currency']] : null,
                 ],
                 [

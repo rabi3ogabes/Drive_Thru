@@ -141,7 +141,7 @@ return [
         'reactivated' => 'Client reactivated',
         'invitation_ready' => 'Invitation link ready',
         'invitation_ready_body' => ':url · valid for 7 days',
-        'whatsapp_message' => 'Welcome to Drive-Thru Plus! Your :restaurant workspace is ready. Choose your password here: :url',
+        'whatsapp_message' => 'Welcome to Dhawq! Your :restaurant workspace is ready. Choose your password here: :url',
     ],
 
     'impersonation' => [

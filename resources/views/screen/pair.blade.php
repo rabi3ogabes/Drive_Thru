@@ -2,7 +2,7 @@
     use App\Support\Locales;
     $next = Locales::other();
 @endphp
-<x-layouts.site :title="__('devices.pair.title').' · '.config('app.name')" theme-color="#0a0f1c" color-scheme="dark" body-class="bg-ink-950 text-white">
+<x-layouts.site :title="__('devices.pair.title').' · '.\App\Support\Brand::name()" theme-color="#0a0f1c" color-scheme="dark" body-class="bg-ink-950 text-white">
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 overflow-hidden">
         <div class="absolute -top-48 start-1/2 size-[44rem] -translate-x-1/2 rounded-full bg-teal-700/20 blur-3xl rtl:translate-x-1/2"></div>
         <div class="absolute -bottom-56 end-[-12rem] size-[30rem] rounded-full bg-brass-500/10 blur-3xl"></div>

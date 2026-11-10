@@ -1,5 +1,5 @@
 @props(['title', 'message', 'restaurant' => null, 'action' => null, 'actionLabel' => null])
-<x-layouts.site :title="$title.' · '.($restaurant?->name ?? config('app.name'))" body-class="grain bg-ivory-50">
+<x-layouts.site :title="$title.' · '.($restaurant?->name ?? \App\Support\Brand::name())" body-class="grain bg-ivory-50">
     <x-slot:head>
         <meta name="robots" content="noindex">
     </x-slot:head>

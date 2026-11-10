@@ -104,7 +104,7 @@ return [
 
     'mail' => [
         'greeting' => 'Hello,',
-        'salutation' => 'Warm regards, the Drive-Thru Plus team',
+        'salutation' => 'Warm regards, the Dhawq team',
         'invoice_issued' => [
             'subject' => 'Invoice :number',
             'body' => 'Your invoice :number for :total is ready. It is due on :due.',

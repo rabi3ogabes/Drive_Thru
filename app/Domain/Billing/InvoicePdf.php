@@ -6,6 +6,7 @@ namespace App\Domain\Billing;
 
 use App\Domain\Billing\Models\Invoice;
 use App\Domain\Platform\PlatformSettings;
+use App\Support\Brand;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 
@@ -43,13 +44,13 @@ final class InvoicePdf
 
         $pdf->SetTitle($invoice->number);
         $pdf->SetAuthor((string) $this->settings->string('billing.legal_name'));
-        $pdf->SetCreator(config('app.name'));
+        $pdf->SetCreator(Brand::latin());
 
         $pdf->WriteHTML(view('pdf.invoice', [
             'invoice' => $invoice,
             'restaurant' => $restaurant,
             'issuer' => [
-                'name' => $this->settings->string('billing.legal_name') ?? config('app.name'),
+                'name' => $this->settings->string('billing.legal_name') ?? Brand::latin(),
                 'address' => $this->settings->string('billing.address'),
                 'tax_number' => $this->settings->string('billing.tax_number'),
                 'email' => $this->settings->string('billing.email'),

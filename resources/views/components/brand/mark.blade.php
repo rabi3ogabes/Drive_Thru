@@ -1,5 +1,5 @@
 @props(['class' => 'size-8'])
-{{-- Drive-Thru Plus mark: a road curve passing a pickup window, closing into a "+" --}}
+{{-- The Dhawq mark --}}
 <svg {{ $attributes->merge(['class' => $class]) }} viewBox="0 0 40 40" fill="none" aria-hidden="true">
     <rect x="1" y="1" width="38" height="38" rx="12" fill="url(#dtp-mark-bg)"/>
     <rect x="1.5" y="1.5" width="37" height="37" rx="11.5" stroke="white" stroke-opacity=".12"/>

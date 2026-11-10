@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Api;
 
 use App\Domain\Integrations\Webhooks\WebhookEvent;
 use App\Domain\Ordering\Enums\OrderStatus;
+use App\Support\Brand;
 
 /**
  * The public API described as OpenAPI 3.1: served as JSON for tools and
@@ -73,7 +74,7 @@ final class OpenApi
         return [
             'openapi' => '3.1.0',
             'info' => [
-                'title' => config('app.name').' API',
+                'title' => Brand::latin().' API',
                 'version' => '1.0.0',
                 'description' => 'Orders and menus for one restaurant. Money is in minor units with the currency; names are {"en","ar"}; times are ISO 8601 UTC.',
             ],

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'title' => 'Developer API',
-    'description' => 'Connect a POS or any other system to Drive-Thru Plus orders and menus with a REST API and signed webhooks.',
+    'description' => 'Connect a POS or any other system to Dhawq orders and menus with a REST API and signed webhooks.',
     'contents' => 'On this page',
     'intro' => 'Read and update orders and menus for one restaurant from your POS, kiosk or reporting tool, and receive signed webhooks the moment something changes. The restaurant owner creates the keys and webhooks in their workspace.',
     'nav' => [

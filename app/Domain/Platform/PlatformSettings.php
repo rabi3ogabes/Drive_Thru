@@ -27,7 +27,7 @@ final class PlatformSettings
             'billing.grace_days' => 7,
             'billing.tax_rate_bp' => 0,
             'billing.currency' => 'QAR',
-            'billing.legal_name' => 'Drive-Thru Plus',
+            'billing.legal_name' => 'Dhawq',
             'billing.tax_number' => null,
             'billing.address' => 'Doha, Qatar',
             'billing.email' => 'billing@drivethru.test',

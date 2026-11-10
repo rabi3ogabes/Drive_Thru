@@ -10,7 +10,7 @@ use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
 /**
- * What Drive-Thru Plus sells. A restaurant takes one, two or all three; each
+ * What Dhawq sells. A restaurant takes one, two or all three; each
  * can run as a free demo first. Plans only set limits and add-ons.
  */
 enum Service: string implements HasDescription, HasIcon, HasLabel

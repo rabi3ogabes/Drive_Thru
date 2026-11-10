@@ -2,7 +2,7 @@
 
 return [
     'meta' => [
-        'title' => 'Drive-Thru Plus · Drive-thru ordering, ready calls and rewards for restaurants',
+        'title' => 'Dhawq · Drive-thru ordering, ready calls and rewards for restaurants',
         'description' => 'Three services for restaurants in Qatar and the Gulf: online drive-thru ordering, a pager on the guest’s own phone, and stamp-card rewards. Arabic and English, free for 14 days.',
     ],
     'nav' => [

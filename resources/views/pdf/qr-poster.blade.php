@@ -42,7 +42,7 @@
         <div class="cta-ar" dir="rtl">{{ __($cta, [], 'ar') }}</div>
         <div class="cta-en">{{ __($cta, [], 'en') }}</div>
         <div class="url">{{ $url }}</div>
-        <div class="foot">{{ config('app.name') }}</div>
+        <div class="foot">{{ \App\Support\Brand::full() }}</div>
     </div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Install Drive-Thru Plus',
+    'title' => 'Install Dhawq',
     'eyebrow' => 'First-time setup',
     'lead' => 'Three minutes, once. This page creates the database tables and your super admin account, then locks itself for good.',
     'language' => 'العربية',
@@ -58,7 +58,7 @@ return [
         'other' => 'check the details and try again.',
     ],
     'done' => [
-        'title' => 'Drive-Thru Plus is installed',
+        'title' => 'Dhawq is installed',
         'body' => 'The tables are created and :email is your super admin. This page is now locked for good.',
         'cta' => 'Sign in to the admin',
         'next' => 'Next',

@@ -102,7 +102,7 @@
                 <span class="mark" aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16V9a2 2 0 0 1 2-2h7l4 4h1a2 2 0 0 1 2 2v3"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg>
                 </span>
-                Drive-Thru Plus
+                {{ \App\Support\Brand::name() }}
             </span>
             <a class="pill" href="{{ url('/install') }}?lang={{ $other }}" lang="{{ $other }}">{{ __('install.language') }}</a>
         </header>

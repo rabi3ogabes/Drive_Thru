@@ -8,7 +8,7 @@
         <script type="application/ld+json">{!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'SoftwareApplication',
-            'name' => config('app.name'),
+            'name' => \App\Support\Brand::name(),
             'applicationCategory' => 'BusinessApplication',
             'operatingSystem' => 'Web',
             'description' => __('site.meta.description'),

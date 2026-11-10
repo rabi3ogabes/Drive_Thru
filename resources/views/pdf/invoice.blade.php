@@ -34,7 +34,7 @@
 <table>
     <tr>
         <td style="width: 55%;">
-            <div class="brand">Drive-Thru<span class="brass">+</span></div>
+            <div class="brand">{{ \App\Support\Brand::full() }}</div>
             <div class="muted">{{ $issuer['name'] }}</div>
             @if ($issuer['address'])<div class="muted">{{ $issuer['address'] }}</div>@endif
             @if ($issuer['tax_number'])<div class="muted">Tax no. · {{ $issuer['tax_number'] }}</div>@endif
@@ -127,7 +127,7 @@
 @endif
 
 <div class="foot" style="margin-top: 30px; text-align: center;">
-    Thank you for running your drive-thru with {{ config('app.name') }}. · <span class="ar">شكرًا لاختيارك {{ config('app.name') }}.</span>
+    Thank you for running your drive-thru with {{ \App\Support\Brand::name('en') }}. · <span class="ar">شكرًا لاختيارك {{ \App\Support\Brand::name('ar') }}.</span>
 </div>
 
 </body>

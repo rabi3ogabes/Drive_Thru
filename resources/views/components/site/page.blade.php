@@ -35,7 +35,7 @@
             }"
             x-on:keydown.escape.window="menu = false; services = false">
         <nav class="mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full bg-white/70 py-1.5 pe-1.5 ps-3 shadow-[var(--shadow-soft)] ring-1 ring-ink-950/5 backdrop-blur-xl sm:gap-3 sm:py-2 sm:pe-2" aria-label="{{ __('site.nav.label') }}">
-            <a href="{{ route('home') }}" class="shrink-0 rounded-full text-ink-950" aria-label="{{ config('app.name') }}"><x-brand.logo /></a>
+            <a href="{{ route('home') }}" class="shrink-0 rounded-full text-ink-950" aria-label="{{ \App\Support\Brand::name() }}"><x-brand.logo /></a>
 
             <ul class="hidden items-center gap-1 text-sm font-medium text-ink-600 md:flex">
                 <li class="relative" x-on:click.outside="services = false">
@@ -133,7 +133,7 @@
                     </ul>
                 </div>
             </div>
-            <p class="mt-12 text-sm text-ink-500">© <span dir="ltr">{{ now()->year }}</span> {{ config('app.name') }}. {{ __('app.home.rights') }}</p>
+            <p class="mt-12 text-sm text-ink-500">© <span dir="ltr">{{ now()->year }}</span> {{ \App\Support\Brand::name() }}. {{ __('app.home.rights') }}</p>
         </div>
     </footer>
 

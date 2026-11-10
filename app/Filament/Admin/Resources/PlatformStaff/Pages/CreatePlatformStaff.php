@@ -9,6 +9,7 @@ use App\Domain\Access\Models\PlatformRole;
 use App\Filament\Admin\Actions\ClientActions;
 use App\Filament\Admin\Resources\PlatformStaff\PlatformStaffResource;
 use App\Models\User;
+use App\Support\Brand;
 use DomainException;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
@@ -50,7 +51,7 @@ class CreatePlatformStaff extends CreateRecord
             $result['user']->forceFill(['phone' => $data['phone']])->save();
         }
 
-        ClientActions::notifyInvitationLink($result['url'], $data['phone'] ?? null, config('app.name'));
+        ClientActions::notifyInvitationLink($result['url'], $data['phone'] ?? null, Brand::name());
 
         return $result['user'];
     }
