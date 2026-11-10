@@ -24,16 +24,30 @@ it('opens the Arabic home page on the Arabic slides', function () {
     }
 });
 
-it('renders the first slide visible and the others inert without JavaScript', function () {
+it('renders the first slide visible, and every slide usable without JavaScript', function () {
     $html = $this->get('/')->getContent();
 
     preg_match_all('/<article id="hero-(\w+)"[^>]*>/', $html, $slides);
+    preg_match_all('/<a href="#hero-\w+" role="tab"[^>]*>/', $html, $tabs);
 
     expect($slides[1])->toBe(['drive_thru', 'ready_call', 'rewards'])
-        ->and($slides[0][0])->toContain('is-active')->and($slides[0][0])->not->toContain(' inert')
-        ->and($slides[0][1])->toContain(' inert')->and($slides[0][2])->toContain(' inert')
-        ->and($html)->toContain('href="#hero-ready_call"')
-        ->and($html)->toContain('<h1');
+        ->and($slides[0][0])->toContain('is-active')
+        ->and(implode('', $slides[0]))->not->toMatch('/\sinert(\s|>)/')
+        ->and(implode('', $slides[0]))->toContain(':inert=')
+        ->and(implode('', $tabs[0]))->not->toContain('tabindex="-1"')
+        ->and($html)->toContain('href="#hero-ready_call"');
+});
+
+it('makes the first slide headline the page heading, shown at once', function () {
+    $html = $this->get('/')->getContent();
+
+    expect(substr_count($html, '<h1'))->toBe(1)
+        ->and($html)->toMatch('/<h1 id="hero-title-drive_thru"[^>]*>\s*'.preg_quote(e(__('site.hero.slides.drive_thru.title')), '/').'/')
+        ->and($html)->not->toContain('class="sr-only">'.e(__('site.meta.title')).'</h1>');
+
+    // Lines rise in only when the visitor moves to another slide, never on first paint.
+    $css = (string) file_get_contents(resource_path('css/showcase.css'));
+    expect($css)->toContain('.js .showcase.has-moved .sc-slide.is-active .hero-line');
 });
 
 it('sends each slide\'s main button to the request form with that service picked', function () {

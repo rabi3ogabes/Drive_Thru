@@ -12,12 +12,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        $updated = DB::table('platform_settings')
-            ->where('key', 'billing.legal_name')
-            ->where('value', json_encode('Drive-Thru Plus'))
-            ->update(['value' => json_encode('Dhawq'), 'updated_at' => now()]);
+        // Compared in PHP: JSON columns compare differently across SQLite, MySQL and MariaDB.
+        $stored = DB::table('platform_settings')->where('key', 'billing.legal_name')->value('value');
 
-        if ($updated > 0) {
+        if (is_string($stored) && json_decode(trim($stored), true) === 'Drive-Thru Plus') {
+            DB::table('platform_settings')->where('key', 'billing.legal_name')
+                ->update(['value' => json_encode('Dhawq'), 'updated_at' => now()]);
             Cache::forget('platform_settings.v1');
         }
     }

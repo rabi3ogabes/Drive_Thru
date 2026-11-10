@@ -2,6 +2,8 @@
 
 use App\Domain\Platform\PlatformSettings;
 use App\Support\Brand;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 it('names the platform in each language', function () {
@@ -66,6 +68,12 @@ it('renames the stored legal name only when it is the old default', function () 
     $migration = require database_path('migrations/2026_11_10_100000_rename_platform_legal_name.php');
 
     app(PlatformSettings::class)->set(['billing.legal_name' => 'Drive-Thru Plus']);
+    $migration->up();
+    expect(app(PlatformSettings::class)->string('billing.legal_name'))->toBe('Dhawq');
+
+    // Stored with spaces after json_encode options, as MySQL/MariaDB may return it.
+    DB::table('platform_settings')->where('key', 'billing.legal_name')->update(['value' => '"Drive-Thru Plus" ']);
+    Cache::flush();
     $migration->up();
     expect(app(PlatformSettings::class)->string('billing.legal_name'))->toBe('Dhawq');
 

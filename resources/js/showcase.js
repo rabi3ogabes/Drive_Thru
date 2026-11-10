@@ -17,6 +17,7 @@ document.addEventListener('alpine:init', () => {
         hidden: document.hidden,
         still: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
         started: false,
+        moved: false, // a slide other than the first has been shown (entrance animations play from then on)
         touch: null,
 
         init() {
@@ -44,6 +45,7 @@ document.addEventListener('alpine:init', () => {
 
         show(index, { user = false } = {}) {
             this.active = (index + this.count) % this.count;
+            this.moved = true;
             if (user && !this.still) this.started = true;
             this.$nextTick(() => this.restart());
         },

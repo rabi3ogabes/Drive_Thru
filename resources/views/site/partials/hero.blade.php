@@ -6,15 +6,15 @@
 @endphp
 {{--
     The hero: one slide per service, each a headline beside its scene in motion (resources/js/showcase.js).
-    Slide 1 is rendered visible; without JavaScript the tabs are links that show their slide (:target).
+    Slide 1 is rendered visible and its headline is the page's h1; without JavaScript the tabs are links that show their slide (:target).
+    Hidden slides are made inert by Alpine, not on the server, so a slide shown with :target stays usable.
 --}}
 <section id="hero" class="showcase relative isolate"
-         x-data="serviceShowcase({{ $count }})" :class="{ 'is-paused': paused }"
+         x-data="serviceShowcase({{ $count }})" :class="{ 'is-paused': paused, 'has-moved': moved }"
          aria-roledescription="carousel" aria-label="{{ __('site.hero.label') }}">
     <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[38rem] bg-[radial-gradient(60%_60%_at_80%_10%,color-mix(in_oklab,var(--color-brass-200)_45%,transparent),transparent_70%)]"></div>
 
     <div class="mx-auto max-w-6xl px-4 pb-16 pt-10 sm:px-6 lg:flex lg:min-h-[calc(100dvh-6rem)] lg:flex-col lg:justify-center lg:pb-20 lg:pt-4">
-        <h1 class="sr-only">{{ __('site.meta.title') }}</h1>
         <p class="eyebrow reveal w-max self-start" style="--i:0"><span class="size-1.5 rounded-full bg-brass-500"></span>{{ __('site.hero.eyebrow') }}</p>
 
         {{-- Slides --}}
@@ -31,16 +31,16 @@
                 @endphp
                 <article id="hero-{{ $key }}" role="tabpanel" aria-roledescription="slide" aria-labelledby="hero-title-{{ $key }}"
                          @class(['sc-slide grid items-center gap-8 lg:grid-cols-12 lg:gap-12', 'is-active' => $index === 0])
-                         :class="{ 'is-active': active === {{ $index }} }" :inert="active !== {{ $index }}" @if ($index !== 0) inert @endif>
+                         :class="{ 'is-active': active === {{ $index }} }" :inert="active !== {{ $index }}">
                     {{-- The words --}}
                     <div class="order-2 lg:order-1 lg:col-span-5">
                         <p class="hero-line flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brass-700 rtl:tracking-normal" style="--i:0">
                             <x-filament::icon :icon="\App\Domain\Services\Enums\Service::from($key)->getIcon()" class="size-4" />
                             {{ __("site.services.{$key}.kicker") }}
                         </p>
-                        <h2 id="hero-title-{{ $key }}" class="hero-line display mt-4 text-[2.6rem] leading-[1.04] text-ink-950 sm:text-6xl lg:text-[4.1rem] rtl:text-[2.3rem] rtl:leading-[1.35] rtl:sm:text-5xl rtl:lg:text-[3.4rem]" style="--i:1">
+                        <{{ $index === 0 ? 'h1' : 'h2' }} id="hero-title-{{ $key }}" class="hero-line display mt-4 text-[2.6rem] leading-[1.04] text-ink-950 sm:text-6xl lg:text-[4.1rem] rtl:text-[2.3rem] rtl:leading-[1.35] rtl:sm:text-5xl rtl:lg:text-[3.4rem]" style="--i:1">
                             {{ __("site.hero.slides.{$key}.title") }}
-                        </h2>
+                        </{{ $index === 0 ? 'h1' : 'h2' }}>
                         <p class="hero-line mt-6 max-w-xl text-lg leading-relaxed text-ink-600" style="--i:2">{{ __("site.hero.slides.{$key}.lead") }}</p>
                         <ul class="hero-line mt-7 grid gap-2.5" style="--i:3">
                             @foreach ($points as $point)
@@ -79,7 +79,7 @@
                            @click.prevent="show({{ $index }}, { user: true })"
                            :aria-selected="active === {{ $index }} ? 'true' : 'false'" :tabindex="active === {{ $index }} ? 0 : -1"
                            class="group rounded-2xl px-1 pb-3 pt-1 text-start outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-4 focus-visible:ring-offset-ivory-50"
-                           @if ($index === 0) aria-selected="true" @else aria-selected="false" tabindex="-1" @endif>
+                           aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
                             <span class="flex items-baseline gap-2.5">
                                 <span class="hidden text-xs font-semibold tabular-nums transition-colors duration-500 sm:inline" :class="active === {{ $index }} ? 'text-brass-700' : 'text-ink-400'" dir="ltr">0{{ $index + 1 }}</span>
                                 <span class="text-[0.8125rem] font-semibold leading-tight transition-colors duration-500 sm:text-base" :class="active === {{ $index }} ? 'text-ink-950' : 'text-ink-500 group-hover:text-ink-800'">{{ __("site.services.{$key}.kicker") }}</span>

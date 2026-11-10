@@ -72,6 +72,6 @@ it('opens on the services as an accessible hero carousel: one tab and one slide 
         ->toContain(e(__('site.showcase.ready_call.whatsapp', [], $locale)))
         ->toContain(e(__('site.showcase.rewards.wallet', [], $locale)));
 
-    // Only the first slide can be reached before the visitor moves on.
-    expect(substr_count($html, ' inert'))->toBeGreaterThanOrEqual(2);
+    // Alpine makes the hidden slides inert; the server leaves them usable for visitors without JavaScript.
+    expect(substr_count($html, ':inert="active !== '))->toBe(3);
 })->with(['en', 'ar']);
