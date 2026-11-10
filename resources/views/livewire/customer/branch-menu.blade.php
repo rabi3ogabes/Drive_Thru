@@ -13,6 +13,8 @@
     $entries = collect($sections)->flatMap(fn (array $section) => $section['items']);
     $signature = $entries->filter(fn (array $e): bool => $e['product']->is_popular && $e['product']->image_path !== null && $e['offer']->isAvailable())->take(8)->values();
     $cover = $restaurant->cover_path ? Storage::disk('public')->url($restaurant->cover_path) : null;
+    $coverSmall = \App\Domain\Themes\Actions\ProcessThemeCover::small($restaurant->cover_path);
+    $coverSrcset = $coverSmall !== null ? Storage::disk('public')->url($coverSmall).' 800w, '.$cover.' 1600w' : null;
     $collage = $cover === null ? $entries->filter(fn (array $e): bool => $e['product']->image_path !== null)->take(3)->map(fn (array $e): ?string => $e['product']->imageUrl(800))->values() : collect();
     $count = $entries->count();
 @endphp
@@ -39,7 +41,7 @@
                 <div class="relative isolate overflow-hidden rounded-[max(0px,calc(2.25rem*var(--radius-scale)-0.375rem))] bg-[var(--brand)]">
                     {{-- Photography: the restaurant's cover, or its dishes --}}
                     @if ($cover)
-                        <img src="{{ $cover }}" alt="" class="absolute inset-0 -z-10 size-full object-cover" fetchpriority="high">
+                        <img src="{{ $cover }}" @if ($coverSrcset) srcset="{{ $coverSrcset }}" sizes="(min-width: 1024px) 1200px, 100vw" @endif alt="" class="absolute inset-0 -z-10 size-full object-cover" fetchpriority="high">
                     @elseif ($collage->isNotEmpty())
                         <div aria-hidden="true" @class(['absolute inset-0 -z-10 grid gap-0.5', 'sm:grid-cols-3' => $collage->count() === 3, 'sm:grid-cols-2' => $collage->count() === 2])>
                             @foreach ($collage as $i => $photo)

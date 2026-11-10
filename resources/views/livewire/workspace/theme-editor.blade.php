@@ -119,7 +119,7 @@
                 </div>
 
                 @if ($ratios !== [])
-                    <div class="mt-4 grid grid-cols-3 gap-2">
+                    <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
                         @foreach ($ratios as $key => $check)
                             @php
                                 [$color, $label] = $badge($check['ratio'], $check['needs']);

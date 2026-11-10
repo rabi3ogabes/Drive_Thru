@@ -19,8 +19,13 @@ final class ThemePreview
 {
     public const MINUTES = 30;
 
-    public static function put(Restaurant $restaurant, User $user, ThemeSpec $spec): string
+    /** Stores a draft; the draft it replaces (the editor's previous one) is dropped. */
+    public static function put(Restaurant $restaurant, User $user, ThemeSpec $spec, ?string $replaces = null): string
     {
+        if ($replaces !== null && preg_match('/^[A-Za-z0-9]{40}$/', $replaces) === 1) {
+            Cache::forget(self::key($replaces));
+        }
+
         $token = Str::random(40);
 
         Cache::put(self::key($token), ['restaurant' => $restaurant->id, 'user' => $user->id, 'spec' => $spec->toArray()], now()->addMinutes(self::MINUTES));

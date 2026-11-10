@@ -55,8 +55,17 @@ final class ThemeTokens
 
         $tokens['brand'] = $colors['brand'];
         $tokens['color-on-brand'] = self::onBrand($spec);
+        $tokens['color-on-accent'] = self::onAccent($spec);
 
         return $tokens;
+    }
+
+    /** Text on accent-coloured badges: white, or the theme's darkest colour when that reads better. */
+    public static function onAccent(ThemeSpec $spec): string
+    {
+        $colors = $spec->colors;
+
+        return Contrast::onColor($colors['accent'], $spec->mode === 'dark' ? $colors['background'] : $colors['text']);
     }
 
     /** Text on brand-coloured buttons: white, or the theme's darkest colour when that reads better. */

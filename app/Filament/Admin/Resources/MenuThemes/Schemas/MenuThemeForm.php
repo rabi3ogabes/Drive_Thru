@@ -41,7 +41,12 @@ class MenuThemeForm
                         ->dehydrated(fn (?MenuTheme $record): bool => $record === null),
                     Bilingual::text('name', __('themes.admin.fields.name'), maxLength: 60),
                     Bilingual::textarea('description', __('themes.admin.fields.description'), maxLength: 200),
-                    Toggle::make('is_active')->label(__('themes.admin.fields.active'))->helperText(__('themes.admin.fields.active_hint'))->default(true),
+                    Toggle::make('is_active')->label(__('themes.admin.fields.active'))
+                        ->helperText(fn (?MenuTheme $record): string => $record?->is_default === true ? __('themes.admin.fields.active_default') : __('themes.admin.fields.active_hint'))
+                        ->default(true)
+                        // New restaurants start on the default, so it can't be hidden.
+                        ->disabled(fn (?MenuTheme $record): bool => $record?->is_default === true)
+                        ->dehydrated(fn (?MenuTheme $record): bool => $record?->is_default !== true),
                 ]),
             Section::make(__('themes.admin.sections.look'))
                 ->columnSpanFull()

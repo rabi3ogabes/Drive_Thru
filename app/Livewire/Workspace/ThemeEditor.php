@@ -54,6 +54,7 @@ class ThemeEditor extends Component
     #[Locked]
     public int $restaurantId;
 
+    #[Locked]
     public string $template = '';
 
     /** @var array<string, mixed> The theme being edited (ThemeSpec as an array). */
@@ -145,6 +146,7 @@ class ThemeEditor extends Component
             'text_on_background' => ['ratio' => round(Contrast::ratio($colors['text'], $colors['background']), 1), 'needs' => Contrast::TEXT],
             'muted_on_background' => ['ratio' => round(Contrast::ratio(ThemeTokens::muted($spec), $colors['background']), 1), 'needs' => Contrast::MUTED],
             'button_text' => ['ratio' => round(Contrast::ratio(ThemeTokens::onBrand($spec), $colors['brand']), 1), 'needs' => Contrast::TEXT],
+            'accent_text' => ['ratio' => round(Contrast::ratio(ThemeTokens::onAccent($spec), $colors['accent']), 1), 'needs' => Contrast::TEXT],
         ];
     }
 
@@ -197,6 +199,9 @@ class ThemeEditor extends Component
 
             return;
         }
+
+        // Only an offered template, or the one the restaurant already has.
+        abort_unless($this->templates->contains('key', $this->template), 404);
 
         ThemeResolver::save($this->restaurant, $this->template, $spec);
         $this->audit('theme.saved', 'Theme saved');
@@ -354,7 +359,9 @@ class ThemeEditor extends Component
 
         try {
             $path = app(ProcessThemeCover::class)->handle($this->restaurant, Workspace::user(), $file);
+            $previous = $this->restaurant->cover_path;
             $this->restaurant->forceFill(['cover_path' => $path])->save();
+            ProcessThemeCover::delete($this->restaurant, $previous);
             MenuCache::bump($this->restaurantId);
             $this->draft['cover'] = $path;
             $this->error = null;
@@ -367,7 +374,9 @@ class ThemeEditor extends Component
     public function removeCover(): void
     {
         $this->authorizeTheme();
+        $previous = $this->restaurant->cover_path;
         $this->restaurant->forceFill(['cover_path' => null])->save();
+        ProcessThemeCover::delete($this->restaurant, $previous);
         MenuCache::bump($this->restaurantId);
         $this->draft['cover'] = null;
         $this->refreshPreview();
@@ -441,7 +450,7 @@ class ThemeEditor extends Component
         }
 
         $this->error = null;
-        $this->previewToken = ThemePreview::put($this->restaurant, Workspace::user(), $spec);
+        $this->previewToken = ThemePreview::put($this->restaurant, Workspace::user(), $spec, replaces: $this->previewToken);
         $branch = Workspace::scopeToBranches(Branch::query()->where('restaurant_id', $this->restaurantId))->orderBy('sort')->first();
         $page = $branch !== null ? app(Links::class)->branch($this->restaurant, $branch) : route('public.restaurant', $this->restaurant);
 
