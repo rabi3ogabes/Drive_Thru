@@ -3,7 +3,7 @@
 @endphp
 {{-- Drive-Thru, told in motion: tap and pay in the car, the kitchen ticket moves to ready, the car rolls up to the window and away. --}}
 <div class="bezel">
-    <div class="bezel-core theme-fixed relative h-[25rem] overflow-hidden bg-[radial-gradient(120%_90%_at_80%_0%,var(--color-brass-100),transparent_55%),linear-gradient(180deg,var(--color-ivory-50),var(--color-ivory-100))] sm:h-[29rem]">
+    <div class="bezel-core theme-fixed relative h-[25rem] overflow-hidden bg-[radial-gradient(120%_90%_at_80%_0%,var(--color-brass-100),transparent_55%),linear-gradient(180deg,var(--color-ivory-50),var(--color-ivory-100))] sm:h-[29rem] lg:h-[32rem]">
 
         {{-- The guest's phone --}}
         <div class="absolute start-3 top-5 w-[9.5rem] sm:start-8 sm:top-7 sm:w-[13rem]">

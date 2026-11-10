@@ -9,6 +9,7 @@ use App\Domain\Billing\Models\Plan;
 use App\Domain\Services\Enums\Service;
 use App\Domain\Services\ServicePricing;
 use App\Support\Money;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
@@ -22,9 +23,15 @@ final class SiteController
 {
     public function __construct(private readonly ServicePricing $pricing) {}
 
-    public function home(): View
+    public function home(Request $request): View
     {
-        return view('home', $this->shared());
+        $shared = $this->shared();
+        $service = $request->query('service');
+
+        // A hero slide's "start free" button picks its service on the request form.
+        $preselect = is_string($service) && ($shared['services'][$service]['for_sale'] ?? false) ? [$service] : [];
+
+        return view('home', [...$shared, 'preselect' => $preselect]);
     }
 
     public function service(string $service): View

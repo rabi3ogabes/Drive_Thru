@@ -43,7 +43,7 @@
                 <ol class="flex items-center gap-2 text-sm text-ink-500">
                     <li><a href="{{ route('home') }}" class="transition hover:text-ink-950">{{ __('site.breadcrumb.home') }}</a></li>
                     <li aria-hidden="true"><svg class="flip-rtl size-3.5" viewBox="0 0 16 16" fill="none"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></li>
-                    <li><a href="{{ route('home') }}#services" class="transition hover:text-ink-950">{{ __('site.breadcrumb.services') }}</a></li>
+                    <li><a href="{{ route('home') }}#hero" class="transition hover:text-ink-950">{{ __('site.breadcrumb.services') }}</a></li>
                     <li aria-hidden="true"><svg class="flip-rtl size-3.5" viewBox="0 0 16 16" fill="none"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></li>
                     <li aria-current="page" class="font-medium text-ink-800">{{ $service->getLabel() }}</li>
                 </ol>

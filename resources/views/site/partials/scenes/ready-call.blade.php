@@ -1,6 +1,6 @@
 {{-- Order-Ready Call, told in motion: the guest waits anywhere, the phone rings and buzzes, WhatsApp follows, and 27 moves to "Ready" on the TV. --}}
 <div class="bezel">
-    <div class="bezel-core theme-fixed relative h-[25rem] overflow-hidden bg-ink-950 bg-[radial-gradient(90%_70%_at_20%_15%,color-mix(in_oklab,var(--color-teal-700)_55%,transparent),transparent_60%)] sm:h-[29rem]">
+    <div class="bezel-core theme-fixed relative h-[25rem] overflow-hidden bg-ink-950 bg-[radial-gradient(90%_70%_at_20%_15%,color-mix(in_oklab,var(--color-teal-700)_55%,transparent),transparent_60%)] sm:h-[29rem] lg:h-[32rem]">
 
         {{-- The guest's phone, their pager --}}
         <div class="absolute start-4 top-5 w-[9.75rem] sm:start-8 sm:top-7 sm:w-[12.5rem]">

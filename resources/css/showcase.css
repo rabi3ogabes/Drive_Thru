@@ -254,3 +254,29 @@ html[dir='rtl'] .sc-progress::after {
         animation: none;
     }
 }
+
+/* ---- Hero ---- */
+/* The words of the active slide rise in, one line after another, behind the scene. */
+@media (prefers-reduced-motion: no-preference) {
+    .js .sc-slide.is-active .hero-line {
+        animation: hero-line 820ms var(--ease-spring) both;
+        animation-delay: calc(140ms + var(--i, 0) * 80ms);
+    }
+}
+
+@keyframes hero-line {
+    from { opacity: 0; transform: translateY(1rem); }
+    to { opacity: 1; transform: none; }
+}
+
+/* Without JavaScript the tabs are links: the slide they point at shows instead of the first. */
+html:not(.js) .sc-slide:target {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+html:not(.js) .sc-slides:has(.sc-slide:target) .sc-slide.is-active:not(:target) {
+    opacity: 0;
+    visibility: hidden;
+}

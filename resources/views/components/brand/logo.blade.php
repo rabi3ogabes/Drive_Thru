@@ -10,8 +10,8 @@
     <span class="flex flex-col leading-none">
         <span class="flex items-center gap-2">
             {!! $arabicFirst ? $arabic : $latin !!}
-            <span class="h-3 w-px bg-current opacity-20" aria-hidden="true"></span>
-            <span class="opacity-70">{!! $arabicFirst ? $latin : $arabic !!}</span>
+            <span class="hidden h-3 w-px bg-current opacity-20 lg:block" aria-hidden="true"></span>
+            <span class="hidden opacity-70 lg:inline">{!! $arabicFirst ? $latin : $arabic !!}</span>
         </span>
         @if ($subtitle)
             <span class="mt-1.5 text-[0.625rem] font-medium uppercase tracking-[0.18em] opacity-60 rtl:tracking-normal rtl:text-[0.6875rem]">{{ $subtitle }}</span>
