@@ -42,7 +42,7 @@
         <div class="cta-ar" dir="rtl">{{ __($cta, [], 'ar') }}</div>
         <div class="cta-en">{{ __($cta, [], 'en') }}</div>
         <div class="url">{{ $url }}</div>
-        <div class="foot">{{ \App\Support\Brand::full() }}</div>
+        <div class="foot"><img src="{{ \App\Support\Brand::markDataUri() }}" width="{{ round(4 * $z, 2) }}mm" height="{{ round(4 * $z, 2) }}mm" style="vertical-align: middle;"> {{ \App\Support\Brand::full() }}</div>
     </div>
 </body>
 </html>

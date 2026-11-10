@@ -30,4 +30,15 @@ final class Brand
     {
         return self::LATIN;
     }
+
+    /**
+     * The mark as an image source for PDFs. mPDF reads SVG best as an image and
+     * prints gradients near-black, so the tile is the flat deep teal here.
+     */
+    public static function markDataUri(): string
+    {
+        $svg = str_replace('fill="url(#g)"', 'fill="#174d48"', (string) file_get_contents(resource_path('brand/dhawq-mark.svg')));
+
+        return 'data:image/svg+xml;base64,'.base64_encode($svg);
+    }
 }

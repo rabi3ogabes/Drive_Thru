@@ -34,7 +34,7 @@
 <table>
     <tr>
         <td style="width: 55%;">
-            <div class="brand">{{ \App\Support\Brand::full() }}</div>
+            <div class="brand"><img src="{{ \App\Support\Brand::markDataUri() }}" width="11mm" height="11mm" style="vertical-align: middle;"> {{ \App\Support\Brand::full() }}</div>
             <div class="muted">{{ $issuer['name'] }}</div>
             @if ($issuer['address'])<div class="muted">{{ $issuer['address'] }}</div>@endif
             @if ($issuer['tax_number'])<div class="muted">Tax no. · {{ $issuer['tax_number'] }}</div>@endif
