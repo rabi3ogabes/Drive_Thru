@@ -75,7 +75,7 @@ final class ThemeCss
         $tokens = ThemeTokens::for($spec);
         $dark = $spec->mode === 'dark';
         $colors = $spec->colors;
-        $vars = ['brand' => $tokens['brand'], 'color-on-brand' => $tokens['color-on-brand']];
+        $vars = ['brand' => $tokens['brand'], 'color-on-brand' => $tokens['color-on-brand'], 'color-on-accent' => $tokens['color-on-accent']];
 
         $groups = [
             'color-ink-' => $dark || $colors['text'] !== self::CLASSIC['colors']['text'],

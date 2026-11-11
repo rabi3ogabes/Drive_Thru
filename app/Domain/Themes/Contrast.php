@@ -56,6 +56,11 @@ final class Contrast
             $warnings[] = ['key' => 'button_text', 'ratio' => round($button, 2)];
         }
 
+        $accent = self::ratio(ThemeTokens::onAccent($spec), $colors['accent']);
+        if ($accent < self::TEXT) {
+            $warnings[] = ['key' => 'accent_text', 'ratio' => round($accent, 2)];
+        }
+
         return ['ok' => $errors === [], 'errors' => $errors, 'warnings' => $warnings];
     }
 

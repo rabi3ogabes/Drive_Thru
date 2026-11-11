@@ -98,7 +98,7 @@
                 <div class="{{ $core }} relative bg-white">
                     <div aria-hidden="true" class="pointer-events-none absolute -end-10 -top-12 size-40 rounded-full bg-brass-100/70 blur-2xl"></div>
                     <div class="relative flex items-start gap-3.5">
-                        <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-brass-500 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]" aria-hidden="true">
+                        <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-brass-500 text-on-accent shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]" aria-hidden="true">
                             <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7M5 16c1.2 1 2.4 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0M12 12V8m0 0c-1 0-1.6-.8-1.6-1.6S12 4 12 4s1.6 1.6 1.6 2.4S13 8 12 8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <div class="min-w-0">
@@ -148,7 +148,7 @@
                             $share = $row['target'] > 0 ? min(100, (int) round($row['current'] / $row['target'] * 100)) : 0;
                         @endphp
                         <li @class(['rounded-2xl p-3.5 ring-1', 'bg-white ring-brass-500/25' => $earned, 'bg-white/60 ring-ink-950/5' => ! $earned]) wire:key="badge-{{ $badge->value }}">
-                            <span @class(['grid size-11 place-items-center rounded-full', 'bg-brass-500 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]' => $earned, 'bg-ink-950/5 text-ink-300' => ! $earned]) aria-hidden="true">
+                            <span @class(['grid size-11 place-items-center rounded-full', 'bg-brass-500 text-on-accent shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]' => $earned, 'bg-ink-950/5 text-ink-300' => ! $earned]) aria-hidden="true">
                                 <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="{{ $badge->icon() }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
                             <p @class(['mt-2.5 text-sm font-semibold', 'text-ink-950' => $earned, 'text-ink-600' => ! $earned])>{{ $badge->label() }}</p>
@@ -176,7 +176,7 @@
                      x-on:keydown.escape.window="open = false" wire:key="unlocked-{{ $newest->id }}">
                     <div class="w-full max-w-sm rounded-[calc(2rem*var(--radius-scale))] bg-white p-6 text-center shadow-2xl" x-on:click.outside="open = false"
                          x-init="matchMedia('(prefers-reduced-motion: reduce)').matches || $el.animate([{ transform: 'scale(.9)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.32,.72,0,1)' })">
-                        <span class="mx-auto grid size-20 place-items-center rounded-full bg-brass-500 text-white shadow-[0_18px_40px_-18px_var(--color-brass-700,currentColor)]" aria-hidden="true">
+                        <span class="mx-auto grid size-20 place-items-center rounded-full bg-brass-500 text-on-accent shadow-[0_18px_40px_-18px_var(--color-brass-700,currentColor)]" aria-hidden="true">
                             <svg class="size-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="{{ $newest->badge->icon() }}" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <p id="unlocked-title" class="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-brass-700 rtl:tracking-normal">{{ __('loyalty.badges.unlocked') }}</p>
