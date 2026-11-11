@@ -2,6 +2,14 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-11: Screens without a branch
+
+### Fixed
+- Opening a screen (TV, kitchen, pickup window, live board) at a restaurant with no branch no longer shows a bare 403. Owners and branch managers see "Add a branch first" with a button to the Branches page; staff not on a branch are told to ask the owner or their manager. People without access to the screen, and outsiders, still get the 403.
+
+### Verified
+- Full test suite, Pint, Larastan 0. Browser (local): Arabic and English at 375, 768 and 1280 px; the button opens the Branches page; no console errors or sideways scrolling.
+
 ## 2026-11-10: ذوق / Dhawq
 
 ### Built

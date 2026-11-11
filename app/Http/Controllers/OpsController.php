@@ -11,9 +11,12 @@ use App\Domain\Ordering\Operations\Operator;
 use App\Domain\Ordering\Realtime\ChannelAccess;
 use App\Domain\Services\Enums\Service;
 use App\Domain\Tenancy\Models\Restaurant;
+use App\Filament\App\Resources\Branches\BranchResource;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
@@ -57,7 +60,7 @@ final class OpsController
     }
 
     /** /ops/{restaurant}: the overview for owners, otherwise the first screen they may use. */
-    public function home(Request $request, Restaurant $restaurant): RedirectResponse
+    public function home(Request $request, Restaurant $restaurant): RedirectResponse|Response
     {
         $user = $this->user($request);
 
@@ -66,22 +69,30 @@ final class OpsController
         }
 
         $operator = Operator::staff($user, $restaurant->id);
-        $branch = $this->branches($restaurant, $operator)->first();
-        abort_if($branch === null, 403);
-
         $screen = self::screensFor($restaurant, $operator)[0] ?? null;
         abort_if($screen === null, 403);
+
+        $branch = $this->branches($restaurant, $operator)->first();
+        if ($branch === null) {
+            return $this->noBranch($restaurant, $user);
+        }
 
         return redirect()->route('ops.screen', [$restaurant, $branch->code, $screen]);
     }
 
     /** /ops/{restaurant}/go/{screen}: that screen at the first branch the person covers. */
-    public function go(Request $request, Restaurant $restaurant, string $screen): RedirectResponse
+    public function go(Request $request, Restaurant $restaurant, string $screen): RedirectResponse|Response
     {
         abort_unless(isset(self::SCREENS[$screen]), 404);
 
-        $branch = $this->branches($restaurant, Operator::staff($this->user($request), $restaurant->id))->first();
-        abort_if($branch === null, 403);
+        $user = $this->user($request);
+        $operator = Operator::staff($user, $restaurant->id);
+        abort_unless($operator->can(...self::SCREENS[$screen][1]), 403);
+
+        $branch = $this->branches($restaurant, $operator)->first();
+        if ($branch === null) {
+            return $this->noBranch($restaurant, $user);
+        }
 
         return redirect()->route('ops.screen', [$restaurant, $branch->code, $screen]);
     }
@@ -117,6 +128,21 @@ final class OpsController
             'screen' => $component,
             'params' => $params,
         ]);
+    }
+
+    /**
+     * Screens run per branch. Rather than a bare 403, say what's missing: the owner (or anyone who
+     * manages branches) gets a link to add one; others are told who can put them on a branch.
+     */
+    private function noBranch(Restaurant $restaurant, User $user): Response
+    {
+        $canAdd = $user->hasRestaurantPermission($restaurant->id, P::ManageBranches)
+            && ! Branch::withoutTenancy()->where('restaurant_id', $restaurant->id)->exists();
+
+        return response()->view('ops.no-branch', [
+            'addUrl' => $canAdd ? BranchResource::getUrl(panel: 'app', tenant: $restaurant) : null,
+            'dashboardUrl' => Filament::getPanel('app')->getUrl($restaurant) ?? url('/'),
+        ], 409);
     }
 
     private function user(Request $request): User
