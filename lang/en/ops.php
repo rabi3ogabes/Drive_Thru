@@ -6,6 +6,15 @@ return [
     'menu' => 'Screen menu',
     'back_to_panel' => 'Back to the dashboard',
     'min' => 'min',
+
+    'no_branch' => [
+        'title' => 'Add a branch first',
+        'owner' => 'Screens run for one branch at a time: its kitchen, its window, its TV. Add your first branch and every screen opens straight away.',
+        'add' => 'Add a branch',
+        'unassigned_title' => 'You aren’t on a branch yet',
+        'staff' => 'Screens open for the branch you work at. Ask the owner or your manager to add the branch, or to add you to it.',
+        'dashboard' => 'Back to the dashboard',
+    ],
     'minutes_short' => ':count min',
 
     'screens' => [

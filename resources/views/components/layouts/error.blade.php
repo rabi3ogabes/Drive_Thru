@@ -1,7 +1,8 @@
-@props(['code', 'icon' => 'compass'])
+@props(['code' => null, 'icon' => 'compass', 'title' => null, 'message' => null])
+{{-- An error page; with a title, a message and an actions slot it also serves pages that explain a missing step. --}}
 @php
-    $title = __("errors.{$code}.title");
-    $message = __("errors.{$code}.message");
+    $title ??= __("errors.{$code}.title");
+    $message ??= __("errors.{$code}.message");
 @endphp
 <x-layouts.site :title="$title.' · '.\App\Support\Brand::name()" body-class="grain">
     <div aria-hidden="true" class="pointer-events-none fixed inset-0">
@@ -15,10 +16,15 @@
                 <a href="{{ url('/') }}" class="inline-flex text-ink-950" aria-label="{{ \App\Support\Brand::name() }}">
                     <x-brand.logo />
                 </a>
+                @if ($code)
                 <p class="mt-10 font-display text-7xl tracking-tight text-teal-900" dir="ltr" style="font-variation-settings: 'opsz' 144">{{ $code }}</p>
-                <h1 class="display mt-4 text-3xl text-ink-950">{{ $title }}</h1>
+                @endif
+                <h1 @class(['display text-3xl text-ink-950', 'mt-4' => $code, 'mt-10' => ! $code])>{{ $title }}</h1>
                 <p class="mx-auto mt-4 max-w-sm text-base leading-relaxed text-ink-600">{{ $message }}</p>
                 <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+                    @if (isset($actions) && $actions->isNotEmpty())
+                        {{ $actions }}
+                    @else
                     <a href="{{ url('/') }}" class="btn btn-primary">
                         <span>{{ __('errors.actions.home') }}</span>
                         <span class="btn-icon" aria-hidden="true">
@@ -32,6 +38,7 @@
                                 <svg class="flip-rtl size-4 rotate-180" viewBox="0 0 16 16" fill="none"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
                         </a>
+                    @endif
                     @endif
                 </div>
             </div>
