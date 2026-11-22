@@ -2,6 +2,7 @@
 @import './fonts.css';
 @import './tokens.css';
 @import './showcase.css';
+@import './ops-pass.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
