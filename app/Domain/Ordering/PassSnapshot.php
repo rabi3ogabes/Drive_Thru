@@ -205,6 +205,7 @@ final class PassSnapshot
 
     /**
      * Mean time from the order being received to the station finishing its items, today.
+     * An item is finished when its station marked it done, or else when the whole order became ready.
      *
      * @param  array<string, string>  $names
      * @return array<string, int>
@@ -215,11 +216,12 @@ final class PassSnapshot
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.branch_id', $branch->id)
             ->whereNotNull('orders.received_at')
-            ->where('order_items.done_at', '>=', $dayStart)
-            ->get(['order_items.station', 'order_items.done_at', 'orders.received_at']);
+            ->where(fn ($query) => $query->where('order_items.done_at', '>=', $dayStart)
+                ->orWhere(fn ($query) => $query->whereNull('order_items.done_at')->where('orders.ready_at', '>=', $dayStart)))
+            ->get(['order_items.station', 'order_items.done_at', 'orders.ready_at', 'orders.received_at']);
 
         return $rows->groupBy(fn (object $row): string => $this->groupOf(StationKind::tryFrom((string) $row->station), $names))
-            ->map(fn (Collection $group): int => (int) round((float) $group->avg(fn (object $row): int => (int) CarbonImmutable::parse($row->received_at)->diffInSeconds(CarbonImmutable::parse($row->done_at), true))))
+            ->map(fn (Collection $group): int => (int) round((float) $group->avg(fn (object $row): int => (int) CarbonImmutable::parse($row->received_at)->diffInSeconds(CarbonImmutable::parse($row->done_at ?? $row->ready_at), true))))
             ->all();
     }
 }

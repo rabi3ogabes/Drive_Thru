@@ -81,6 +81,7 @@ return [
             ],
             'tips' => [
                 'Only people who cover every branch (the owner and managers of all branches) can open it.',
+                'Your Dhawq team can switch it to the Pass style: one branch at a time, each open order hanging as a ticket by station that turns red when it runs late, with what to start next. Ask support if you want it.',
             ],
         ],
 

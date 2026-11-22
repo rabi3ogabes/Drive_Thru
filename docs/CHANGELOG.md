@@ -2,6 +2,19 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-22: Pass board for the live overview
+
+### Built
+- **A second look for Operations → Overview, the Pass board**, chosen per restaurant by the platform team ("Live overview style" on the client page in `/admin`, Classic by default; the change is logged). One branch at a time, with branch tabs:
+  - every open order hangs as a paper ticket on a steel rail, grouped by station, with its items, options, notes and the car; the timer turns red when the order runs late;
+  - a spike shows what went out in the last 15 minutes and today's count;
+  - four panels: tickets on the pass and late ones with the average ticket time, what to start next (with a Start button for people who run the kitchen; scheduled orders show when they are due), station load bars with averages, and the selected ticket in full.
+- Arabic and English (the rail flows from the right in Arabic), phone, tablet, desktop and TV sizes, live updates, calm motion that stops for people who reduce motion, empty, closed and "add a branch first" states, and screen-reader names for every ticket.
+
+### Verified
+- Full test suite, Pint, Larastan 0, build.
+- Browser (local, temporary restaurant with live orders, removed afterwards): Arabic and English at 375, 768, 1280 px and 1920×1080; tickets age and turn late, Start moves an order on, the selected ticket shows the car and notes; no console errors (with realtime running), no sideways scrolling, no requests to other hosts. Ops screens are always dark, so there is no light mode to check.
+
 ## 2026-11-22: The right panel after signing in
 
 ### Fixed

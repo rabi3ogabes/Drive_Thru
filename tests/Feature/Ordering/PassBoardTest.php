@@ -1,11 +1,13 @@
 <?php
 
 use App\Domain\Branches\Actions\CreateBranch;
+use App\Domain\Branches\Models\BranchHour;
 use App\Domain\Ordering\Enums\OpsBoardStyle;
 use App\Domain\Ordering\Enums\OrderStatus;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Ops\ExecutiveBoard;
 use App\Livewire\Ops\PassBoard;
+use Carbon\CarbonImmutable;
 use Livewire\Livewire;
 
 require_once __DIR__.'/../../Support/PassHelpers.php';
@@ -118,3 +120,41 @@ it('renders in Arabic and English', function (string $locale) {
         ->assertSee(__('ops.pass.next', [], $locale))
         ->assertSee(__('ops.pass.stations', [], $locale));
 })->with(['en', 'ar']);
+
+it('names every ticket for screen readers', function () {
+    CarbonImmutable::setTestNow(CarbonImmutable::parse('2026-11-22 09:00:00', 'UTC'));
+    $restaurant = passRestaurant();
+    $branch = passBranch($restaurant);
+    $late = passOrder($branch, ['received_at' => now()->subMinutes(9)], items: [['Karak', 'drinks'], ['Tea', 'drinks']]);
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->assertSeeHtml('aria-label="'.e(__('ops.pass.ticket_label', ['number' => $late->displayNumber(), 'items' => trans_choice('ops.pass.items', 2, ['count' => 2]), 'minutes' => 9]).', '.__('ops.pass.late_word')).'"');
+
+    CarbonImmutable::setTestNow();
+});
+
+it('shows a calm empty rail when nothing is open', function () {
+    $restaurant = passRestaurant();
+    passBranch($restaurant);
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->assertSee(__('ops.pass.empty'))
+        ->assertSee(__('ops.pass.next_empty'))
+        ->assertSee(__('ops.pass.select_hint'));
+});
+
+it('shows when the branch opens again when it is closed', function () {
+    CarbonImmutable::setTestNow(CarbonImmutable::parse('2026-11-22 09:00:00', 'UTC')); // Sunday, 12:00 in Doha
+    $restaurant = passRestaurant();
+    $branch = passBranch($restaurant);
+    BranchHour::withoutTenancy()->create(['restaurant_id' => $restaurant->id, 'branch_id' => $branch->id, 'weekday' => 1, 'opens_at' => '06:00', 'closes_at' => '10:00']);
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->assertSee(__('ops.pass.closed'))
+        ->assertSee(__('ops.pass.opens', ['time' => '06:00']));
+
+    CarbonImmutable::setTestNow();
+});

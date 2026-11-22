@@ -116,7 +116,7 @@
                             <li class="flex min-h-14 items-center gap-3 rounded-2xl bg-white/[0.04] px-3 ring-1 ring-white/6" wire:key="next-{{ $row['order_id'] }}">
                                 <span class="w-14 shrink-0 text-xl font-semibold tabular-nums" dir="ltr">{{ $row['number'] }}</span>
                                 <span class="min-w-0 flex-1">
-                                    <span class="block text-sm text-white/80">{{ __('ops.pass.items', ['count' => $row['items_count']]) }}</span>
+                                    <span class="block text-sm text-white/80">{{ trans_choice('ops.pass.items', $row['items_count'], ['count' => $row['items_count']]) }}</span>
                                     @if ($row['notes'])<span class="block truncate text-xs text-status-delayed" dir="auto">{{ $row['notes'] }}</span>@endif
                                 </span>
                                 @if ($row['status'] === 'scheduled')

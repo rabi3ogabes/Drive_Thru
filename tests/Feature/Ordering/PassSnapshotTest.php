@@ -85,12 +85,13 @@ it('shows orders that became ready in the last 15 minutes on the spike, newest f
 it('computes the average ticket time and station averages for today', function () {
     $branch = passBranch();
     passOrder($branch, ['status' => 'picked_up', 'received_at' => now()->subMinutes(30), 'ready_at' => now()->subMinutes(26)], items: [['Karak', 'drinks', true]]);
-    passOrder($branch, ['status' => 'picked_up', 'received_at' => now()->subMinutes(20), 'ready_at' => now()->subMinutes(14)]);
+    passOrder($branch, ['status' => 'picked_up', 'received_at' => now()->subMinutes(20), 'ready_at' => now()->subMinutes(14)], items: [['Manakish', 'general']]);
 
     $snapshot = app(PassSnapshot::class)->of($branch);
 
     expect($snapshot['totals']['avg_ticket_seconds'])->toBe(300)
-        ->and(passStations($snapshot)['drinks']['avg_seconds'])->toBe(1800);
+        ->and(passStations($snapshot)['drinks']['avg_seconds'])->toBe(1800)
+        ->and(passStations($snapshot)['general']['avg_seconds'])->toBe(360);
 });
 
 it('never includes another restaurant\'s or another branch\'s orders', function () {
@@ -127,4 +128,14 @@ it('runs a fixed number of queries however many orders there are', function () {
     }
 
     expect($count())->toBe($one);
+});
+
+it('uses the order\'s ready time for station averages when the station did not mark its items', function () {
+    $branch = passBranch();
+    passOrder($branch, ['status' => 'picked_up', 'received_at' => now()->subMinutes(20), 'ready_at' => now()->subMinutes(15)], items: [['Karak', 'drinks'], ['Manakish', 'general']]);
+
+    $stations = passStations(app(PassSnapshot::class)->of($branch));
+
+    expect($stations['drinks']['avg_seconds'])->toBe(300)
+        ->and($stations['general']['avg_seconds'])->toBe(300);
 });

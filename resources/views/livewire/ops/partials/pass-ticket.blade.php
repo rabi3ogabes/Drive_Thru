@@ -1,7 +1,7 @@
 @php
     $count = array_sum(array_column($ticket['items'], 'quantity'));
     $minutes = intdiv((int) $ticket['age_seconds'], 60);
-    $label = __('ops.pass.ticket_label', ['number' => $ticket['number'], 'items' => $count, 'minutes' => $minutes]).($ticket['late'] ? ', '.__('ops.pass.late_word') : '');
+    $label = __('ops.pass.ticket_label', ['number' => $ticket['number'], 'items' => trans_choice('ops.pass.items', $count, ['count' => $count]), 'minutes' => $minutes]).($ticket['late'] ? ', '.__('ops.pass.late_word') : '');
 @endphp
 <li class="pass-slot" wire:key="ticket-{{ $kind }}-{{ $ticket['order_id'] }}">
     <button type="button" wire:click="select({{ $ticket['order_id'] }})"
