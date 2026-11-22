@@ -18,6 +18,7 @@ use App\Domain\Menu\Models\MenuCategory;
 use App\Domain\Menu\Models\MenuSchedule;
 use App\Domain\Menu\Models\ModifierGroup;
 use App\Domain\Menu\Models\Product;
+use App\Domain\Ordering\Enums\OpsBoardStyle;
 use App\Domain\Ordering\Models\Order;
 use App\Domain\Services\Enums\Service;
 use App\Domain\Services\Models\RestaurantService;
@@ -64,6 +65,7 @@ use Spatie\Translatable\HasTranslations;
  * @property bool $order_override_enabled
  * @property int $cancellation_window_minutes
  * @property ?array<string, mixed> $menu_layout
+ * @property OpsBoardStyle $ops_board
  * @property ?array<string, mixed> $settings
  * @property ?string $legal_name
  * @property ?string $contact_email
@@ -79,7 +81,7 @@ use Spatie\Translatable\HasTranslations;
  * @property ?CarbonImmutable $created_at
  * @property-read ?Subscription $subscription
  */
-#[Fillable(['slug', 'name', 'logo_path', 'cover_path', 'accent_color', 'menu_theme', 'tax_rate_bp', 'service_fee_bp', 'menu_link_mode', 'order_override_enabled', 'cancellation_window_minutes', 'menu_layout', 'currency', 'timezone', 'default_locale', 'status', 'settings', 'legal_name', 'contact_email', 'contact_phone', 'tax_number', 'billing_address', 'internal_notes', 'feature_overrides', 'suspended_at', 'suspension_reason', 'quiet_hours_start', 'quiet_hours_end'])]
+#[Fillable(['slug', 'name', 'logo_path', 'cover_path', 'accent_color', 'menu_theme', 'tax_rate_bp', 'service_fee_bp', 'menu_link_mode', 'order_override_enabled', 'cancellation_window_minutes', 'menu_layout', 'ops_board', 'currency', 'timezone', 'default_locale', 'status', 'settings', 'legal_name', 'contact_email', 'contact_phone', 'tax_number', 'billing_address', 'internal_notes', 'feature_overrides', 'suspended_at', 'suspension_reason', 'quiet_hours_start', 'quiet_hours_end'])]
 #[UseFactory(RestaurantFactory::class)]
 class Restaurant extends Model implements HasAvatar, HasName
 {
@@ -106,6 +108,7 @@ class Restaurant extends Model implements HasAvatar, HasName
         'quiet_hours_start' => null,
         'quiet_hours_end' => null,
         'menu_layout' => null,
+        'ops_board' => 'classic',
         'menu_theme' => null,
         'settings' => null,
         'legal_name' => null,
@@ -125,6 +128,7 @@ class Restaurant extends Model implements HasAvatar, HasName
             'status' => RestaurantStatus::class,
             'settings' => 'array',
             'menu_layout' => 'array',
+            'ops_board' => OpsBoardStyle::class,
             'menu_theme' => 'array',
             'tax_rate_bp' => 'integer',
             'service_fee_bp' => 'integer',
