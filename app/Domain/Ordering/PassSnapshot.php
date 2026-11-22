@@ -56,6 +56,7 @@ final class PassSnapshot
         $finished = Order::withoutTenancy()
             ->where('branch_id', $branch->id)
             ->whereNotNull('received_at')
+            ->whereIn('status', [OrderStatus::Ready->value, OrderStatus::PickedUp->value])
             ->where('ready_at', '>=', $dayStart)
             ->orderByDesc('ready_at')
             ->get(['id', 'number', 'received_at', 'ready_at']);
@@ -169,6 +170,7 @@ final class PassSnapshot
             'car' => $vehicle === [] ? null : implode(' · ', array_filter([trim(($vehicle['color'] ?? '').' '.($vehicle['make'] ?? '').' '.($vehicle['model'] ?? '')), $vehicle['plate'] ?? null])),
             'lane' => $order->lane?->name,
             'arrived' => $order->arrived_at !== null,
+            'payment' => $order->payment_status->getLabel(),
             'notes' => filled($order->notes) ? (string) $order->notes : null,
             'items' => $items->values()->map(fn (OrderItem $item): array => [
                 'quantity' => $item->quantity,

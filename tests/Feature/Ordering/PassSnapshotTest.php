@@ -139,3 +139,17 @@ it('uses the order\'s ready time for station averages when the station did not m
     expect($stations['drinks']['avg_seconds'])->toBe(300)
         ->and($stations['general']['avg_seconds'])->toBe(300);
 });
+
+it('keeps orders sent back to the kitchen or cancelled off the spike and out of the day\'s totals', function () {
+    $branch = passBranch();
+    $back = passOrder($branch, ['status' => 'preparing', 'received_at' => now()->subMinutes(8), 'ready_at' => now()->subMinutes(3)]);
+    passOrder($branch, ['status' => 'cancelled', 'received_at' => now()->subMinutes(9), 'ready_at' => now()->subMinutes(4)]);
+    $ready = passOrder($branch, ['status' => 'ready', 'received_at' => now()->subMinutes(7), 'ready_at' => now()->subMinutes(2)]);
+
+    $snapshot = app(PassSnapshot::class)->of($branch);
+
+    expect(array_column($snapshot['done'], 'order_id'))->toBe([$ready->id])
+        ->and($snapshot['totals']['ready_today'])->toBe(1)
+        ->and($snapshot['totals']['avg_ticket_seconds'])->toBe(300)
+        ->and(collect(passStations($snapshot)['drinks']['tickets'])->pluck('order_id')->all())->toBe([$back->id]);
+});

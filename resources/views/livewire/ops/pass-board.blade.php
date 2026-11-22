@@ -16,7 +16,7 @@
     }
     $hasTickets = $totals['on_pass'] > 0;
 @endphp
-<div wire:poll.15s>
+<div wire:poll.10s>
     <x-ops.shell :restaurant="$restaurant" :title="__('ops.screens.overview')" :channel="'restaurant.'.$restaurant->id.'.dashboard'" screen="overview">
         <x-slot:tools>
             @if ($branches->count() > 1)
@@ -34,7 +34,7 @@
             </div>
         </x-slot:tools>
 
-        <div class="pass" x-data="passBoard()">
+        <div class="pass" x-data="passBoard({{ now()->getTimestampMs() }})">
             @if ($branches->count() > 1)
                 <nav class="flex gap-1 overflow-x-auto px-4 pt-4 lg:hidden" aria-label="{{ __('ops.pass.branches') }}">
                     @foreach ($branches as $option)
@@ -159,7 +159,7 @@
                             <p class="text-4xl font-semibold tabular-nums" dir="ltr">{{ $focus['number'] }}</p>
                             <p @class(['text-3xl font-semibold tabular-nums', 'text-status-delayed' => $focus['late']]) dir="ltr" x-text="age(@js($focus['received_at']))">{{ $clock((int) $focus['age_seconds']) }}</p>
                         </div>
-                        <p class="text-sm text-brass-200">{{ __('ops.pass.'.$focus['status']) }}@if ($focus['arrived']) · {{ __('ops.pass.car_here') }}@endif</p>
+                        <p class="text-sm text-brass-200">{{ __('ops.pass.'.$focus['status']) }}@if ($focus['arrived']) · {{ __('ops.pass.car_here') }}@endif · {{ $focus['payment'] }}</p>
                         @if ($focus['car'] || $focus['lane'])<p class="mt-1 text-sm text-white/60" dir="auto">{{ $focus['car'] ?? $focus['lane'] }}</p>@endif
                         <ul class="pass-receipt mt-4 grid gap-1.5" role="list">
                             @foreach ($focus['items'] as $item)

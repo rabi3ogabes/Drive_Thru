@@ -5,13 +5,18 @@
         setInterval(() => (window.Alpine.store('clock').now = Date.now()), 1000);
 
         // Pass board: ticket ages from server times on the shared clock, and arrow keys along the rail.
-        window.Alpine.data('passBoard', () => ({
+        // The offset corrects for a screen whose own clock is wrong: ages always follow the server.
+        window.Alpine.data('passBoard', (serverNow) => ({
+            offset: serverNow - Date.now(),
+            now() {
+                return this.$store.clock.now + this.offset;
+            },
             age(iso) {
-                const seconds = Math.max(0, Math.floor((this.$store.clock.now - Date.parse(iso)) / 1000));
+                const seconds = Math.max(0, Math.floor((this.now() - Date.parse(iso)) / 1000));
                 return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
             },
             late(iso) {
-                return this.$store.clock.now > Date.parse(iso);
+                return this.now() > Date.parse(iso);
             },
             nav(event) {
                 if (! ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;

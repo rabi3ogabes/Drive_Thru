@@ -118,38 +118,49 @@
     scroll-snap-align: start;
 }
 
-/* A ticket: warm paper, receipt type, a torn bottom edge, a small tilt. */
+/*
+ * A ticket: the button carries the tilt, the shadow, the clip, the focus ring and the
+ * selected outline; the paper inside carries the torn edge (a mask would clip all of those).
+ */
 .pass-ticket {
     --tilt: -.6deg;
     position: relative;
-    display: flex;
-    flex-direction: column;
+    display: block;
     width: 9.5rem;
-    min-height: 13rem;
-    padding: .75rem .75rem 1.1rem;
     text-align: start;
     font-family: var(--font-receipt);
     color: var(--pass-ink);
-    background: var(--pass-paper);
+    border-radius: .2rem;
     transform-origin: 50% 0;
     transform: rotate(var(--tilt));
     filter: drop-shadow(0 14px 14px color-mix(in oklab, var(--color-ink-950) 65%, transparent));
+    transition: transform .4s cubic-bezier(.32, .72, 0, 1);
+    animation: pass-hang .6s cubic-bezier(.32, .72, 0, 1) backwards;
+}
+
+.pass-ticket-paper {
+    display: flex;
+    flex-direction: column;
+    min-height: 13rem;
+    padding: .75rem .75rem 1.1rem;
+    background: var(--pass-paper);
     -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / .7rem 100%;
     mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / .7rem 100%;
-    transition: transform .4s cubic-bezier(.32, .72, 0, 1);
-    animation: pass-hang .6s cubic-bezier(.32, .72, 0, 1) both;
 }
 
 .pass-slot:nth-child(3n + 2) .pass-ticket { --tilt: .45deg; }
 .pass-slot:nth-child(3n + 3) .pass-ticket { --tilt: -.25deg; }
 
 .pass-ticket:hover { transform: rotate(0deg) translateY(2px); }
-.pass-ticket:focus-visible { outline: 3px solid var(--color-brass-300); outline-offset: 4px; }
+.pass-ticket:focus-visible { outline: 3px solid var(--color-brass-300); outline-offset: 5px; }
+.pass-ticket.is-selected { transform: rotate(0deg) translateY(4px); outline: 3px solid var(--color-ivory-50); outline-offset: 5px; }
+.pass-ticket.is-selected:focus-visible { outline-color: var(--color-brass-300); }
 
 /* The clip that holds it to the rail. */
 .pass-ticket::before {
     content: '';
     position: absolute;
+    z-index: 1;
     inset-block-start: -.15rem;
     inset-inline-start: 50%;
     width: 1.6rem;
@@ -158,13 +169,12 @@
     border-radius: 0 0 .3rem .3rem;
     background: linear-gradient(180deg, var(--pass-steel-hi), var(--pass-steel-lo));
 }
+[dir='rtl'] .pass-ticket::before { translate: 50% 0; }
 
-.pass-ticket.is-selected { box-shadow: 0 0 0 3px var(--color-brass-300); transform: rotate(0deg) translateY(4px); }
-
-.pass-ticket.is-late {
-    background: linear-gradient(90deg, var(--color-status-delayed) 0 .3rem, var(--pass-paper) .3rem);
-    animation: pass-hang .6s cubic-bezier(.32, .72, 0, 1) both, pass-late .9s ease-out 1;
-}
+/* Late: a red edge on the reading side, and one pulse when it turns. */
+.pass-ticket.is-late .pass-ticket-paper { background: linear-gradient(90deg, var(--color-status-delayed) 0 .3rem, var(--pass-paper) .3rem); }
+[dir='rtl'] .pass-ticket.is-late .pass-ticket-paper { background: linear-gradient(270deg, var(--color-status-delayed) 0 .3rem, var(--pass-paper) .3rem); }
+.pass-ticket.is-late { animation: pass-hang .6s cubic-bezier(.32, .72, 0, 1) backwards, pass-late .9s ease-out 1; }
 
 .pass-ticket-head { display: flex; align-items: flex-start; justify-content: space-between; gap: .25rem; }
 .pass-ticket-number { font-size: 1.9rem; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
@@ -258,7 +268,8 @@
 }
 
 @media (min-width: 1800px) {
-    .pass-ticket { width: 11rem; min-height: 15rem; }
+    .pass-ticket { width: 11rem; }
+    .pass-ticket-paper { min-height: 15rem; }
     .pass-ticket-number { font-size: 2.3rem; }
     .pass-ticket-items { font-size: .9rem; }
 }

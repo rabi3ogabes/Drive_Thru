@@ -51,7 +51,7 @@ return [
         'already_started' => 'Order :number has already started.',
         'started' => 'Order :number is being prepared.',
         'ticket_label' => 'Order :number, :items, :minutes min',
-        'late_word' => 'late',
+        'late_word' => ', late',
         'minutes' => ':count min',
         'kitchen' => 'Kitchen',
     ],

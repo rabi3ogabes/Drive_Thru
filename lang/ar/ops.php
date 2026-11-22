@@ -51,7 +51,7 @@ return [
         'already_started' => 'الطلب :number بدأ بالفعل.',
         'started' => 'الطلب :number قيد التحضير الآن.',
         'ticket_label' => 'الطلب :number، :items، :minutes دقيقة',
-        'late_word' => 'متأخر',
+        'late_word' => '، متأخر',
         'minutes' => ':count د',
         'kitchen' => 'المطبخ',
     ],

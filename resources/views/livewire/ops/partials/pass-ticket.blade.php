@@ -1,7 +1,7 @@
 @php
     $count = array_sum(array_column($ticket['items'], 'quantity'));
     $minutes = intdiv((int) $ticket['age_seconds'], 60);
-    $label = __('ops.pass.ticket_label', ['number' => $ticket['number'], 'items' => trans_choice('ops.pass.items', $count, ['count' => $count]), 'minutes' => $minutes]).($ticket['late'] ? ', '.__('ops.pass.late_word') : '');
+    $label = __('ops.pass.ticket_label', ['number' => $ticket['number'], 'items' => trans_choice('ops.pass.items', $count, ['count' => $count]), 'minutes' => $minutes]).($ticket['late'] ? __('ops.pass.late_word') : '');
 @endphp
 <li class="pass-slot" wire:key="ticket-{{ $kind }}-{{ $ticket['order_id'] }}">
     <button type="button" wire:click="select({{ $ticket['order_id'] }})"
@@ -9,6 +9,7 @@
             :class="{ 'is-late': late(@js($ticket['target_at'])) }"
             aria-label="{{ $label }}" aria-pressed="{{ $selected === $ticket['order_id'] ? 'true' : 'false' }}"
             data-pass-ticket>
+        <span class="pass-ticket-paper">
         <span class="pass-ticket-head">
             <span class="pass-ticket-number" dir="ltr">{{ $ticket['number'] }}</span>
             @if ($ticket['arrived'])
@@ -35,6 +36,7 @@
         <span class="pass-ticket-foot">
             <span class="pass-ticket-timer" dir="ltr" x-text="age(@js($ticket['received_at']))">{{ sprintf('%d:%02d', $minutes, (int) $ticket['age_seconds'] % 60) }}</span>
             @if ($ticket['car'])<span class="pass-ticket-meta" dir="auto">{{ $ticket['car'] }}</span>@elseif ($ticket['lane'])<span class="pass-ticket-meta" dir="auto">{{ $ticket['lane'] }}</span>@endif
+        </span>
         </span>
     </button>
 </li>

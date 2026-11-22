@@ -4,6 +4,7 @@ use App\Domain\Branches\Actions\CreateBranch;
 use App\Domain\Branches\Models\BranchHour;
 use App\Domain\Ordering\Enums\OpsBoardStyle;
 use App\Domain\Ordering\Enums\OrderStatus;
+use App\Domain\Ordering\Enums\PaymentStatus;
 use App\Domain\Tenancy\Models\Restaurant;
 use App\Livewire\Ops\ExecutiveBoard;
 use App\Livewire\Ops\PassBoard;
@@ -129,7 +130,7 @@ it('names every ticket for screen readers', function () {
     $this->actingAs(ownerOf($restaurant));
 
     Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
-        ->assertSeeHtml('aria-label="'.e(__('ops.pass.ticket_label', ['number' => $late->displayNumber(), 'items' => trans_choice('ops.pass.items', 2, ['count' => 2]), 'minutes' => 9]).', '.__('ops.pass.late_word')).'"');
+        ->assertSeeHtml('aria-label="'.e(__('ops.pass.ticket_label', ['number' => $late->displayNumber(), 'items' => trans_choice('ops.pass.items', 2, ['count' => 2]), 'minutes' => 9]).__('ops.pass.late_word')).'"');
 
     CarbonImmutable::setTestNow();
 });
@@ -155,6 +156,29 @@ it('shows when the branch opens again when it is closed', function () {
     Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
         ->assertSee(__('ops.pass.closed'))
         ->assertSee(__('ops.pass.opens', ['time' => '06:00']));
+
+    CarbonImmutable::setTestNow();
+});
+
+it('shows the payment status of the selected ticket', function () {
+    $restaurant = passRestaurant();
+    $order = passOrder(passBranch($restaurant), ['payment_status' => 'unpaid']);
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->call('select', $order->id)
+        ->assertSee(PaymentStatus::Unpaid->getLabel());
+});
+
+it('refreshes every 10 seconds and ticks timers on the server\'s clock', function () {
+    CarbonImmutable::setTestNow(CarbonImmutable::parse('2026-11-22 09:00:00', 'UTC'));
+    $restaurant = passRestaurant();
+    passOrder(passBranch($restaurant));
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->assertSeeHtml('wire:poll.10s')
+        ->assertSeeHtml('passBoard('.now()->getTimestampMs().')');
 
     CarbonImmutable::setTestNow();
 });
