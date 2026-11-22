@@ -17,6 +17,10 @@ return [
     ],
     'minutes_short' => ':count min',
 
+    'pass' => [
+        'kitchen' => 'Kitchen',
+    ],
+
     'board_style' => [
         'classic' => ['label' => 'Classic', 'description' => 'A card per branch with its health, live counts and sales today.'],
         'pass' => ['label' => 'Pass', 'description' => 'The kitchen pass: every open order hangs as a ticket on a rail by station and ages live, with what to start next.'],
