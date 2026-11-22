@@ -39,10 +39,11 @@ it('opens the platform console for platform staff', function () {
     $this->actingAs($staff)->get('/admin')->assertOk();
 });
 
-it('keeps restaurant staff out of the platform console', function () {
+it('keeps restaurant staff out of the platform console, sending them to their workspace', function () {
     $owner = ownerOf(restaurant());
 
-    $this->actingAs($owner)->get('/admin')->assertForbidden();
+    $this->actingAs($owner)->get('/admin')->assertRedirect(url('/app'));
+    $this->actingAs($owner)->get('/admin/menu-themes')->assertRedirect(url('/app'));
 });
 
 it('opens the restaurant workspace for its team', function () {

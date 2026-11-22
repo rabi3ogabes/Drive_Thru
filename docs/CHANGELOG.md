@@ -2,6 +2,15 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-22: The right panel after signing in
+
+### Fixed
+- Someone already signed in who opens the other panel is sent to the one they can use, instead of a 403: a platform admin at `/app` goes to `/admin`, a restaurant owner or staff member at `/admin` goes to their workspace.
+- An account linked to no restaurant and no platform role sees "This account isn't linked yet" with a sign-out button. The sign-out route is never blocked. Deactivated accounts still get 403.
+
+### Verified
+- Full test suite (883), Pint, Larastan 0. Browser (local, temporary accounts): both redirects; the page in Arabic (1280 px) and English (375 px); sign-out returns to the sign-in page; no console errors or sideways scrolling.
+
 ## 2026-11-11: Screens without a branch
 
 ### Fixed

@@ -6,6 +6,11 @@ return [
         'back' => 'Go back',
     ],
     401 => ['title' => 'Please sign in', 'message' => 'You need to be signed in to see this page.'],
+    'no_access' => [
+        'title' => 'This account isn’t linked yet',
+        'message' => 'You’re signed in, but this account isn’t part of a restaurant team or the platform team. Ask the restaurant owner to invite this email, or sign out and use another account.',
+        'sign_out' => 'Sign out',
+    ],
     403 => ['title' => 'This area is private', 'message' => 'Your account doesn’t have access here. If you think it should, ask your manager or the restaurant owner.'],
     404 => ['title' => 'We couldn’t find that', 'message' => 'The link may be old or mistyped. Let’s get you back on the road.'],
     419 => ['title' => 'This page expired', 'message' => 'For your security the page timed out. Go back, refresh and try again.'],
