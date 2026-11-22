@@ -62,5 +62,5 @@ it('shows the health page to platform admins only', function () {
 
     $this->get(PlatformHealth::getUrl(panel: 'admin'))->assertOk();
 
-    $this->actingAs(ownerOf(restaurant()))->get(PlatformHealth::getUrl(panel: 'admin'))->assertForbidden();
+    $this->actingAs(ownerOf(restaurant()))->get(PlatformHealth::getUrl(panel: 'admin'))->assertRedirect(url('/app'));
 });

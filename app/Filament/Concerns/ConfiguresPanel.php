@@ -6,6 +6,7 @@ namespace App\Filament\Concerns;
 
 use App\Filament\Auth\Login;
 use App\Filament\AvatarProviders\InitialsAvatarProvider;
+use App\Filament\Http\AuthenticatePanel;
 use App\Filament\Pages\DeviceSessions;
 use App\Http\Middleware\GuardImpersonation;
 use App\Http\Middleware\SetLocale;
@@ -15,7 +16,6 @@ use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\FontProviders\LocalFontProvider;
-use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -87,6 +87,6 @@ trait ConfiguresPanel
                 DispatchServingFilamentEvent::class,
             ])
             ->middleware([SetLocale::class, GuardImpersonation::class], isPersistent: true)
-            ->authMiddleware([Authenticate::class]);
+            ->authMiddleware([AuthenticatePanel::class]);
     }
 }

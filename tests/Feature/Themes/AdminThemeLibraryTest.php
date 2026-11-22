@@ -164,7 +164,7 @@ it('clears the theme cache of restaurants using an edited template', function ()
 
 it('is limited to platform staff with Manage themes', function () {
     $restaurant = restaurant(slug: 'masar');
-    $this->actingAs(ownerOf($restaurant))->get('/admin/menu-themes')->assertForbidden();
+    $this->actingAs(ownerOf($restaurant))->get('/admin/menu-themes')->assertRedirect(url('/app'));
 
     $staff = User::factory()->create();
     $staff->forceFill(['platform_role_id' => PlatformRole::factory()->granting([PlatformPermission::ViewClients])->create()->id])->save();
