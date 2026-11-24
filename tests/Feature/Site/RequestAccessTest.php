@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 
+require_once __DIR__.'/../../Support/LeadHelpers.php';
+
 beforeEach(function () {
     Notification::fake();
     app(PlanCatalog::class)->install();
@@ -32,6 +34,7 @@ it('turns the website form into a lead', function () {
         'branches_count' => 3,
         'plan' => 'growth',
         'message' => 'Two lanes, busy at night.',
+        'form_started' => leadToken(),
     ])->assertRedirect(route('home').'#request')->assertSessionHas('lead_submitted');
 
     $lead = Lead::sole();

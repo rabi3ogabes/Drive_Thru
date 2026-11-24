@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schedule;
 
 // Billing runs early in the morning, Doha time, before restaurants open.
 Schedule::command('billing:run')
+    ->when(fn (): bool => (bool) config('billing.scheduled', true))
     ->dailyAt('05:30')
     ->timezone('Asia/Qatar')
     ->withoutOverlapping()

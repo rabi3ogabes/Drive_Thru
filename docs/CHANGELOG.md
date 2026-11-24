@@ -2,6 +2,15 @@
 
 All notable changes per phase. Newest first.
 
+## 2026-11-24: Safeguards: request-form spam and a billing switch
+
+### Fixed
+- **Spam on the request form:** besides the hidden field and the per-address limit, the form now carries an encrypted time it was shown (requests sent within 3 seconds, or without it, are dropped), recognises SEO and marketing pitches and lookalikes of our own domain, and limits each email address to 3 requests a day. Dropped requests look successful to the sender and are logged without personal data. No captcha, no third-party requests.
+- **Billing switch:** `BILLING_SCHEDULE=false` keeps the daily billing run (05:30 Doha time) off while billing is not live; `php artisan billing:run` still works by hand.
+
+### Verified
+- New `LeadSpamGuardTest` (real pitches from the live form, timing, forged tokens, lookalike domain, a genuine message with the restaurant's own website, per-email limit, billing switch on/off); full suite, Pint, Larastan 0.
+
 ## 2026-11-22: The right panel after signing in
 
 ### Fixed
