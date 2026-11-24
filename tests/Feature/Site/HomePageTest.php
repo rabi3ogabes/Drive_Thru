@@ -5,6 +5,8 @@ use App\Domain\Platform\PlatformSettings;
 use App\Domain\Services\Models\ServicePrice;
 use Illuminate\Support\Facades\Notification;
 
+require_once __DIR__.'/../../Support/LeadHelpers.php';
+
 beforeEach(fn () => Notification::fake());
 
 it('presents the three services with their real prices, in both languages', function (string $locale) {
@@ -47,6 +49,7 @@ it('keeps the services a prospect picked on the lead, and ignores made-up ones',
         'email' => 'noora@karak.test',
         'branches_count' => 2,
         'services' => ['ready_call', 'rewards'],
+        'form_started' => leadToken(),
     ])->assertRedirect(route('home').'#request');
 
     expect(Lead::sole()->services)->toBe(['ready_call', 'rewards']);

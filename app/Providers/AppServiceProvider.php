@@ -162,6 +162,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('leads', fn (Request $request): array => [
             Limit::perMinute(3)->by('leads:'.$request->ip()),
             Limit::perDay(20)->by('leads-day:'.$request->ip()),
+            Limit::perDay(3)->by('leads-email:'.mb_strtolower(trim((string) $request->input('email')))),
         ]);
 
         Event::listen(Failed::class, RecordFailedSignIn::class);

@@ -8,6 +8,8 @@ use App\Domain\Tenancy\Actions\CreateRestaurant;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Js;
 
+require_once __DIR__.'/../../Support/LeadHelpers.php';
+
 beforeEach(fn () => Notification::fake());
 
 it('has a page for every service, in both languages, with its own form choice', function (Service $service, string $locale) {
@@ -55,7 +57,7 @@ it('lists every public page in the sitemap, in both languages', function () {
 });
 
 it('sends visitors back to the page they asked from, never to another site', function () {
-    $lead = ['restaurant_name' => 'Karak Corner', 'contact_name' => 'Noora', 'email' => 'noora@karak.test', 'services' => ['rewards']];
+    $lead = ['restaurant_name' => 'Karak Corner', 'contact_name' => 'Noora', 'email' => 'noora@karak.test', 'services' => ['rewards'], 'form_started' => leadToken()];
 
     $this->from(url('/services/rewards'))->post('/request-access', $lead)->assertRedirect(url('/services/rewards').'#request');
     $this->from('https://evil.test/phish')->post('/request-access', [...$lead, 'email' => 'other@karak.test'])->assertRedirect(route('home').'#request');

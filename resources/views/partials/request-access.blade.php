@@ -48,6 +48,7 @@
                             <div class="hidden" aria-hidden="true">
                                 <label for="company_website">Website</label>
                                 <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off">
+                                <input type="hidden" name="form_started" value="{{ app(\App\Domain\Growth\LeadSpamGuard::class)->token() }}">
                             </div>
 
                             @foreach ([

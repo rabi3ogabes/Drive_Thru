@@ -7,18 +7,21 @@ namespace App\Http\Controllers;
 use App\Domain\Billing\Models\Plan;
 use App\Domain\Growth\Actions\SubmitLead;
 use App\Domain\Growth\Enums\LeadSource;
+use App\Domain\Growth\LeadSpamGuard;
 use App\Domain\Services\Enums\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 /**
- * The public "request access" form. A hidden honeypot field silently drops
- * bots; real requests become leads in the sales pipeline.
+ * The public "request access" form. A hidden honeypot field and LeadSpamGuard
+ * (timing, pitches, lookalike domains) silently drop bots; real requests
+ * become leads in the sales pipeline.
  */
 final class SubmitLeadController
 {
-    public function __invoke(Request $request, SubmitLead $submit): RedirectResponse
+    public function __invoke(Request $request, SubmitLead $submit, LeadSpamGuard $guard): RedirectResponse
     {
         if (filled($request->input('company_website'))) {
             return redirect()->to($this->backTo($request).'#request')->with('lead_submitted', true);
@@ -35,6 +38,12 @@ final class SubmitLeadController
             'services.*' => ['string', Rule::enum(Service::class)],
             'message' => ['nullable', 'string', 'max:2000'],
         ], attributes: trans('leads.form.attributes'));
+
+        if (($reason = $guard->reason($request->only(['form_started', 'email', 'restaurant_name', 'contact_name', 'message']))) !== null) {
+            Log::info('Request form dropped as spam', ['reason' => $reason]);
+
+            return redirect()->to($this->backTo($request).'#request')->with('lead_submitted', true);
+        }
 
         $submit->handle([
             'restaurant_name' => $validated['restaurant_name'],
