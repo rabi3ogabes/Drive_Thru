@@ -4,6 +4,33 @@
         window.Alpine.store('clock', { now: Date.now() });
         setInterval(() => (window.Alpine.store('clock').now = Date.now()), 1000);
 
+        // Pass board: ticket ages from server times on the shared clock, and arrow keys along the rail.
+        // The offset corrects for a screen whose own clock is wrong: ages always follow the server.
+        window.Alpine.data('passBoard', (serverNow) => ({
+            offset: serverNow - Date.now(),
+            now() {
+                return this.$store.clock.now + this.offset;
+            },
+            age(iso) {
+                const seconds = Math.max(0, Math.floor((this.now() - Date.parse(iso)) / 1000));
+                return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+            },
+            late(iso) {
+                return this.now() > Date.parse(iso);
+            },
+            nav(event) {
+                if (! ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+                const tickets = [...this.$refs.rail.querySelectorAll('[data-pass-ticket]')];
+                const at = tickets.indexOf(document.activeElement);
+                if (at === -1) return;
+                event.preventDefault();
+                const forward = (event.key === 'ArrowRight') !== (document.documentElement.dir === 'rtl');
+                const to = event.key === 'Home' ? 0 : event.key === 'End' ? tickets.length - 1 : Math.min(tickets.length - 1, Math.max(0, at + (forward ? 1 : -1)));
+                tickets[to].focus();
+                tickets[to].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+            },
+        }));
+
         // Stamp screen: the shell's chime when a new guest asks for a stamp.
         window.Alpine.data('stampChime', (initial) => ({
             seen: initial,

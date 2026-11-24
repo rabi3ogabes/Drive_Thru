@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Restaurants\Schemas;
 
 use App\Domain\Billing\Enums\PlanFeature;
+use App\Domain\Ordering\Enums\OpsBoardStyle;
 use App\Filament\Support\Bilingual;
 use App\Support\Locales;
 use DateTimeZone;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -71,6 +73,17 @@ class RestaurantForm
                         ->default('default')
                         ->inline()
                         ->grouped())->all()),
+
+                Section::make(__('clients.sections.ops_board'))
+                    ->description(__('clients.sections.ops_board_hint'))
+                    ->collapsible()
+                    ->schema([
+                        Radio::make('ops_board')
+                            ->hiddenLabel()
+                            ->options(OpsBoardStyle::class)
+                            ->default(OpsBoardStyle::Classic->value)
+                            ->required(),
+                    ]),
             ]),
 
             Section::make(__('clients.sections.internal'))

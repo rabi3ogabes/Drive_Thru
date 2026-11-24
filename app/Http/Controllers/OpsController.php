@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Domain\Access\Enums\RestaurantPermission as P;
 use App\Domain\Branches\Enums\DeviceKind;
 use App\Domain\Branches\Models\Branch;
+use App\Domain\Ordering\Enums\OpsBoardStyle;
 use App\Domain\Ordering\Operations\Operator;
 use App\Domain\Ordering\Realtime\ChannelAccess;
 use App\Domain\Services\Enums\Service;
@@ -97,13 +98,21 @@ final class OpsController
         return redirect()->route('ops.screen', [$restaurant, $branch->code, $screen]);
     }
 
-    public function overview(Request $request, Restaurant $restaurant): View
+    public function overview(Request $request, Restaurant $restaurant): View|Response
     {
-        abort_unless(app(ChannelAccess::class)->restaurantDashboard($this->user($request), $restaurant->id), 403);
+        $user = $this->user($request);
+        abort_unless(app(ChannelAccess::class)->restaurantDashboard($user, $restaurant->id), 403);
+
+        $pass = $restaurant->ops_board === OpsBoardStyle::Pass;
+
+        // The pass hangs one branch's orders: without a branch there is nothing to hang.
+        if ($pass && ! Branch::withoutTenancy()->where('restaurant_id', $restaurant->id)->exists()) {
+            return $this->noBranch($restaurant, $user);
+        }
 
         return view('ops.page', [
             'title' => __('ops.screens.overview').' · '.$restaurant->name,
-            'screen' => 'ops.executive-board',
+            'screen' => $pass ? 'ops.pass-board' : 'ops.executive-board',
             'params' => ['restaurantId' => $restaurant->id],
         ]);
     }

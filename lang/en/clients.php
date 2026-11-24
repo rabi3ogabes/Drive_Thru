@@ -32,6 +32,8 @@ return [
         'billing_details' => 'Contact & billing details',
         'billing_details_hint' => 'Shown on invoices.',
         'features' => 'Features',
+        'ops_board' => 'Live overview style',
+        'ops_board_hint' => 'How this client’s live overview (Operations → Overview) looks to the owner and managers.',
         'features_hint' => 'Follow the plan, or switch a feature on or off for this client only.',
         'internal' => 'Internal notes',
         'internal_hint' => 'Only the platform team sees these.',
