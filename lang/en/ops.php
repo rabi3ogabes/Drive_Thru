@@ -48,6 +48,7 @@ return [
         'orders_today' => 'Orders today',
         'branches' => 'Branch',
         'rail' => 'Open orders by station',
+        'not_allowed' => 'Only people who run the kitchen can start orders.',
         'already_started' => 'Order :number has already started.',
         'started' => 'Order :number is being prepared.',
         'ticket_label' => 'Order :number, :items, :minutes min',

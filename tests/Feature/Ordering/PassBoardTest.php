@@ -182,3 +182,38 @@ it('refreshes every 10 seconds and ticks timers on the server\'s clock', functio
 
     CarbonImmutable::setTestNow();
 });
+
+it('tells someone without the kitchen permission why Start did nothing', function () {
+    $restaurant = passRestaurant();
+    $order = passOrder(passBranch($restaurant));
+    $this->actingAs(employeeAt($restaurant, 'accountant', ['all_branches' => true]));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->call('start', $order->id)
+        ->assertDispatched('ops-toast', tone: 'error');
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Received);
+});
+
+it('never starts an order of another restaurant', function () {
+    $restaurant = passRestaurant();
+    passBranch($restaurant);
+    $foreign = passOrder(passBranch(restaurant(['en' => 'Other', 'ar' => 'آخر'], slug: 'other')));
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->call('start', $foreign->id)
+        ->assertStatus(404)
+        ->assertNotDispatched('ops-toast', tone: 'success');
+
+    expect($foreign->fresh()->status)->toBe(OrderStatus::Received);
+});
+
+it('shows the orders of the day on every screen size', function () {
+    $restaurant = passRestaurant();
+    passOrder(passBranch($restaurant));
+    $this->actingAs(ownerOf($restaurant));
+
+    Livewire::test(PassBoard::class, ['restaurantId' => $restaurant->id])
+        ->assertSeeHtml('data-orders-today');
+});

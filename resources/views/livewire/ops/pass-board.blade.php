@@ -107,6 +107,7 @@
                     <p class="pass-panel-title mt-6">{{ __('ops.pass.avg_ticket') }}</p>
                     <p class="mt-1 text-5xl font-semibold tabular-nums" dir="ltr">{{ $clock($totals['avg_ticket_seconds']) }}</p>
                     <p class="mt-1 text-sm text-white/50">{{ __('ops.pass.ready_today', ['count' => $totals['ready_today']]) }}</p>
+                    <p class="mt-1 text-sm text-white/50 xl:hidden" data-orders-today>{{ __('ops.pass.orders_today') }}: <span dir="ltr">{{ $totals['orders_today'] }}</span></p>
                 </div>
 
                 <div class="pass-panel">

@@ -48,6 +48,7 @@ return [
         'orders_today' => 'طلبات اليوم',
         'branches' => 'الفرع',
         'rail' => 'الطلبات المفتوحة حسب المحطة',
+        'not_allowed' => 'بدء الطلبات متاح لمن يدير المطبخ فقط.',
         'already_started' => 'الطلب :number بدأ بالفعل.',
         'started' => 'الطلب :number قيد التحضير الآن.',
         'ticket_label' => 'الطلب :number، :items، :minutes دقيقة',

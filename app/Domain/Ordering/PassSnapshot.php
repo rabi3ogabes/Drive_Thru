@@ -174,8 +174,8 @@ final class PassSnapshot
             'notes' => filled($order->notes) ? (string) $order->notes : null,
             'items' => $items->values()->map(fn (OrderItem $item): array => [
                 'quantity' => $item->quantity,
-                'name' => (string) ($item->name[$locale] ?? $item->name['en'] ?? reset($item->name)),
-                'options' => array_values(array_filter(array_map(fn (array $o): string => (string) ($o['option'][$locale] ?? $o['option']['en'] ?? ''), $item->options ?? []))),
+                'name' => $item->localName($locale),
+                'options' => array_values(array_filter($item->optionLabels($locale))),
                 'notes' => filled($item->notes) ? (string) $item->notes : null,
             ])->all(),
         ];

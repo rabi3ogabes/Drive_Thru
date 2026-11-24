@@ -71,6 +71,8 @@ class PassBoard extends Component
         $operator = $this->operator();
 
         if (! $operator->can(P::OperateKitchen, P::OperateOrders)) {
+            $this->dispatch('ops-toast', message: Lang::text('ops.pass.not_allowed'), tone: 'error');
+
             return;
         }
 
